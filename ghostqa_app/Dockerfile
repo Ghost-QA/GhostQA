@@ -5,8 +5,8 @@ FROM node:18-alpine as build
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY ./ghostQA_app/package.json ./
-COPY ./ghostQA_app/package-lock.json ./
+COPY ./ghostqa_app/package.json ./
+COPY ./ghostqa_app/package-lock.json ./
 
 # Install dependencies
 RUN npm install --force

@@ -7,7 +7,7 @@ services:
   webui:
     build:
       context: .
-      dockerfile: ./ghostQA_App/Dockerfile
+      dockerfile: ./ghostqa_app/Dockerfile
     ports:
       - "3000:80"
     environment:
