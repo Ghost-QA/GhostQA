@@ -135,7 +135,9 @@ To successfully set up and run GhostQA, ensure the following software is install
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-12.png)
 
 **Step 13.** On the `Feature Selection window`, select features as shown in the below `screenshot`. You can also change the location for SQL Server instance installation but I will go with the default location. After feature selection please click the `Next` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-13.png)
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-14.png)
 
 **Step 14.** It will check some feature rules/prerequisites and then you will see the `Instance Configuration` screen. Here you can choose between `Default Instance` and `Named Instance`. Here I will go with `Named Instance`.
@@ -192,7 +194,9 @@ Just Click on the `Next` button.
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20211022172644-4.png)
 
 **Step 5.** Next, you will see below screen. In Connect to Server window, you can see the SQL instance name, which we have just installed. Also you can find your server name by selecting `Browse for more` option from `dropdown`, and now from opened pop-up window select `local server` by expanding `database engine`.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20211022172644-5.png)
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/Sql_server_browse_server.jpg)
 
 **Step 6.** After selecting Server name select `Sql Server Authentication` from `Authentication` dropdown put `sa` as `user name` and `password` is what you have entered during installation of `SQL server Mixed mode` also click on `checkbox` for `Remember me` and `Trust Server Cirtificate` options.
