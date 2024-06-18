@@ -264,12 +264,15 @@ Download the zip file [Download Zip](https://github.com/MechlinTech/MyersAndStau
    **Note**: Ensure the `GhostQA_API` and `GhostQA_UI` folders are directly placed in the `Published Project` folder.
 
 3. Right-click on the `SetupApp.bat` file and run it as an Administrator. It will create two sites on IIS:
-   A. API
-   B. UI
-
+      - A. API
+      - B. UI
    - On completion of the BAT installation process, copy the URL provided in the `command prompt` and open it.
    - After launching the URL, the default username and password will be: `admin@gmail.com` and `Admin@123`.
 
 #### Step 4: Set Up the Application
 
 1. Under the `GhostQA_API` folder, modify the `appsettings.json` file to update the connection string with the appropriate server name, database name, username, and password.
+- Need to change in `connectionString` as below
+  ![ConnectionString](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/connectionStringChanges.jpg)
+- Need to change `Location Setting` by putting correct directory
+   ![LocationSetting](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/locationSetting.jpg)
