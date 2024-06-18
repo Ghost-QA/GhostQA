@@ -25,7 +25,7 @@ RUN wget https://storage.googleapis.com/chrome-for-testing-public/125.0.6422.141
 # Unzip ChromeDriver
 RUN apt-get install -y unzip && \
     unzip chromedriver-linux64.zip 
- 
+
 # Set execute permissions for ChromeDriver
 RUN chmod +x /usr/local/bin/chromedriver-linux64/chromedriver
 
@@ -38,11 +38,11 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["GhostQA_API/GhostQA_API.csproj", "GhostQA_API/"]
-COPY ["GhostQA/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj", "GhostQA/GhostQA_FrameworkTests/"]
-COPY ["GhostQA/GhostQA_Framework/GhostQA_Framework.csproj", "GhostQA/GhostQA_Framework/"]
+COPY ["GhostQA/GhostQA_Automation/GhostQA_FrameworkTests/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj", "GhostQA/GhostQA_Automation/GhostQA_FrameworkTests/"]
+COPY ["GhostQA/GhostQA_Automation/GhostQA_Framework/GhostQA_Framework.csproj", "GhostQA/GhostQA_Automation/GhostQA_Framework/"]
 RUN dotnet restore "GhostQA_API/GhostQA_API.csproj"
-RUN dotnet restore "GhostQA/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj"
-RUN dotnet restore "GhostQA/GhostQA_Framework/GhostQA_Framework.csproj"
+RUN dotnet restore "GhostQA/GhostQA_Automation/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj"
+RUN dotnet restore "GhostQA/GhostQA_Automation/GhostQA_Framework/GhostQA_Framework.csproj"
 COPY . .
 WORKDIR "/src/GhostQA_API"
 RUN dotnet build "GhostQA_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
@@ -72,6 +72,6 @@ COPY ["GhostQA_API/entrypoint.sh", "/app/"]
 RUN apt install ffmpeg -y
 # Use the entrypoint script to start the application
 RUN sed -i 's/\r//' /app/entrypoint.sh \
-	&& chmod +x /app/entrypoint.sh
+    && chmod +x /app/entrypoint.sh
 ENTRYPOINT ["/bin/bash","/app/entrypoint.sh" ,"dotnet","GhostQA_API.dll"]
 # ENTRYPOINT ["dotnet" ,"GhostQA_API.dll"]
