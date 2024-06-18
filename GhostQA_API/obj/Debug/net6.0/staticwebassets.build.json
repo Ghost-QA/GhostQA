@@ -1,0 +1,39 @@
+{
+  "Version": 1,
+  "Hash": "syrTp+4+LB8x098zFg8oqXjcmWmZQ9tdJcFzwtrB15Q=",
+  "Source": "GhostQA_API",
+  "BasePath": "_content/GhostQA_API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "GhostQA_API\\wwwroot",
+      "Source": "GhostQA_API",
+      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\",
+      "BasePath": "_content/GhostQA_API",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\TestDataFile\\fontawesome-webfont.bin",
+      "SourceId": "GhostQA_API",
+      "SourceType": "Discovered",
+      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\",
+      "BasePath": "_content/GhostQA_API",
+      "RelativePath": "TestDataFile/fontawesome-webfont.bin",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\TestDataFile\\fontawesome-webfont.bin"
+    }
+  ]
+}
