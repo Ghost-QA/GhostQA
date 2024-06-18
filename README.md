@@ -71,7 +71,7 @@ To successfully set up and run GhostQA, ensure the following software is install
 7. Check the Web Server (IIS) section: When you get to the Series Roles section, scroll down the list, then check the `Web Server (IIS)` section and hit `Next`.  
    ![Web Server (IIS)](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-9.png)
 
-8. Click on `Add Features`, ensuring the checkbox `Install management tool (if available)` is selected.  
+8. Click on `Add Features`, ensuring the checkbox `Install management tool (if applicable)` is selected.  
    ![Add Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-10.png)
 
 9. Keep the default features selection as they already are, then click `Next`.  
