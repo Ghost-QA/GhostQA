@@ -98,6 +98,7 @@ To successfully set up and run GhostQA, ensure the following software is install
 #### Step 2: Install SQL Server (If not already installed, please proceed to Step 3 if SQL Server is already installed)
 
     To Install SQL Server follow below steps
+
 **Step 1.** Download installation media from this [link](https://go.microsoft.com/fwlink/p/?linkid=2215158&clcid=0x409&culture=en-us&country=us).
 
 **Step 2.** Run the downloaded file and you will see the below screen. Now select the third option – `Download Media`.
@@ -139,7 +140,6 @@ To successfully set up and run GhostQA, ensure the following software is install
 
 **Step 14.** It will check some feature rules/prerequisites and then you will see the `Instance Configuration` screen. Here you can choose between `Default Instance` and `Named Instance`. Here I will go with `Named Instance`.
 [img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-15.png)
-
 
 **Step 15.** Next, you will see the `Server Configuration` window. In `Service Accounts` tab, select `Automatic` in `Startup Type` for `SQL Server Agent`, `SQL Server Database Engine`, and `SQL Server Browser` services.
 [img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-16.png)
