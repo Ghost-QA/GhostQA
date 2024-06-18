@@ -27,16 +27,16 @@ To successfully set up and run GhostQA, ensure the following software is install
 ##### To install Internet Information Services (IIS) using Windows Edition, follow these steps:
 
 1. Open the launch section: Press the **Windows + R** key to open the launch section.  
-   ![Windows + R](https://cloudzy.com/wp-content/uploads/winkey-R.png)
+   ![Windows + R](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/winkey-R.png)
 
 2. Type `appwiz.cpl` in the Run UI and hit Enter to open Programs and Features in Windows 10.  
-   ![Programs and Features](https://cloudzy.com/wp-content/uploads/open-programs-and-features-by-run-420x218.png)
+   ![Programs and Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/open-programs-and-features-by-run-420x218.png)
 
 3. Click on `Turn Windows features on or off`. The Windows Features window will appear.  
-   ![Windows Features](https://qvlyvrthdkqyff8ep3lxa.shekhartarare.com/SetupIIS/2_.png)
+   ![Windows Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/2_.png)
 
 4. Ensure all features under Internet Information Services and Microsoft .NET Framework are selected.  
-   ![IIS Features](https://www.c-sharpcorner.com/article/how-to-deploy-and-publish-a-net-7-app-in-iis/Images/1.png)
+   ![IIS Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/1.png)
 
 5. Click `OK` to install the selected Windows components, including IIS. Once IIS installation is done, **Restart** your machine.
 
@@ -51,40 +51,40 @@ To successfully set up and run GhostQA, ensure the following software is install
 ##### To install Internet Information Services (IIS) using Windows Server Edition, follow these steps:
 
 1. Open the launch section: Press the **Windows + R** key to open the launch section.  
-   ![Windows + R](https://cloudzy.com/wp-content/uploads/winkey-R.png)
+   ![Windows + R](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/winkey-R.png)
 
 2. Type `ServerManager` in the launch box and click OK. This opens the Programs and Features box on Windows Server 2012 (or any other version you’re using).  
-   ![Server Manager](https://cloudzy.com/wp-content/uploads/How-to-install-ISS-on-Windows-10-1.webp)
+   ![Server Manager](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/How-to-install-ISS-on-Windows-10-1.png)
 
 3. Add roles and features: Click on the `Add roles and features` in the newly opened window.  
-   ![Add Roles and Features](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-6.webp)
+   ![Add Roles and Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-6.png)
 
 4. Installation Wizard: Now, the Installation Wizard will appear. Click `Next`.  
-   ![Installation Wizard](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-7.webp)
+   ![Installation Wizard](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-7.png)
 
 5. Select `Role-based or feature-based installation` and click Next.  
-   ![Role-based Installation](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-7-1.jpg)
+   ![Role-based Installation](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-7-1.jpg)
 
 6. Select `Select a server from the server pool` from the window, then `select Server` and click `Next`.  
-   ![Select Server](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-8.webp)
+   ![Select Server](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-8.png)
 
 7. Check the Web Server (IIS) section: When you get to the Series Roles section, scroll down the list, then check the `Web Server (IIS)` section and hit `Next`.  
-   ![Web Server (IIS)](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-9.webp)
+   ![Web Server (IIS)](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-9.png)
 
 8. Click on `Add Features`, ensuring the checkbox `Install management tool (if available)` is selected.  
-   ![Add Features](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-10.webp)
+   ![Add Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-10.png)
 
 9. Keep the default features selection as they already are, then click `Next`.  
-   ![Default Features](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-11.webp)
+   ![Default Features](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-11.png)
 
 10. Click `Next` when you’re done with the Web Server Roles (IIS) text.  
-    ![Web Server Roles](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-12.webp)
+    ![Web Server Roles](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-12.png)
 
 11. Click `Next` after selecting the `Web Server roles` as shown in the following image.  
-    ![Select Web Server Roles](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-13.webp)
+    ![Select Web Server Roles](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-13.png)
 
 12. Click `Install`.  
-    ![Install](https://cloudzy.com/wp-content/uploads/how-to-install-iis-on-windows-10-14.webp)
+    ![Install](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/how-to-install-iis-on-windows-10-14.png)
 
 13. To access IIS, click the Windows Start button. Start typing `Internet Information Services Manager` in the search field and click `Internet Information Services (IIS) Manager` once it appears.
 
