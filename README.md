@@ -102,36 +102,47 @@ To successfully set up and run GhostQA, ensure the following software is install
 **Step 1.** Download installation media from this [link](https://go.microsoft.com/fwlink/p/?linkid=2215158&clcid=0x409&culture=en-us&country=us).
 
 **Step 2.** Run the downloaded file and you will see the below screen. Now select the third option – `Download Media`.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-1.png)
 
 **Step 3.** Now you will see the below screen. Please select the language you prefer and select the `ISO` radio button to download the ISO file. In addition, select the download location of your choice. I will go with the default location. Now press the `Download` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-2.png)
 
 **Step 4.** Now it will start downloading SQL Server installation media. It will take some time based on your internet connection speed.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-3.png)
 
 **Step 5.** After successful download of installation media, you will see the below screen. Click the `Close` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-4.png)
 
 **Step 6.** Run install media file `(ISO file)` downloaded in above section by double-clicking on it. It will extract/mount all the contents in a new `temporary drive`.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-6.png)
 
 **Step 7.** Once extraction is completed, double click on the `setup.exe` file and you will see the below screen. Click on the Installation option in the left panel and then click on `New SQL Server stand-alone installation or add features to an existing installation` option from the right panel.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-7.png)
 
 **Step 8.** Now you will see the `Product Key window`. Select the `Developer option` from the dropdown and click on the `Next` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-8.png)
 
 **Step 9.** Now you will see the `License Terms window`. Just select the `checkbox` and click on the `Next` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-9.png)
 
 **Step 10.** Now you will see the `Microsoft Update window`. It is not compulsory to check for the latest updates but it is recommended. So, select the `checkbox` and click the `Next` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-10.png)
 
 **Step 11.** Now it will check for updates and install them if any.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-11.png)
 
 **Step 12.** After that, it will check some rules or prerequisites for the installation of SQL Server. Once all the rules passed, click on the `Next` button. Sometimes you may face an error at this stage. You need to check those on google to resolve on runtime.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-12.png)
 
 **Step 13.** On the `Feature Selection window`, select features as shown in the below `screenshot`. You can also change the location for SQL Server instance installation but I will go with the default location. After feature selection please click the `Next` button.
@@ -141,41 +152,53 @@ To successfully set up and run GhostQA, ensure the following software is install
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-14.png)
 
 **Step 14.** It will check some feature rules/prerequisites and then you will see the `Instance Configuration` screen. Here you can choose between `Default Instance` and `Named Instance`. Here I will go with `Named Instance`.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-15.png)
 
 **Step 15.** Next, you will see the `Server Configuration` window. In `Service Accounts` tab, select `Automatic` in `Startup Type` for `SQL Server Agent`, `SQL Server Database Engine`, and `SQL Server Browser` services.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-16.png)
 
 In the `Collation tab`, select collation as per your preference.
 “Collations in SQL Server provide sorting rules, case, and accent sensitivity properties for your data. Collations that are used with character data types, such as `char` and `varchar`, dictate the code page and corresponding characters that can be represented for that data type.” – Microsoft.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-17.png)
 
 **Step 16.** Next, you will see the `Database Engine Configuration` window. In the `Server Configuration` tab, choose `Mixed Mode` in the `authentication mode` section and enter a `strong password`. In Specify `SQL Server administrators` section, your current windows user should already be added automatically. If not, click on `Add Current User` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-18.png)
 
-In the `Data Directories` tab, specify locations for database files and backup files. By default, it saves all the files on a C drive but it is not recommended to store database files on an OS drive because if any OS-related issue occurs then we may lose our data. Therefore, I choose D drive on my local machine.
+In the `Data Directories` tab, specify locations for database files and backup files. By default, it saves all the files on a C drive but it is not recommended to store database files on an OS drive because if any OS-related issue occurs then we may lose our data. Therefore, I choose `D:` drive on my local machine.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-19.png)
 
 In the `TempDB` tab, there are configurations for the temporary database file(s). There are some best practices on how to configure temporary database files locations, the number of files, and their file sizes. Ideally, the number of the TempDB data files should match the number of logical processors. So I have a number of files to 2.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-20.png)
 
 Next, in the `MaxDOP` tab, the maximum degree of parallelism (MAXDOP) is a server configuration option for running SQL Server on `multiple CPUs`. It controls the number of processors used to run a single statement in `parallel plan execution`. By default, the setup will suggest value based on the system configuration.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-21.png)
 
 Next, in the `Memory` tab, we can configure how much memory SQL Server instance can consume. By default, the installation process will recommend you min and `max memory allocation` based on the system configuration on which it is going install. However, you can change it.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-22.png)
 
 In the `FILESTREAM` tab, leave the checkbox unchecked because we are not going to enable this feature. `FILESTREAM`, in SQL Server, `allows storing these large documents, images, or files` onto the file system itself.
 Just Click on the `Next` button.
-[img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-23.png)
+
+![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-23.png)
 
 **Step 17.** Next, the setup will check some feature configuration rules, and then the `Ready to Install` window will appear. This window shows the summary of all the features and configurations which we have done in the above steps. Once review the summary and click on the `Install` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-24.png)
 
 **Step 18.** Now, the installation will start and it may take some time based on our configurations.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-25.png)
 
 **Step 19.** After installation, it will show you the list of features and their installation status. If any error occurred, it will show here.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20210925153402-26.png)
 
 #### `Congratulations! We have successfully installed SQL Server 2019 Developer edition on Windows machine. Next, you can install SQL Server Management Studio to connect SQL Server and query SQL databases`
@@ -185,12 +208,15 @@ Just Click on the `Next` button.
 **Step 1.** Download installation media from this [link](https://aka.ms/ssmsfullsetup)
 
 **Step 2.** Run the `downloaded file` and you will see below screen. Just click on the `Install` button.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20211022172644-2.png)
 
 **Step 3.** It will start installing management studio. It will take some time.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20211022172644-3.png)
 
 **Step 4.** Once `installation` finished, `close` the installation wizard and open `start` menu and search for `SQL Server Management Studio`. click on it to open the application.
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/image-20211022172644-4.png)
 
 **Step 5.** Next, you will see below screen. In Connect to Server window, you can see the SQL instance name, which we have just installed. Also you can find your server name by selecting `Browse for more` option from `dropdown`, and now from opened pop-up window select `local server` by expanding `database engine`.
@@ -201,6 +227,7 @@ Just Click on the `Next` button.
 
 **Step 6.** After selecting Server name select `Sql Server Authentication` from `Authentication` dropdown put `sa` as `user name` and `password` is what you have entered during installation of `SQL server Mixed mode` also click on `checkbox` for `Remember me` and `Trust Server Cirtificate` options.
 After all above setup click on `Connect` button
+
 ![img](https://github.com/Ghost-QA/GhostQA/blob/main/Assets/SQL_Server_Auth_Login_Screen.jpg)
 
 After installing SQL Server, perform the following tasks:
