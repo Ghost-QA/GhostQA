@@ -22,4 +22,4 @@ exec $cmd
 
 
 # Start the application
-# dotnet SeleniumReportAPI.dll
+# dotnet GhostQA_API.dll

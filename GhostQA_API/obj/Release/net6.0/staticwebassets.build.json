@@ -1,27 +1,27 @@
 {
   "Version": 1,
   "Hash": "XxdMvuyitTuZ7/qDpCGQDbqKpiC4LvliUJktTUZLqQ4=",
-  "Source": "SeleniumReportAPI",
-  "BasePath": "_content/SeleniumReportAPI",
+  "Source": "GhostQA_API",
+  "BasePath": "_content/GhostQA_API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [
     {
-      "Name": "SeleniumReportAPI\\wwwroot",
-      "Source": "SeleniumReportAPI",
-      "ContentRoot": "C:\\GhostQA\\SeleniumReportAPI\\wwwroot\\",
-      "BasePath": "_content/SeleniumReportAPI",
+      "Name": "GhostQA_API\\wwwroot",
+      "Source": "GhostQA_API",
+      "ContentRoot": "C:\\GhostQA\\GhostQA_API\\wwwroot\\",
+      "BasePath": "_content/GhostQA_API",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\GhostQA\\SeleniumReportAPI\\wwwroot\\Driver\\chromedriver.exe",
-      "SourceId": "SeleniumReportAPI",
+      "Identity": "C:\\GhostQA\\GhostQA_API\\wwwroot\\Driver\\chromedriver.exe",
+      "SourceId": "GhostQA_API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\GhostQA\\SeleniumReportAPI\\wwwroot\\",
-      "BasePath": "_content/SeleniumReportAPI",
+      "ContentRoot": "C:\\GhostQA\\GhostQA_API\\wwwroot\\",
+      "BasePath": "_content/GhostQA_API",
       "RelativePath": "Driver/chromedriver.exe",
       "AssetKind": "All",
       "AssetMode": "All",
@@ -36,11 +36,11 @@
       "OriginalItemSpec": "wwwroot\\Driver\\chromedriver.exe"
     },
     {
-      "Identity": "C:\\GhostQA\\SeleniumReportAPI\\wwwroot\\TestDataFile\\fontawesome-webfont.bin",
-      "SourceId": "SeleniumReportAPI",
+      "Identity": "C:\\GhostQA\\GhostQA_API\\wwwroot\\TestDataFile\\fontawesome-webfont.bin",
+      "SourceId": "GhostQA_API",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\GhostQA\\SeleniumReportAPI\\wwwroot\\",
-      "BasePath": "_content/SeleniumReportAPI",
+      "ContentRoot": "C:\\GhostQA\\GhostQA_API\\wwwroot\\",
+      "BasePath": "_content/GhostQA_API",
       "RelativePath": "TestDataFile/fontawesome-webfont.bin",
       "AssetKind": "All",
       "AssetMode": "All",

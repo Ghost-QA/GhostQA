@@ -9,15 +9,15 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["SeleniumReportAPI/SeleniumReportAPI.csproj", "SeleniumReportAPI/"]
-COPY ["MyersAndStaufferAutomation/MyersAndStaufferSeleniumTests/MyersAndStaufferSeleniumTests.csproj", "MyersAndStaufferAutomation/MyersAndStaufferSeleniumTests/"]
-COPY ["MyersAndStaufferAutomation/MyersAndStaufferFramework/MyersAndStaufferFramework.csproj", "MyersAndStaufferAutomation/MyersAndStaufferFramework/"]
-RUN dotnet restore "SeleniumReportAPI/SeleniumReportAPI.csproj"
-RUN dotnet restore "MyersAndStaufferAutomation/MyersAndStaufferSeleniumTests/MyersAndStaufferSeleniumTests.csproj"
-RUN dotnet restore "MyersAndStaufferAutomation/MyersAndStaufferFramework/MyersAndStaufferFramework.csproj"
+COPY ["GhostQA_API/GhostQA_API.csproj", "GhostQA_API/"]
+COPY ["GhostQA_Automation/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj", "GhostQA_Automation/GhostQA_FrameworkTests/"]
+COPY ["GhostQA_Automation/GhostQA_Framework/GhostQA_Framework.csproj", "GhostQA_Automation/GhostQA_Framework/"]
+RUN dotnet restore "GhostQA_API/GhostQA_API.csproj"
+RUN dotnet restore "GhostQA_Automation/GhostQA_FrameworkTests/GhostQA_FrameworkTests.csproj"
+RUN dotnet restore "GhostQA_Automation/GhostQA_Framework/GhostQA_Framework.csproj"
 COPY . .
-WORKDIR "/src/SeleniumReportAPI"
-RUN dotnet build "SeleniumReportAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/GhostQA_API"
+RUN dotnet build "GhostQA_API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 RUN dotnet tool uninstall dotnet-ef
 
@@ -32,14 +32,14 @@ RUN apt-get update && \
 RUN dotnet tool install dotnet-ef --version 6.0.25
 
 # Copy and set permissions for the entrypoint script
-COPY ["SeleniumReportAPI/migrations.sh", "/src/"]
-COPY ["SeleniumReportAPI/entrypoint.sh", "/src/"]
+COPY ["GhostQA_API/migrations.sh", "/src/"]
+COPY ["GhostQA_API/entrypoint.sh", "/src/"]
 # Use the entrypoint script to start the application
 RUN sed -i 's/\r//' /src/migrations.sh \
-	&& chmod +x /src/migrations.sh
+    && chmod +x /src/migrations.sh
 
 RUN sed -i 's/\r//' /src/entrypoint.sh \
-	&& chmod +x /src/entrypoint.sh
+    && chmod +x /src/entrypoint.sh
 
 
 ENTRYPOINT ["/bin/bash", "/src/entrypoint.sh","/src/migrations.sh"]

@@ -7,7 +7,7 @@ services:
   webui:
     build:
       context: .
-      dockerfile: ./seleniumreact_app/Dockerfile
+      dockerfile: ./ghostQA_App/Dockerfile
     ports:
       - "3000:80"
     environment:
@@ -19,7 +19,7 @@ services:
   dotnetapi:
     build:
       context: .
-      dockerfile: SeleniumReportAPI\Dockerfile
+      dockerfile: GhostQA_API\Dockerfile
     ports:
       - "80"
     environment:
@@ -30,13 +30,13 @@ services:
       - ConnectionStrings__AppDBContextConnection=Server=db;Database=GhostQA;User=sa;Password=P@ssw0rd@123###
       - CypressAPI__PerformanceExecutor=http://codeengine:8000/codeengine/api/performance-testsexecute2/
       - CypressAPI__ExecutorResult=http://codeengine:8000/codeengine/api/performance-container-runs/
-      - LocationFile__JMXFile=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFile
-      - LocationFile__CSVFile=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataCSVFile
-      - LocationFile__JMXFileDev=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFileDev
+      - LocationFile__JMXFile=C:/GhostQA/GhostQA_API/wwwroot/TestDataFile
+      - LocationFile__CSVFile=C:/GhostQA/GhostQA_API/wwwroot/TestDataCSVFile
+      - LocationFile__JMXFileDev=C:/GhostQA/GhostQA_API/wwwroot/TestDataFileDev
       - InvitationUrl__Url=http://127.0.0.1:30001/AcceptInvitation/
-    command: dotnet SeleniumReportAPI.dll
+    command: dotnet GhostQA_API.dll
     volumes:
-      - ./app/dotnet/wwwroot/:/app/C:/GhostQA/SeleniumReportAPI/wwwroot/
+      - ./app/dotnet/wwwroot/:/app/C:/GhostQA/GhostQA_API/wwwroot/
     depends_on:
       - db
       - migrations
@@ -46,7 +46,7 @@ services:
   migrations:
     build:
       context: .
-      dockerfile: SeleniumReportAPI\Dockerfile.migrations
+      dockerfile: GhostQA_API\Dockerfile.migrations
     command: "/src/migrations.sh"
     ports:
       - "5001:80"

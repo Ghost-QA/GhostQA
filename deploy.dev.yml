@@ -40,15 +40,15 @@ services:
       - ConnectionStrings__AppDBContextConnection=Server=db;Database=GhostQA;User=sa;Password=P@ssw0rd@123###
       - CypressAPI__PerformanceExecutor=http://codeengine:8000/codeengine/api/performance-tests/execute2/
       - CypressAPI__ExecutorResult=http://codeengine:8000/codeengine/api/performance-container-runs/
-      - LocationFile__JMXFile=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFile
-      - LocationFile__CSVFile=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataCSVFile
-      - LocationFile__JMXFileDev=C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFileDev
+      - LocationFile__JMXFile=C:/GhostQA/GhostQA_API/wwwroot/TestDataFile
+      - LocationFile__CSVFile=C:/GhostQA/GhostQA_API/wwwroot/TestDataCSVFile
+      - LocationFile__JMXFileDev=C:/GhostQA/GhostQA_API/wwwroot/TestDataFileDev
       - InvitationUrl__Url=http://127.0.0.1:30001/AcceptInvitation/
-    command: dotnet SeleniumReportAPI.dll
+    command: dotnet GhostQA_API.dll
     volumes:
-      - ./app/dotnet/wwwroot/TestDataFile:/app/C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFile
-      - ./app/dotnet/wwwroot/TestDataCSVFile:/app/C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataCSVFile
-      - ./app/dotnet/wwwroot/TestDataFileDev:/app/C:/GhostQA/SeleniumReportAPI/wwwroot/TestDataFileDev
+      - ./app/dotnet/wwwroot/TestDataFile:/app/C:/GhostQA/GhostQA_API/wwwroot/TestDataFile
+      - ./app/dotnet/wwwroot/TestDataCSVFile:/app/C:/GhostQA/GhostQA_API/wwwroot/TestDataCSVFile
+      - ./app/dotnet/wwwroot/TestDataFileDev:/app/C:/GhostQA/GhostQA_API/wwwroot/TestDataFileDev
       - ./app/UploadedLogos:/app/UploadedLogos/
       - ./app/data:/app/C:/Published_Projects/React_App/images/data
     depends_on:

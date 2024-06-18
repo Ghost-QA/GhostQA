@@ -2,9 +2,9 @@
   <ItemGroup>
     <StaticWebAsset Include="$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\staticwebassets\Driver\chromedriver.exe))">
       <SourceType>Package</SourceType>
-      <SourceId>SeleniumReportAPI</SourceId>
+      <SourceId>GhostQA_API</SourceId>
       <ContentRoot>$(MSBuildThisFileDirectory)..\staticwebassets\</ContentRoot>
-      <BasePath>_content/SeleniumReportAPI</BasePath>
+      <BasePath>_content/GhostQA_API</BasePath>
       <RelativePath>Driver/chromedriver.exe</RelativePath>
       <AssetKind>All</AssetKind>
       <AssetMode>All</AssetMode>

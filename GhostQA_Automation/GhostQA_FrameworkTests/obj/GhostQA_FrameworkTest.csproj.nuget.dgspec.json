@@ -29,8 +29,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\MyersAndStaufferFramework\\MyersAndStaufferFramework.csproj": {
-                "projectPath": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\MyersAndStaufferFramework\\MyersAndStaufferFramework.csproj"
+              "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj": {
+                "projectPath": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj"
               }
             }
           }

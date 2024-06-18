@@ -1,6 +1,6 @@
 {
   "profiles": {
-    "SeleniumReportAPI": {
+    "GhostQA_API": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "swagger",
