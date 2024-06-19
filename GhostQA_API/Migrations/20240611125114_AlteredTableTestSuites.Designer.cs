@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using GhostQA_API.DBContext;
 
@@ -11,9 +12,10 @@ using GhostQA_API.DBContext;
 namespace GhostQA_API.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240611125114_AlteredTableTestSuites")]
+    partial class AlteredTableTestSuites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -488,9 +490,6 @@ namespace GhostQA_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<bool>("IsCustomSuite")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -847,54 +846,8 @@ namespace GhostQA_API.Migrations
                     b.ToTable("tbl_RootRelation");
                 });
 
-            modelBuilder.Entity("GhostQA_API.Models.SuiteScheduleInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CroneExpression")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Interval")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifyBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifyOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecurringInterval")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuiteName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_SuiteScheduleInfo");
-                });
-
             modelBuilder.Entity("GhostQA_API.Models.TestCase", b =>
                 {
-                    b.Property<int>("RootId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TestCaseName")
                         .HasColumnType("VARCHAR(100)")
                         .HasColumnName("TestCaseName");

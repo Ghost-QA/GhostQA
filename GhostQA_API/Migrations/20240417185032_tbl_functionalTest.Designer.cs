@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using GhostQA_API.DBContext;
 
@@ -11,9 +12,10 @@ using GhostQA_API.DBContext;
 namespace GhostQA_API.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240417185032_tbl_functionalTest")]
+    partial class tbl_functionalTest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -276,9 +278,6 @@ namespace GhostQA_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<byte[]>("ContainerLog")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("EndDateTime")
                         .HasColumnType("nvarchar(max)");
 
@@ -442,22 +441,6 @@ namespace GhostQA_API.Migrations
                     b.ToTable("tbl_Environments");
                 });
 
-            modelBuilder.Entity("GhostQA_API.Models.ExistingSuiteRun", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("IsExistingSuiteRunning")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_ExistingSuiteRun");
-                });
-
             modelBuilder.Entity("GhostQA_API.Models.FuncationalTest", b =>
                 {
                     b.Property<int>("RootId")
@@ -478,166 +461,6 @@ namespace GhostQA_API.Migrations
                     b.HasKey("RootId");
 
                     b.ToTable("tbl_FuncationalTest");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.FunctionalSuiteRelation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("IsCustomSuite")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Parent")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_FunctionalSuiteRelation");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.FunctionalTestCase", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ActualResult")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExpectedResult")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PreCondition")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RootId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Steps")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TestCaseName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_FunctionalTestCase");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.FunctionalTestRun", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("AssignedTo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BuildVersion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Environment")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Milestone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RootId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TestCases")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TestRunDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TestRunName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_FunctionalTestRun");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.Integration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<byte[]>("APIKey")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("AppName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Domain")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsIntegrated")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_Integration");
                 });
 
             modelBuilder.Entity("GhostQA_API.Models.InternalTestExecution", b =>
@@ -725,9 +548,6 @@ namespace GhostQA_API.Migrations
 
                     b.Property<string>("CountryName")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("LocationId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -847,54 +667,8 @@ namespace GhostQA_API.Migrations
                     b.ToTable("tbl_RootRelation");
                 });
 
-            modelBuilder.Entity("GhostQA_API.Models.SuiteScheduleInfo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CroneExpression")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EndTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Interval")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifyBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifyOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RecurringInterval")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StartTime")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SuiteName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_SuiteScheduleInfo");
-                });
-
             modelBuilder.Entity("GhostQA_API.Models.TestCase", b =>
                 {
-                    b.Property<int>("RootId")
-                        .HasColumnType("int");
-
                     b.Property<string>("TestCaseName")
                         .HasColumnType("VARCHAR(100)")
                         .HasColumnName("TestCaseName");
@@ -937,9 +711,6 @@ namespace GhostQA_API.Migrations
                     b.Property<string>("TestSuiteStartDateTime")
                         .HasColumnType("VARCHAR(50)")
                         .HasColumnName("TestSuiteStartDateTime");
-
-                    b.Property<int?>("TestUserId")
-                        .HasColumnType("int");
 
                     b.Property<string>("TesterName")
                         .HasColumnType("VARCHAR(100)")
@@ -1114,9 +885,6 @@ namespace GhostQA_API.Migrations
                     b.Property<string>("Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Wait")
-                        .HasColumnType("int");
-
                     b.HasKey("TestStepsDetailsId");
 
                     b.ToTable("tbl_TestStepsDetails");
@@ -1140,9 +908,6 @@ namespace GhostQA_API.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RootId")
-                        .HasColumnType("int");
-
                     b.Property<string>("SelectedTestCases")
                         .HasColumnType("nvarchar(max)");
 
@@ -1157,80 +922,9 @@ namespace GhostQA_API.Migrations
                     b.Property<string>("TestSuiteType")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TestUserId")
-                        .HasColumnType("int");
-
                     b.HasKey("TestSuiteId");
 
                     b.ToTable("tbl_TestSuites");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.TestUser", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ModifiedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_TestUser");
-                });
-
-            modelBuilder.Entity("GhostQA_API.Models.UsersOrganization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CreatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LogoPath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedOn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("tbl_UsersOrganization");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

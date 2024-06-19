@@ -11,9 +11,9 @@ namespace GhostQA_API.DBContext
         }
 
         public DbSet<TestSuites> tbl_TestSuites { get; set; }
-        public DbSet<Models.Applications> tbl_Applications { get; set; }
+        public DbSet<Applications> tbl_Applications { get; set; }
         public DbSet<Models.Environments> tbl_Environments { get; set; }
-        public DbSet<Models.Browsers> tbl_Browsers { get; set; }
+        public DbSet<Browsers> tbl_Browsers { get; set; }
         public DbSet<TestCase> tbl_TestCase { get; set; }
         public DbSet<TestExecution> tbl_TestExecution { get; set; }
         public DbSet<RootRelation> tbl_RootRelation { get; set; }
@@ -37,6 +37,7 @@ namespace GhostQA_API.DBContext
         public DbSet<Integration> tbl_Integration { get; set; }
         public DbSet<ExistingSuiteRun> tbl_ExistingSuiteRun { get; set; }
         public DbSet<FunctionalSuiteRelation> tbl_FunctionalSuiteRelation { get; set; }
+        //public DbSet<SuiteScheduleInfo> tbl_SuiteScheduleInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
