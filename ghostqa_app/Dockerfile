@@ -5,14 +5,14 @@ FROM node:18-alpine as build
 WORKDIR /app
 
 # Copy package.json and package-lock.json to the working directory
-COPY ./ghostQA_app/package.json ./
-COPY ./ghostQA_app/package-lock.json ./
+COPY ./ghostqa_app/package.json ./
+COPY ./ghostqa_app/package-lock.json ./
 
 # Install dependencies
 RUN npm install --force
 
 # Copy the entire project directory to the working directory
-COPY ./ghostQA_app ./
+COPY ./ghostqa_app ./
 
 # Build the React app
 RUN npm run build
@@ -24,7 +24,7 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Copy custom nginx configuration file
-COPY ./ghostQA_app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ./ghostqa_app/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Expose port 80 to the outside world
 EXPOSE 80

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GhostQA_FrameworkTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2a75d11e8acdf773679d3839de8da682ad8c5a95")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2dc846628309ca75e41d6d7268453dfe9748d59b")]
 [assembly: System.Reflection.AssemblyProductAttribute("GhostQA_FrameworkTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GhostQA_FrameworkTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

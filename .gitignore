@@ -61,7 +61,7 @@ Thumbs.db
 /MyBoelterAutomation/GoBoelterSeleniumTests/obj/
 ms_data/
 app/media/*
-GhostQA_app/public/config.json
+ghostqa_app/public/config.json
 GhostQA_Automation/GhostQA_Framework/obj/GhostQA_Framework.csproj.nuget.dgspec.json
 GhostQA_Automation/GhostQA_Framework/obj/GhostQA_Framework.csproj.nuget.g.props
 GhostQA_Automation/GhostQA_Framework/obj/GhostQA_Framework.csproj.nuget.g.targets
