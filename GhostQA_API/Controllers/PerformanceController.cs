@@ -234,6 +234,10 @@ namespace GhostQA_API.Controllers
             string originalUrl = Request.Headers.Referer.ToString();
             int lastSlashIndex = originalUrl.LastIndexOf('/');
             var Url = lastSlashIndex != -1 ? originalUrl.Substring(0, lastSlashIndex + 1) : originalUrl;
+            if (Url.Contains("3009"))
+                Url = "https://dev.ghostqa.com/";
+            else if (Url.Contains("8002"))
+                Url = "https://stage.ghostqa.com/";
             return Ok(await _helper.ExecutePerformanceJMX(model, Url));
         }
 

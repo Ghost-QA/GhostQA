@@ -827,19 +827,20 @@ CREATE OR ALTER PROCEDURE [dbo].[stp_AddUpdateTestSuites]
 @SelectedTestCases		NVARCHAR(MAX),
 @Description			NVARCHAR(MAX) = '',
 @TestSuiteId			INT = 0,
-@TestUserId				INT
+@TestUserId				INT,
+@RootId					INT
 AS
 /**************************************************************************************
 PROCEDURE NAME	:	stp_AddUpdateTestSuites
 CREATED BY		:	Mohammad Mobin
 CREATED DATE	:	15 Jan 2024
-MODIFIED BY		:	Mohammad Yaseer
-MODIFIED DATE	:	17 Jan 2024
+MODIFIED BY		:	Lokesh
+MODIFIED DATE	:	12th June, 2024
 PROC EXEC		:
 				EXEC stp_AddUpdateTestSuites 'Mississippi', 0
 **************************************************************************************/
 BEGIN TRY
-	IF EXISTS( SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
+	IF EXISTS(SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId AND [RootId] = @RootId)
 	BEGIN
 		SELECT [result] = JSON_QUERY((
 			SELECT 'fail' [status], 'Duplicate Custom Test Suite Name' [message]
@@ -848,10 +849,13 @@ BEGIN TRY
 	END
 	ELSE IF @TestSuiteId = 0
 	BEGIN
-		IF NOT EXISTS( SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
+		IF NOT EXISTS(SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId AND [RootId] = @RootId)
 		BEGIN
-			INSERT INTO tbl_TestSuites (TestSuiteName, TestSuiteType, ApplicationId, SendEmail, EnvironmentId, SelectedTestCases, [Description], [TestUserId]) 
-			VALUES (@TestSuiteName, @TestSuiteType, @ApplicationId, @SendEmail, @EnvironmentId, @SelectedTestCases, @Description, @TestUserId)
+			INSERT INTO tbl_TestSuites (TestSuiteName, TestSuiteType, ApplicationId, SendEmail, EnvironmentId, SelectedTestCases, [Description], [TestUserId], [RootId]) 
+			VALUES (@TestSuiteName, @TestSuiteType, @ApplicationId, @SendEmail, @EnvironmentId, @SelectedTestCases, @Description, @TestUserId, @RootId)
+
+			INSERT INTO dbo.tbl_FunctionalSuiteRelation ([Name], Parent, IsCustomSuite)
+			VALUES (@TestSuiteName, @RootId, 1)
 		END
 		ELSE
 		BEGIN
@@ -881,7 +885,8 @@ BEGIN TRY
 		SELECT 
 		@OldTestSuiteName = TestSuiteName 
 		FROM tbl_TestSuites
-		WHERE [TestSuiteId] = @TestSuiteId;
+		WHERE [TestSuiteId] = @TestSuiteId
+		AND [RootId] = @RootId;
 
 		UPDATE tbl_TestSuites
 			SET [TestSuiteName]		= @TestSuiteName,
@@ -893,6 +898,11 @@ BEGIN TRY
 				[Description]		= @Description,
 				[TestUserId]        = @TestUserId
 		WHERE [TestSuiteId] = @TestSuiteId
+		AND [RootId] = @RootId
+
+		UPDATE dbo.tbl_FunctionalSuiteRelation
+		SET [Name] = @TestSuiteName
+		WHERE Parent = @RootId
 
 		UPDATE tbl_TestCase
 		SET TestSuiteName = @TestSuiteName
@@ -2976,7 +2986,9 @@ BEGIN TRY
 	SELECT [TestSuites] = JSON_QUERY((
 		SELECT [TestSuiteName],[TestSuiteFlag] FROM
 		(SELECT DISTINCT [TestSuiteName] [TestSuiteName], 'InBuilt' [TestSuiteFlag]
-		FROM tbl_TestCase) tbl
+		FROM tbl_TestCase
+		WHERE RootId IS NULL
+		OR RootId = 0) tbl
 	FOR JSON PATH))
 END TRY
 BEGIN CATCH
@@ -3186,12 +3198,12 @@ BEGIN TRY
 	BEGIN
 		INSERT INTO tbl_TestCase ([TestSuiteName], [TestRunName], [TestCaseName], [TestCaseStatus], [TestCaseVideoURL], 
 								  [TestSuiteStartDateTime], [TestSuiteEndDateTime], [TestRunStartDateTime], [TestRunEndDateTime], 
-								  [TestCaseSteps], [TesterName], [TestEnvironment])
+								  [TestCaseSteps], [TesterName], [TestEnvironment], [RootId])
 		SELECT
 			TestSuiteName, TestRunName, TestCaseName, TestCaseStatus, TestCaseVideoURL,
 			CONVERT(datetimeoffset, TestSuiteStartDateTime), CONVERT(datetimeoffset, TestSuiteEndDateTime),
 			CONVERT(datetimeoffset, TestRunStartDateTime), CONVERT(datetimeoffset, TestRunEndDateTime),
-			TestCaseSteps, TesterName, TestEnvironment
+			TestCaseSteps, TesterName, TestEnvironment, RootId
 		FROM OPENJSON(@TestSuiteJson) WITH (
 			TestSuiteName NVARCHAR(100),
 			TestRunName NVARCHAR(100),
@@ -3204,7 +3216,8 @@ BEGIN TRY
 			TestRunEndDateTime DATETIMEOFFSET,
 			TestCaseSteps NVARCHAR(MAX),
 			TesterName NVARCHAR(100),
-			TestEnvironment NVARCHAR(50))
+			TestEnvironment NVARCHAR(50),
+			RootId INT)
 	END
 	ELSE
 	BEGIN
@@ -4743,49 +4756,71 @@ BEGIN CATCH
 	--Error handling
 END CATCH
 GO
-CREATE OR ALTER PROCEDURE [dbo].[stp_AddFunctionalSuiteRelation]
+CREATE OR ALTER PROCEDURE [dbo].[stp_AddUpdateFunctionalSuiteRelation]
+@Id				INT,
 @Parent	        INT,
 @Name           NVARCHAR(MAX)
 AS
 /**************************************************************************************
-PROCEDURE NAME	:	stp_AddFunctionalSuiteRelation
+PROCEDURE NAME	:	stp_AddUpdateFunctionalSuiteRelation
 CREATED BY		:	Lokesh
 CREATED DATE	:	1th June, 2024
-PROC EXEC		:  EXEC stp_AddRootRelation
+PROC EXEC		:  EXEC stp_AddUpdateFunctionalSuiteRelation 0, '', ''
 				
 **************************************************************************************/
 BEGIN TRY
- IF EXISTS( SELECT 1 FROM [dbo].[tbl_FunctionalSuiteRelation] WHERE [Parent] = @Parent AND [Name] = @Name)
-BEGIN
-	SELECT [result] = JSON_QUERY((
-		SELECT 'fail' [status], 'Duplicate Name' [message]
-		FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
-	))
-END
-ELSE
+	IF EXISTS(SELECT 1 FROM [dbo].[tbl_FunctionalSuiteRelation] WHERE [Parent] = @Parent AND [Name] = @Name)
 	BEGIN
-		INSERT INTO [dbo].[tbl_FunctionalSuiteRelation] (Parent, [Name]) 
-		VALUES (@Parent, @Name)
+		SELECT [result] = JSON_QUERY((
+			SELECT 'fail' [status], 'Duplicate Name' [message]
+			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+		))
+	END
+	ELSE IF(@Id = 0)
+	BEGIN
+		INSERT INTO [dbo].[tbl_FunctionalSuiteRelation] (Parent, [Name], IsCustomSuite) 
+		VALUES (@Parent, @Name, 0)
+	END
+	ELSE
+	BEGIN
+		UPDATE [dbo].[tbl_FunctionalSuiteRelation]
+		SET [Name] = @Name
+		WHERE Id = @Id
+	END
 
-		IF @@ERROR = 0
+	IF @@ERROR = 0
+	BEGIN
+		IF (@Id = 0)
 		BEGIN
 			SELECT [Result] = JSON_QUERY((
-				SELECT 'success' [status], '' [message],
+				SELECT 'success' [status], 'Suite saved successfully' [message],
 					[Data] = JSON_QUERY((
 						SELECT Id [id], Parent [parentId], [Name] [name]
 						FROM [dbo].[tbl_FunctionalSuiteRelation] where Id = SCOPE_IDENTITY()
 						FOR JSON PATH
 					))
-			FOR JSON PATH,WITHOUT_ARRAY_WRAPPER 
+				FOR JSON PATH,WITHOUT_ARRAY_WRAPPER 
 			))
 		END
 		ELSE
 		BEGIN
-			SELECT [result] = JSON_QUERY((
-				SELECT 'fail' [status], CAST(@@ERROR AS NVARCHAR(20)) [message]
-				FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+			SELECT [Result] = JSON_QUERY((
+				SELECT 'success' [status], 'Suite saved successfully' [message],
+					[Data] = JSON_QUERY((
+						SELECT Id [id], Parent [parentId], [Name] [name]
+						FROM [dbo].[tbl_FunctionalSuiteRelation] where Id = @Id
+						FOR JSON PATH
+					))
+				FOR JSON PATH,WITHOUT_ARRAY_WRAPPER 
 			))
 		END
+	END
+	ELSE
+	BEGIN
+		SELECT [result] = JSON_QUERY((
+			SELECT 'fail' [status], CAST(@@ERROR AS NVARCHAR(20)) [message]
+			FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+		))
 	END
 END TRY
 BEGIN CATCH
@@ -4814,5 +4849,76 @@ BEGIN TRY
 END TRY
 BEGIN CATCH
 	SELECT ERROR_MESSAGE() [RootRelation]
+END CATCH
+GO
+CREATE OR ALTER PROCEDURE [dbo].[stp_DeleteFunctionalSuiteRelation]
+@RootId     INT
+AS
+/**************************************************************************************
+PROCEDURE NAME   : stp_DeleteFunctionalSuiteRelation
+CREATED BY       : Lokesh
+CREATED DATE     : 14th June, 2024
+MODIFIED BY      : 
+MODIFIED DATE    : 
+PROC EXEC        : EXEC stp_DeleteFunctionalSuiteRelation 0
+**************************************************************************************/
+BEGIN TRY
+	IF OBJECT_ID('tempdb..#temp') IS NOT NULL
+	BEGIN
+		DROP TABLE #temp;
+	END
+
+    -- Common Table Expression to select all nodes and child nodes
+    ;WITH ALL_NODE_CHILDNODES AS (
+        SELECT [Id], [Parent], [Name], [IsCustomSuite]
+        FROM dbo.tbl_FunctionalSuiteRelation
+        WHERE [Id] = @RootId
+
+        UNION ALL
+
+        SELECT trr.[Id], trr.[Parent], trr.[Name], trr.[IsCustomSuite]
+        FROM dbo.tbl_FunctionalSuiteRelation trr
+        INNER JOIN ALL_NODE_CHILDNODES CN ON trr.[Parent] = CN.[Id]
+    )
+
+	SELECT * INTO #temp FROM ALL_NODE_CHILDNODES;
+
+	DECLARE @ParentRootId INT;
+	SELECT @ParentRootId = Parent FROM #temp WHERE IsCustomSuite = 1;
+
+    -- Deleting all related nodes
+    DELETE FROM dbo.tbl_FunctionalSuiteRelation WHERE [Id] IN (SELECT [Id] FROM #temp);
+
+    -- Deleting the root node
+    DELETE FROM dbo.tbl_FunctionalSuiteRelation WHERE [Id] = @RootId;
+
+	--Deleting related custom suites
+	DELETE FROM dbo.tbl_TestSuites WHERE RootId = @ParentRootId;
+
+    IF @@ERROR = 0
+    BEGIN
+		DROP TABLE #temp
+        -- Return success message if deletion is successful
+        SELECT [result] = JSON_QUERY((
+            SELECT 'success' [status], 'Deleted Successfully' [message]
+            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        ))
+    END
+    ELSE
+    BEGIN
+		DROP TABLE #temp
+        -- Return error message if deletion fails
+        SELECT [result] = JSON_QUERY((
+            SELECT 'fail' [status], 'Deletion failed' [message]
+            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        ))
+    END
+END TRY
+BEGIN CATCH
+    -- Return error message if an exception is caught
+    SELECT [result] = JSON_QUERY((
+        SELECT 'error' [status], ERROR_MESSAGE() [message]
+        FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+    ))
 END CATCH
 GO

@@ -13679,11 +13679,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
+      "projectUniqueName": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
       "projectName": "GhostQA_API",
-      "projectPath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
+      "projectPath": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
       "packagesPath": "C:\\Users\\ermob\\.nuget\\packages\\",
-      "outputPath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_API\\obj\\",
+      "outputPath": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ermob\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -13701,8 +13701,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_Automation\\GhostQA_FrameworkTests\\GhostQA_FrameworkTests.csproj": {
-              "projectPath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_Automation\\GhostQA_FrameworkTests\\GhostQA_FrameworkTests.csproj"
+            "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_FrameworkTests\\GhostQA_FrameworkTests.csproj": {
+              "projectPath": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_FrameworkTests\\GhostQA_FrameworkTests.csproj"
             }
           }
         }

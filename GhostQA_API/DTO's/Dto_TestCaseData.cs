@@ -15,5 +15,6 @@
         public string TesterName { get; set; }
         public string TestEnvironment { get; set; }
         public string TestBrowserName { get; set; }
+        public int RootId { get; set; }
     }
 }

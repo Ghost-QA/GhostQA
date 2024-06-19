@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "syrTp+4+LB8x098zFg8oqXjcmWmZQ9tdJcFzwtrB15Q=",
+  "Hash": "czpOufn+jC12eIv8hFu1xPdC+EBwo7UyRcr3DEbeP8I=",
   "Source": "GhostQA_API",
   "BasePath": "_content/GhostQA_API",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "GhostQA_API\\wwwroot",
       "Source": "GhostQA_API",
-      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\",
+      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\wwwroot\\",
       "BasePath": "_content/GhostQA_API",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\TestDataFile\\fontawesome-webfont.bin",
+      "Identity": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\wwwroot\\TestDataFile\\fontawesome-webfont.bin",
       "SourceId": "GhostQA_API",
       "SourceType": "Discovered",
-      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_API\\wwwroot\\",
+      "ContentRoot": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\wwwroot\\",
       "BasePath": "_content/GhostQA_API",
       "RelativePath": "TestDataFile/fontawesome-webfont.bin",
       "AssetKind": "All",

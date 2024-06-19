@@ -4,5 +4,6 @@
     {
         public string testSuiteName { get; set; }
         public string userId { get; set; }
+        public int rootId { get; set; }
     }
 }
