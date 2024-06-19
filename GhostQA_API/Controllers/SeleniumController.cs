@@ -211,6 +211,7 @@ namespace GhostQA_API.Controllers
             TestSuiteNameData _testSuiteNameData = Newtonsoft.Json.JsonConvert.DeserializeObject<TestSuiteNameData>(_testSuiteDetailsJson);
             string testerName = User.FindFirst(ClaimTypes.Email)?.Value.ToString();
             string result = string.Empty;
+            string projectName = _testSuiteNameData.Application.ApplicationName.ToString();
 
             Models.Environments _environmentDetails = await _helper.GetEnvironmentById(Convert.ToInt32(_testSuiteNameData.Environment.EnvironmentId));
             if (_testSuiteNameData.SelectedTestCases != null && _testSuiteNameData.SelectedTestCases.Length > 0)
@@ -219,7 +220,7 @@ namespace GhostQA_API.Controllers
                 int counter = 0;
                 foreach (var testCaseName in _testSuiteNameData.SelectedTestCases.Split(","))
                 {
-                    string _testCaseJsonData = await _helper.RunTestCase(model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
+                    string _testCaseJsonData = await _helper.RunTestCase(projectName, model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
 
                     if (string.IsNullOrEmpty(_testCaseJsonData))
                     {

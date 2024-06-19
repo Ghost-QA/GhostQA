@@ -1,7 +1,6 @@
 ﻿using ExcelDataReader;
 using GhostQA_API.DTO_s;
 using GhostQA_API.Models;
-using GhostQA_FrameworkTests.Arum.Mississippi.TestFile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -14,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,13 +24,11 @@ namespace GhostQA_API.Helper
     public class DBHelper
     {
         private readonly IConfiguration _configuration;
-        private readonly TestExecutor _testExecutor;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DBHelper(IConfiguration configuration, TestExecutor testExecutor, IServiceProvider serviceProvider)
+        public DBHelper(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _configuration = configuration;
-            _testExecutor = testExecutor;
             _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         }
 
@@ -473,13 +471,14 @@ namespace GhostQA_API.Helper
             return EnvironmentListJson;
         }
 
-        internal async Task<string> RunTestCase(string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
+        internal async Task<string> RunTestCase(string projectName, string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
         {
             string TestCaseJsonData = string.Empty;
             try
             {
                 SaveExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
-                TestCaseJsonData = _testExecutor.ExecuteTestCases(browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
+                TestCaseJsonData = InvokeTestExecutor(projectName, browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
+                //TestCaseJsonData = _testExecutor.ExecuteTestCases(browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
                 UpdateExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
             }
             catch (Exception)
@@ -4321,6 +4320,60 @@ namespace GhostQA_API.Helper
                 connection.Close();
             }
             return result;
+        }
+
+        internal string InvokeTestExecutor(string projectName, string browserName, string environmentName, string testCaseName, string baseURL, string basePath, string driverPath, string testerName, string TestUserName, string Password)
+        {
+            // Define Assembly with the path for dll exists in current directory
+            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{projectName}.dll");
+            // Define Class Name as per project as class file may exists in different path instead direct attached with project
+            string className = projectName == "GhostQA_FrameworkTests" ? $"{projectName}.Arum.Mississippi.TestFile.TestExecutor" : $"{projectName}.TestExecutor";
+
+            try
+            {
+                // Load the assembly
+                if (!File.Exists(dllPath))
+                {
+                    throw new FileNotFoundException($"Assembly file not found: {dllPath}");
+                }
+
+                // Load the assembly
+                Assembly assembly = Assembly.LoadFrom(dllPath);
+
+                // Get the type of the class
+                Type type = assembly.GetType(className);
+
+                if (type == null)
+                {
+                    throw new Exception($"Type {className} not found in assembly {dllPath}");
+                }
+
+                // Create an instance of the class
+                object instance = Activator.CreateInstance(type);
+
+                // Get the MethodInfo for TestExecutor method
+                MethodInfo methodInfo = type.GetMethod("ExecuteTestCases");
+
+                if (methodInfo == null)
+                {
+                    throw new Exception($"Method TestExecutor not found in type {className}");
+                }
+
+                // Prepare the parameters
+                object[] parameters = new object[] { browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password };
+
+                // Invoke the method
+                object result = methodInfo.Invoke(instance, parameters);
+
+                return result is string testJsonDatastring
+                    ? testJsonDatastring
+                    : string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return string.Empty;
+            }
         }
     }
 }
