@@ -4370,7 +4370,7 @@ namespace GhostQA_API.Helper
             // Define Assembly with the path for dll exists in current directory
             string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{projectName}.dll");
             // Define Class Name as per project as class file may exists in different path instead direct attached with project
-            string className = projectName == "GhostQA_FrameworkTests" ? $"{projectName}.Arum.Mississippi.TestFile.TestExecutor" : $"{projectName}.TestExecutor";
+            string className = projectName == "GhostQA_FrameworkTests" ? $"{projectName}.Arum.Mississippi.TestFile.TestExecutor" : $"{projectName}.Utils.TestExecutor";
 
             try
             {
