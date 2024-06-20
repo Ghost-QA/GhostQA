@@ -91,7 +91,7 @@ To successfully set up and run GhostQA, ensure the following software is install
 
 14. Install the URL Rewrite module 2.1 from the following link: [URL Rewrite Module 2.1](https://www.iis.net/downloads/microsoft/url-rewrite).
 
-15. Install the .NET Core Hosting Bundle by searching for it in any web browser and installing it from the following link: [Install .NET Core Hosting Bundle](https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/iis/hosting-bundle?view=aspnetcore-8.0#direct-download).
+15. Install the .NET Core Hosting Bundle by searching for it in any web browser and installing it from the following link: [Install .NET Core Hosting Bundle 2.2.1](https://download.visualstudio.microsoft.com/download/pr/5ee633f2-bf6d-49bd-8fb6-80c861c36d54/caa93641707e1fd5b8273ada22009246/dotnet-hosting-2.2.1-win.exe)).
 
 16. Download the `FFmpeg` file from the following link: [Download FFmpeg](https://ffmpeg.org/download.html). Extract the FFmpeg file in the `C:` directory for recording functionality.
 
