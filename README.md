@@ -89,7 +89,7 @@ To successfully set up and run GhostQA, ensure the following software is install
 
 13. To access IIS, click the Windows Start button. Start typing `Internet Information Services Manager` in the search field and click `Internet Information Services (IIS) Manager` once it appears.
 
-14. Install the URL Rewrite module 2.1 from the following link: [URL Rewrite Module 2.1](https://www.iis.net/downloads/microsoft/url-rewrite).
+14. Install the URL Rewrite module 2.1 from the following link: [URL Rewrite Module 2.1](https://download.microsoft.com/download/1/2/8/128E2E22-C1B9-44A4-BE2A-5859ED1D4592/rewrite_amd64_en-US.msi).
 
 15. Install the .NET Core Hosting Bundle by searching for it in any web browser and installing it from the following link: [Install .NET Core Hosting Bundle 2.2.1](https://download.visualstudio.microsoft.com/download/pr/5ee633f2-bf6d-49bd-8fb6-80c861c36d54/caa93641707e1fd5b8273ada22009246/dotnet-hosting-2.2.1-win.exe)).
 
