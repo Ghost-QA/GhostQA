@@ -8,6 +8,7 @@ services:
 
   caddy:
     image: ghostqa/caddy:${COMMITHASH}
+    restart: on-failure
     ports:
       - "30001:30001"
     extra_hosts:
@@ -18,6 +19,7 @@ services:
 
   webui:
     image: ghostqa/webui:${COMMITHASH}
+    restart: on-failure
     ports:
       - "3000:80"
     environment:
@@ -28,6 +30,7 @@ services:
 
   dotnetapi:
     image: ghostqa/dotnetapi:${COMMITHASH}
+    restart: on-failure
     ports:
       - "5000:80"
     environment:
@@ -96,6 +99,7 @@ services:
 
   postgres:
     image: postgres:latest
+    restart: on-failure
     environment:
       POSTGRES_USER: "yourusername"  # Set your PostgreSQL username here
       POSTGRES_PASSWORD: "yourpassword"  # Set your PostgreSQL password here
@@ -107,6 +111,7 @@ services:
   
   codeengine: &django_app
     image: ghostqa/codeengine:${COMMITHASH}
+    restart: on-failure
     command:  pipenv run gunicorn ghostqa.wsgi -w 4 -b 0.0.0.0:8000 -t 1000000000
     extra_hosts:
       - host.docker.internal:host-gateway
