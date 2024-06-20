@@ -4347,7 +4347,7 @@ namespace GhostQA_API.Helper
                     //command.Parameters.AddWithValue("@RecurringInterval", model.RecurringInterval);
                     command.Parameters.AddWithValue("@Interval", model.Interval);
                     command.Parameters.AddWithValue("@SuiteName", model.SuiteName);
-                    command.Parameters.AddWithValue("@StartTime", model.StartTime);
+                   // command.Parameters.AddWithValue("@StartTime", model.StartTime);
                     //command.Parameters.AddWithValue("@EndTime", model.EndTime);
                     command.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     //command.Parameters.AddWithValue("@CroneExpression", model.CroneExpression);

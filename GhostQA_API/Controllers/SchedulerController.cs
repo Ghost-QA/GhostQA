@@ -14,13 +14,11 @@ namespace GhostQA_API.Controllers
     {
         private readonly IRecurringJobManager _recurringJobManager;
         private readonly DBHelper _helper;
-        private readonly HttpClient _httpClient;
 
-        public SchedulerController(IRecurringJobManager recurringJobManager, DBHelper helper, HttpClient httpClient)
+        public SchedulerController(IRecurringJobManager recurringJobManager, DBHelper helper)
         {
             _recurringJobManager = recurringJobManager;
             _helper = helper;
-            _httpClient = httpClient;
         }
 
         [HttpPost]
@@ -39,7 +37,7 @@ namespace GhostQA_API.Controllers
 
             suiteRun.Header = timeZoneHeader;
 
-            SuiteService _service = new SuiteService(_httpClient);
+            SuiteService _service = new SuiteService();
 
             switch (schedulingInfo.Interval)
             {
@@ -107,7 +105,6 @@ namespace GhostQA_API.Controllers
                             $"SuiteScheduleJob - {schedulingInfo.RootId}-{schedulingInfo.SuiteName}-{current:yyyyMMddHHmmss}",
                             () => _service.RunSuite(suiteRun),
                             Cron.MinuteInterval(schedulingInfo.IntervalInMinutes)
-                        //new RecurringJobOptions {  StartTime = current, EndTime = schedulingInfo.EndDate }
                         );
 
                         current = current.AddMinutes(schedulingInfo.IntervalInMinutes);
