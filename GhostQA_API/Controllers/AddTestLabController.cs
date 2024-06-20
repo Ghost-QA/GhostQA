@@ -105,6 +105,19 @@ namespace GhostQA_API.Controllers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param ApplicationId="ApplicationId"></param>
+        /// <param TenantId="TenantId"></param>
+        /// <param OrganizationId="OrganizationId"></param>
+        /// <returns></returns>
+        [HttpPost("GetTestCaseDetailsByApplicationId")]
+        public async Task<ActionResult> GetTestCaseDetailsByApplicationId(int ApplicationId, Guid? TenantId, Guid? OrganizationId)
+        {
+            return Ok(await _helper.GetTestCaseDetailsByApplicationId(ApplicationId));
+        }
+
+        /// <summary>
         ///  Get TestStepsDetails By TestStepsId
         /// </summary>
         /// <param TestStepsId="TestStepsId"></param>

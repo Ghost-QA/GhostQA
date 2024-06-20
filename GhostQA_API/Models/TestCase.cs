@@ -1,9 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
     public class TestCase
     {
+        [Key]
+        public int TestCaseId { get; set; }
+
         [Column("TestSuiteName", TypeName = "VARCHAR(100)")]
         public string TestSuiteName { get; set; }
 
@@ -41,5 +45,11 @@ namespace GhostQA_API.Models
 
         public int? TestUserId { get; set; }
         public int RootId { get; set; }
+
+        public int? ApplicationId { get; set; }
+
+        public Guid? TenantId { get; set; }
+
+        public Guid? OrganizationId { get; set; }
     }
 }

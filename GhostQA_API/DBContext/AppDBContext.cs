@@ -9,7 +9,6 @@ namespace GhostQA_API.DBContext
         public AppDBContext(DbContextOptions<AppDBContext> options) : base(options)
         {
         }
-
         public DbSet<TestSuites> tbl_TestSuites { get; set; }
         public DbSet<Applications> tbl_Applications { get; set; }
         public DbSet<Models.Environments> tbl_Environments { get; set; }
@@ -37,7 +36,6 @@ namespace GhostQA_API.DBContext
         public DbSet<Integration> tbl_Integration { get; set; }
         public DbSet<ExistingSuiteRun> tbl_ExistingSuiteRun { get; set; }
         public DbSet<FunctionalSuiteRelation> tbl_FunctionalSuiteRelation { get; set; }
-        //public DbSet<SuiteScheduleInfo> tbl_SuiteScheduleInfo { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -61,7 +59,10 @@ namespace GhostQA_API.DBContext
             .HasColumnName("ExecutionId")
             .UseIdentityColumn(seed: 1000);
 
-            builder.Entity<Models.TestCase>().HasNoKey();
+            builder.Entity<TestCase>()
+                .Property(e => e.TestCaseId)
+                .HasColumnName("TestCaseId")
+                .UseIdentityColumn(seed: 1000);
 
             builder.Entity<InternalTestExecution>().HasNoKey();
 

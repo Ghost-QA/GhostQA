@@ -1483,6 +1483,38 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
+
+        internal async Task<string> GetTestCaseDetailsByApplicationId(int applicationId)
+        {
+            string result = string.Empty;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_GetTestCaseDetailsByApplicationId", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                result = reader["result"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
         internal async Task<string> GetTestStepsDetailsByTestStepsId(int TestStepsId)
         {
             string result = string.Empty;
@@ -4418,5 +4450,7 @@ namespace GhostQA_API.Helper
                 return string.Empty;
             }
         }
+
+
     }
 }

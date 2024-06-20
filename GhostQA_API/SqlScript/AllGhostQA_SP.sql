@@ -2575,6 +2575,46 @@ BEGIN CATCH
     ))
 END CATCH
 GO
+CREATE OR ALTER PROCEDURE stp_GetTestCaseDetailsByApplicationId
+@ApplicationId			INT
+/**************************************************************************************
+PROCEDURE NAME	:	stp_GetTestCaseDetailsByApplicationId
+CREATED BY		:	Mohammad Mobin
+CREATED DATE	:	20th Jun 2024
+MODIFIED BY		:	
+MODIFIED DATE	:	
+PROC EXEC		:
+				EXEC stp_GetTestCaseDetailsByApplicationId 1000
+**************************************************************************************/
+AS
+BEGIN TRY
+	IF EXISTS(SELECT TOP 1 1 FROM tbl_TestCase (NOLOCK) WHERE [ApplicationId] = @ApplicationId)
+	BEGIN
+		SELECT [result] = JSON_QUERY((
+			SELECT DISTINCT 
+				[TestCaseName]
+			FROM tbl_TestCase (NOLOCK)
+			WHERE [ApplicationId] = @ApplicationId
+			FOR JSON PATH
+		))
+	END
+	ELSE
+	BEGIN
+		SELECT [result] = JSON_QUERY((
+            SELECT 'fail' [status], 
+                   'Test Case not found' [message]
+            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        ))
+	END
+END TRY
+BEGIN CATCH
+	SELECT [result] = JSON_QUERY((
+            SELECT 'fail' [status], 
+                   ERROR_MESSAGE() [message]
+            FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+        ))
+END CATCH
+GO
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetTestCaseDetailsByTestDetailId]
 @TestDetailId              INT
 AS
