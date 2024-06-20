@@ -13,7 +13,9 @@ BEGIN TRY
 	SELECT [TestSuites] = JSON_QUERY((
 		SELECT [TestSuiteName],[TestSuiteFlag] FROM
 		(SELECT DISTINCT [TestSuiteName] [TestSuiteName], 'InBuilt' [TestSuiteFlag]
-		FROM tbl_TestCase) tbl
+		FROM tbl_TestCase
+		WHERE RootId IS NULL
+		OR RootId = 0) tbl
 	FOR JSON PATH))
 END TRY
 BEGIN CATCH

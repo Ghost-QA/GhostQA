@@ -211,6 +211,7 @@ namespace GhostQA_API.Controllers
             TestSuiteNameData _testSuiteNameData = Newtonsoft.Json.JsonConvert.DeserializeObject<TestSuiteNameData>(_testSuiteDetailsJson);
             string testerName = User.FindFirst(ClaimTypes.Email)?.Value.ToString();
             string result = string.Empty;
+            string projectName = _testSuiteNameData.Application.ApplicationName.ToString();
 
             Models.Environments _environmentDetails = await _helper.GetEnvironmentById(Convert.ToInt32(_testSuiteNameData.Environment.EnvironmentId));
             if (_testSuiteNameData.SelectedTestCases != null && _testSuiteNameData.SelectedTestCases.Length > 0)
@@ -219,7 +220,7 @@ namespace GhostQA_API.Controllers
                 int counter = 0;
                 foreach (var testCaseName in _testSuiteNameData.SelectedTestCases.Split(","))
                 {
-                    string _testCaseJsonData = await _helper.RunTestCase(model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
+                    string _testCaseJsonData = await _helper.RunTestCase(projectName, model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
 
                     if (string.IsNullOrEmpty(_testCaseJsonData))
                     {
@@ -233,7 +234,8 @@ namespace GhostQA_API.Controllers
                         _testSuiteData.TestRunName = _testRunName;
                         _testSuiteData.TestEnvironment = _environmentDetails.EnvironmentName;
                         _testSuiteData.TestBrowserName = _environmentDetails?.BrowserName;
-                        _testSuiteData.TestCaseName = testCaseName.ToString();
+                        _testSuiteData.TestCaseName = testCaseName;
+                        _testSuiteData.RootId = model.rootId;
                         result = await _helper.SaveTestCaseData(Newtonsoft.Json.JsonConvert.SerializeObject(_testSuiteData));
                         _result.Add(result);
                     }
@@ -272,7 +274,7 @@ namespace GhostQA_API.Controllers
 
                     if (webhookUrl[1].IsIntegrated)
                     {
-                        await _helper.PostReportInTeams(model.testSuiteName, _testRunName, testerName, _environmentDetails.EnvironmentName, webhookUrl[1].APIKey, mapping);
+                        await _helper.PostReportInTeams(model.testSuiteName, _testRunName, testerName, _environmentDetails.EnvironmentName, webhookUrl[1].APIKey, Url, mapping);
                     }
                 }
             }
@@ -572,10 +574,10 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Add Functional Suite Relation
         /// </summary>
-        [HttpPost("AddFunctionalSuiteRelation")]
-        public async Task<ActionResult> AddFunctionalSuiteRelation(FunctionalSuiteRelation model)
+        [HttpPost("AddUpdateFunctionalSuiteRelation")]
+        public async Task<ActionResult> AddUpdateFunctionalSuiteRelation(FunctionalSuiteRelation model)
         {
-            return Ok(await _helper.AddFunctionalSuiteRelation(model));
+            return Ok(await _helper.AddUpdateFunctionalSuiteRelation(model));
         }
 
         /// <summary>
@@ -585,6 +587,15 @@ namespace GhostQA_API.Controllers
         public async Task<ActionResult> GetFunctionalSuiteRelation()
         {
             return Ok(await _helper.GetFunctionalSuiteRelation());
+        }
+
+        /// <summary>
+        ///  Delete Functional Suite Relation By Root Id  and Parent Id
+        /// </summary>
+        [HttpPost("DeleteFunctionalSuiteRelation")]
+        public async Task<ActionResult> DeleteFunctionalSuiteRelation(FunctionalSuiteRelation model)
+        {
+            return Ok(await _helper.DeleteFunctionalSuiteRelation(model));
         }
     }
 }

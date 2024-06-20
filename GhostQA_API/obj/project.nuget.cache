@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "kYxHPn6hQfQ=",
+  "dgSpecHash": "ApPHAgmRqek=",
   "success": true,
-  "projectFilePath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
+  "projectFilePath": "D:\\MechlinTech\\GhostQA\\GhostQA_API\\GhostQA_API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ermob\\.nuget\\packages\\bouncycastle.netcore\\1.9.0\\bouncycastle.netcore.1.9.0.nupkg.sha512",
     "C:\\Users\\ermob\\.nuget\\packages\\dnsclient\\1.2.0\\dnsclient.1.2.0.nupkg.sha512",

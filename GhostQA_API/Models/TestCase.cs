@@ -40,5 +40,6 @@ namespace GhostQA_API.Models
         public string? TestEnvironment { get; set; }
 
         public int? TestUserId { get; set; }
+        public int RootId { get; set; }
     }
 }

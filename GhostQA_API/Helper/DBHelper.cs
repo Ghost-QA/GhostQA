@@ -1,7 +1,6 @@
 ﻿using ExcelDataReader;
 using GhostQA_API.DTO_s;
 using GhostQA_API.Models;
-using GhostQA_FrameworkTests.Arum.Mississippi.TestFile;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -14,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,13 +24,11 @@ namespace GhostQA_API.Helper
     public class DBHelper
     {
         private readonly IConfiguration _configuration;
-        private readonly TestExecutor _testExecutor;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public DBHelper(IConfiguration configuration, TestExecutor testExecutor, IServiceProvider serviceProvider)
+        public DBHelper(IConfiguration configuration, IServiceProvider serviceProvider)
         {
             _configuration = configuration;
-            _testExecutor = testExecutor;
             _userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         }
 
@@ -301,6 +299,7 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@SelectedTestCases", string.Join(", ", model.SelectedTestCases));
                         command.Parameters.AddWithValue("@Description", model.Description);
                         command.Parameters.AddWithValue("@TestUserId", model.TestUserId);
+                        command.Parameters.AddWithValue("@RootId", model.RootId);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -473,13 +472,14 @@ namespace GhostQA_API.Helper
             return EnvironmentListJson;
         }
 
-        internal async Task<string> RunTestCase(string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
+        internal async Task<string> RunTestCase(string projectName, string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
         {
             string TestCaseJsonData = string.Empty;
             try
             {
                 SaveExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
-                TestCaseJsonData = _testExecutor.ExecuteTestCases(browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
+                TestCaseJsonData = InvokeTestExecutor(projectName, browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
+                //TestCaseJsonData = _testExecutor.ExecuteTestCases(browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
                 UpdateExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
             }
             catch (Exception)
@@ -1109,7 +1109,6 @@ namespace GhostQA_API.Helper
                 ? IdentityResult.Success
                 : IdentityResult.Failed(new IdentityError { Description = "Failed to change password." });
         }
-
         internal async Task<string> GetUserDetails()
         {
             string UsersListJson = string.Empty;
@@ -1296,7 +1295,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetTestStepsDetails()
         {
             string result = string.Empty;
@@ -1394,7 +1392,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> AddTestStepsDetails(Dto_AddTestStepsJson AddStepsJson)
         {
             string result = string.Empty;
@@ -1425,7 +1422,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> UpdateRootRelation(RootRelation model)
         {
             string result = string.Empty;
@@ -1457,7 +1453,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetTestCaseDetailsByRootId(int RootId)
         {
             string result = string.Empty;
@@ -1488,7 +1483,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetTestStepsDetailsByTestStepsId(int TestStepsId)
         {
             string result = string.Empty;
@@ -1645,7 +1639,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> UpdateProjectData(ProjectRootRelation model)
         {
             string result = string.Empty;
@@ -1677,7 +1670,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> DeleteProjectData(ProjectRootRelation model)
         {
             string result = string.Empty;
@@ -1889,7 +1881,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> AddLocation(PerformanceLocation model)
         {
             string result = string.Empty;
@@ -1953,7 +1944,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> DeleteLocation(int Id)
         {
             string result = string.Empty;
@@ -1984,7 +1974,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> AddProperty(PerformanceProperties model)
         {
             string result = string.Empty;
@@ -2042,7 +2031,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> DeleteProperties(int Id)
         {
             string result = string.Empty;
@@ -2113,6 +2101,7 @@ namespace GhostQA_API.Helper
                     }
                 });
                 dt = dataSet.Tables[0];
+
             }
 
             List<Dictionary<string, object>> rows = new List<Dictionary<string, object>>();
@@ -2213,7 +2202,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<object> AddUpdateLoadData(Dto_Load loadData)
         {
             string result = string.Empty;
@@ -2271,7 +2259,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> DeleteLoadTestData(int Id)
         {
             string result = string.Empty;
@@ -2380,7 +2367,6 @@ namespace GhostQA_API.Helper
         {
             return model.runs_artifacts.Where(x => x.type == str).Count() > 0 ? model.runs_artifacts.Where(x => x.type == str).Select(y => y.files).FirstOrDefault() : string.Empty;
         }
-
         internal async Task<string> GetTestDetailByTestName(int TestId)
         {
             string result = string.Empty;
@@ -2565,6 +2551,7 @@ namespace GhostQA_API.Helper
             var scenarios = new List<Scenarios>();
             var maxDuration = 0;
             string estimate = string.Empty;
+            var apiUrl = $"{url}codeengine/api/performance-tests/execute2";
             try
             {
                 using (SqlConnection connection = new SqlConnection(GetConnectionString()))
@@ -2613,7 +2600,7 @@ namespace GhostQA_API.Helper
                             formData.Add(new StringContent(data.RampUpSteps.ToString()), "jrampup_steps");
                             formData.Add(new StringContent(data.DurationInMinutes.ToString()), "durations");
                             formData.Add(new StringContent(guid), "client_reference_id");
-                            using (var response = await httpClient.PostAsync(url, formData))
+                            using (var response = await httpClient.PostAsync(apiUrl, formData))
                             {
                                 var res1 = await response.Content.ReadAsStringAsync();
                             }
@@ -2743,7 +2730,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetExecutedPerformanceByRootId(int RootId)
         {
             string result = string.Empty;
@@ -2774,7 +2760,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> stp_GetExecutedPerformanceByClientId(string ClientId)
         {
             List<Dto_LoadBinaryResponse> result;
@@ -2835,7 +2820,6 @@ namespace GhostQA_API.Helper
             }
             return data;
         }
-
         internal string DecompressString(byte[] compressedData)
         {
             using (MemoryStream memoryStream = new MemoryStream(compressedData))
@@ -3031,8 +3015,8 @@ namespace GhostQA_API.Helper
                         result.Add(new { status = "Failed", message = "Invalid email address format.", email = toEmail });
                     }
                     var BodyString = $@"<!DOCTYPE html>
-                                        <html lang=""en"">
-			                            <head>
+                                        <html lang=""en""> 
+			                            <head>         
 			                            <body style=""font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;"">
                                         <H4>Hi {toEmail},</H4>
                                         <p>Below is the test execution result for Test-Suite {testSuiteName}:</p>
@@ -3061,10 +3045,10 @@ namespace GhostQA_API.Helper
                                         <td style=""border: 1px solid #ddd; padding: 8px; text-align: center;"">{data.FailedTestCases}</td>
                                         </tr>
                                         </tbody>
-                                        </table>
+                                        </table> 
                                         <div style=""text-align: left; margin-top: 10px;"">
-                                        <img src=""cid:logoImage"" alt=""logo"" style=""max-width: 200px; height: auto;"">
-                                        <a href=""{ghostQaUrl}"" style=""text-decoration: none; color: #654DF7;"">www.ghostqa.com</a>
+                                        <img src=""cid:logoImage"" alt=""logo"" style=""max-width: 200px; height: auto; display: inline-block; vertical-align: middle;"">
+                                        <a href=""{ghostQaUrl}"" style=""text-decoration: none; color: #654DF7; display: inline-block; vertical-align: middle; margin-left: 5px;"">www.ghostqa.com</a>
                                         </div>
                                         </body>
 			                            </html>";
@@ -3085,6 +3069,7 @@ namespace GhostQA_API.Helper
                     msg.AddAttachment(logoAttachment);
                     response = await client.SendEmailAsync(msg);
                 }
+
             }
             else
             {
@@ -3093,8 +3078,8 @@ namespace GhostQA_API.Helper
                     result.Add(new { status = "Failed", message = "Invalid email address format.", email = testerName });
                 }
                 var BodyString = $@"<!DOCTYPE html>
-                                        <html lang=""en"">
-			                            <head>
+                                        <html lang=""en""> 
+			                            <head>         
 			                            <body style=""font-family: Arial, sans-serif; color: #333; margin: 0; padding: 0;"">
                                         <H4>Hi {testerName},</H4>
                                         <p>Below is the test execution result for Test-Suite {testSuiteName}:</p>
@@ -3125,8 +3110,8 @@ namespace GhostQA_API.Helper
                                         </tbody>
                                         </table>
                                          <div style=""text-align: left; margin-top: 10px;"">
-                                            <img src=""cid:logoImage"" alt=""logo"" style=""max-width: 200px; height: auto;"">
-                                            <a href=""{ghostQaUrl}"" style=""text-decoration: none; color: #654DF7;"">www.ghostqa.com</a>
+                                            <img src=""cid:logoImage"" alt=""logo"" style=""max-width: 200px; height: auto; display: inline-block; vertical-align: middle;"">
+                                            <a href=""{ghostQaUrl}"" style=""text-decoration: none; color: #654DF7; display: inline-block; vertical-align: middle; margin-left: 5px;"">www.ghostqa.com</a>
                                         </div>
                                         </body>
 			                            </html>";
@@ -3134,7 +3119,7 @@ namespace GhostQA_API.Helper
                 var from = new EmailAddress(fromEmail, senderDisplayName);
                 var to = new EmailAddress(testerName, testerName);
                 var msg = MailHelper.CreateSingleEmail(from, to, subject, "", BodyString);
-                var logoPath = logoUrl; // Path to the logo on the server
+                var logoPath = logoUrl;
                 var logoBytes = File.ReadAllBytes(logoPath);
                 var logoAttachment = new Attachment
                 {
@@ -3188,7 +3173,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetAllTestUser()
         {
             string result = string.Empty;
@@ -3218,7 +3202,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> GetTestUserById(int Id)
         {
             string result = string.Empty;
@@ -3249,7 +3232,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> AddTestUser(TestUser model, string createdBy)
         {
             string result = string.Empty;
@@ -3646,9 +3628,11 @@ namespace GhostQA_API.Helper
                         var res1 = await response.Content.ReadAsStringAsync();
                         data = JsonConvert.DeserializeObject<Dto_AddPrivateLocation>(res1);
                     }
+
                 }
                 foreach (var item in data.results)
                 {
+
                     using (SqlConnection connection = new SqlConnection(GetConnectionString()))
                     {
                         connection.Open();
@@ -3676,7 +3660,6 @@ namespace GhostQA_API.Helper
             }
             return result;
         }
-
         internal async Task<string> DeletePrivateLocationById(int Id)
         {
             string result = string.Empty;
@@ -4242,24 +4225,28 @@ namespace GhostQA_API.Helper
             }
         }
 
-        internal async Task<object> PostReportInTeams(string TestSuiteName, string TestRunName, string TesterName, string Environment, string Webhook, string TimeZone)
+        internal async Task<object> PostReportInTeams(string TestSuiteName, string TestRunName, string TesterName, string Environment, string Webhook, string Url, string TimeZone)
         {
+            int indexOfAt = TesterName.IndexOf("@");
+            string _testerName = TesterName.Substring(0, indexOfAt);
             var testrunData = GetTestRunData(TestSuiteName, TestRunName, TimeZone);
             var data = JsonConvert.DeserializeObject<Dto_TestRunData>(testrunData.Result);
-
+            string encodedQueryParameter = TestSuiteName.Replace(" ", "%20");
+            string testRunUrl = $"{Url}test/{encodedQueryParameter}/{TestRunName}";
             string summary = $@"
 **Suite Run Report**
 
-**Suite Name:** {TestSuiteName}
-**Environment:** {Environment}
-**Start Time:** {data.TestSuiteStartDateTime}
-**End Time:** {data.TestSuiteEndDateTime}
-**Tester Name:** {TesterName}
-**Duration:** {Convert.ToDateTime(data.TestSuiteEndDateTime) - Convert.ToDateTime(data.TestSuiteStartDateTime)}
-**Total Tests:** {data.TotalTestCases}
-**Passed Tests:** {data.PassedTestCases}
-**Failed Tests:** {data.FailedTestCases}
-**Status:** {(Convert.ToInt32(data.FailedTestCases) > 0 ? "Failed" : "Passed")}
+**Suite Name:** {TestSuiteName}  
+**Test Run Id**: [{data.TestRunName}]({testRunUrl})  
+**Environment:** {Environment}  
+**Start Time:** {data.TestSuiteStartDateTime}  
+**End Time:** {data.TestSuiteEndDateTime}  
+**Tester Name:** {_testerName}  
+**Duration:** {Convert.ToDateTime(data.TestSuiteEndDateTime) - Convert.ToDateTime(data.TestSuiteStartDateTime)}  
+**Total Tests:** {data.TotalTestCases}  
+**Passed Tests:** {data.PassedTestCases}  
+**Failed Tests:** {data.FailedTestCases}  
+**Status:** {(Convert.ToInt32(data.FailedTestCases) > 0 ? "Failed" : "Passed")}  
 ";
 
             var payload = new { text = summary };
@@ -4275,15 +4262,16 @@ namespace GhostQA_API.Helper
                 : (new { status = response.StatusCode, message = "Report posted successfully", data = await response.Content.ReadAsStringAsync() });
         }
 
-        internal async Task<string> AddFunctionalSuiteRelation(FunctionalSuiteRelation model)
+        internal async Task<string> AddUpdateFunctionalSuiteRelation(FunctionalSuiteRelation model)
         {
             string result = string.Empty;
             using (SqlConnection connection = new SqlConnection(GetConnectionString()))
             {
                 connection.Open();
-                using (SqlCommand command = new SqlCommand("stp_AddFunctionalSuiteRelation", connection))
+                using (SqlCommand command = new SqlCommand("stp_AddUpdateFunctionalSuiteRelation", connection))
                 {
                     command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@Id", model.Id);
                     command.Parameters.AddWithValue("@Parent", model.Parent);
                     command.Parameters.AddWithValue("@Name", model.Name);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -4321,6 +4309,114 @@ namespace GhostQA_API.Helper
                 connection.Close();
             }
             return result;
+        }
+
+        internal async Task<string> DeleteFunctionalSuiteRelation(FunctionalSuiteRelation model)
+        {
+            string result = string.Empty;
+            using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("stp_DeleteFunctionalSuiteRelation", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@RootId", model.Id);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            result = reader["result"].ToString();
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return result;
+        }
+
+        internal async Task<string> SaveSuiteSchedulerInfo(SuiteScheduleInfo model)
+        {
+            string result = string.Empty;
+            using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("stp_SaveSuiteScheduler", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    //command.Parameters.AddWithValue("@RecurringInterval", model.RecurringInterval);
+                    command.Parameters.AddWithValue("@Interval", model.Interval);
+                    command.Parameters.AddWithValue("@SuiteName", model.SuiteName);
+                   // command.Parameters.AddWithValue("@StartTime", model.StartTime);
+                    //command.Parameters.AddWithValue("@EndTime", model.EndTime);
+                    command.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                    //command.Parameters.AddWithValue("@CroneExpression", model.CroneExpression);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            result = reader["result"].ToString();
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return result;
+        }
+
+        internal string InvokeTestExecutor(string projectName, string browserName, string environmentName, string testCaseName, string baseURL, string basePath, string driverPath, string testerName, string TestUserName, string Password)
+        {
+            // Define Assembly with the path for dll exists in current directory
+            string dllPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{projectName}.dll");
+            // Define Class Name as per project as class file may exists in different path instead direct attached with project
+            string className = projectName == "GhostQA_FrameworkTests" ? $"{projectName}.Arum.Mississippi.TestFile.TestExecutor" : $"{projectName}.Utils.TestExecutor";
+
+            try
+            {
+                // Load the assembly
+                if (!File.Exists(dllPath))
+                {
+                    throw new FileNotFoundException($"Assembly file not found: {dllPath}");
+                }
+
+                // Load the assembly
+                Assembly assembly = Assembly.LoadFrom(dllPath);
+
+                // Get the type of the class
+                Type type = assembly.GetType(className);
+
+                if (type == null)
+                {
+                    throw new Exception($"Type {className} not found in assembly {dllPath}");
+                }
+
+                // Create an instance of the class
+                object instance = Activator.CreateInstance(type);
+
+                // Get the MethodInfo for TestExecutor method
+                MethodInfo methodInfo = type.GetMethod("ExecuteTestCases");
+
+                if (methodInfo == null)
+                {
+                    throw new Exception($"Method TestExecutor not found in type {className}");
+                }
+
+                // Prepare the parameters
+                object[] parameters = new object[] { browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password };
+
+                // Invoke the method
+                object result = methodInfo.Invoke(instance, parameters);
+
+                return result is string testJsonDatastring
+                    ? testJsonDatastring
+                    : string.Empty;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return string.Empty;
+            }
         }
     }
 }

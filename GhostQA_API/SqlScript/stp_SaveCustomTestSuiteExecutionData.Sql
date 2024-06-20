@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE stp_SaveCustomTestSuiteExecutionData
+CREATE OR ALTER PROCEDURE [dbo].[stp_SaveCustomTestSuiteExecutionData]
 @TestSuiteJson			NVARCHAR(MAX)
 AS
 /**************************************************************************************
@@ -12,7 +12,10 @@ PROC EXEC		:  EXEC stp_SaveCustomTestSuiteExecutionData '{"TestSuiteName":"Custo
 					"TestSuiteStartDateTime":"2024-01-23T19:14:31.8909134+05:30","TestSuiteEndDateTime":"2024-01-23T19:14:54.4617051+05:30",
 					"TestRunStartDateTime":"2024-01-23T19:14:49.04712+05:30","TestRunEndDateTime":"2024-01-23T19:14:54.1651478+05:30",
 					"TestCaseSteps":"[{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:49.0471200+05:30\",\"Details\":\"wait for plage to loader\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},
-					{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:49.4064360+05:30\",\"Details\":\"Click on Login Button\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:52.6804401+05:30\",\"Details\":\"Enter Email Test\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:53.4712594+05:30\",\"Details\":\"Enter passoword test\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:54.0119291+05:30\",\"Details\":\"Click on Submit button Test\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null}]",
+					{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:49.4064360+05:30\",\"Details\":\"Click on Login Button\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:
+52.6804401+05:30\",\"Details\":\"Enter Email Test\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:53.4712594+05:30\",\"Details\":\"Enter passoword test\",\"FailureMe
+ssage\":null,\"FailureException\":null,\"FailureScreenShots\":null},{\"Status\":\"Passed\",\"Timestamp\":\"23-Jan-2024 19:14:54.0119291+05:30\",\"Details\":\"Click on Submit button Test\",\"FailureMessage\":null,\"FailureException\":null,\"FailureScreenSh
+ots\":null}]",
 					"TesterName":"admin@gmail.com","TestEnvironment":"dev"}'
 				
 **************************************************************************************/
@@ -21,20 +24,26 @@ BEGIN TRY
 	BEGIN
 		INSERT INTO tbl_TestCase ([TestSuiteName], [TestRunName], [TestCaseName], [TestCaseStatus], [TestCaseVideoURL], 
 								  [TestSuiteStartDateTime], [TestSuiteEndDateTime], [TestRunStartDateTime], [TestRunEndDateTime], 
-								  [TestCaseSteps], [TesterName], [TestEnvironment])
+								  [TestCaseSteps], [TesterName], [TestEnvironment], [RootId])
 		SELECT
-			JSON_VALUE(@TestSuiteJson, '$.TestSuiteName') AS TestSuiteName,
-			JSON_VALUE(@TestSuiteJson, '$.TestRunName') AS TestRunName,
-			JSON_VALUE(@TestSuiteJson, '$.TestCaseName') AS TestCaseName,
-			JSON_VALUE(@TestSuiteJson, '$.TestCaseStatus') AS TestCaseStatus,
-			JSON_VALUE(@TestSuiteJson, '$.TestCaseVideoURL') AS TestCaseVideoURL,
-			TRY_CAST(JSON_VALUE(@TestSuiteJson, '$.TestSuiteStartDateTime') AS DATETIMEOFFSET) AS TestSuiteStartDateTime,
-			TRY_CAST(JSON_VALUE(@TestSuiteJson, '$.TestSuiteEndDateTime') AS DATETIMEOFFSET) AS TestSuiteEndDateTime,
-			TRY_CAST(JSON_VALUE(@TestSuiteJson, '$.TestRunStartDateTime') AS DATETIMEOFFSET) AS TestRunStartDateTime,
-			TRY_CAST(JSON_VALUE(@TestSuiteJson, '$.TestRunEndDateTime') AS DATETIMEOFFSET) AS TestRunEndDateTime,
-			JSON_VALUE(@TestSuiteJson, '$.TestCaseSteps') AS TestCaseSteps,
-			JSON_VALUE(@TestSuiteJson, '$.TesterName') AS TesterName,
-			JSON_VALUE(@TestSuiteJson, '$.TestEnvironment') AS TestEnvironment
+			TestSuiteName, TestRunName, TestCaseName, TestCaseStatus, TestCaseVideoURL,
+			CONVERT(datetimeoffset, TestSuiteStartDateTime), CONVERT(datetimeoffset, TestSuiteEndDateTime),
+			CONVERT(datetimeoffset, TestRunStartDateTime), CONVERT(datetimeoffset, TestRunEndDateTime),
+			TestCaseSteps, TesterName, TestEnvironment, RootId
+		FROM OPENJSON(@TestSuiteJson) WITH (
+			TestSuiteName NVARCHAR(100),
+			TestRunName NVARCHAR(100),
+			TestCaseName NVARCHAR(100),
+			TestCaseStatus NVARCHAR(50),
+			TestCaseVideoURL NVARCHAR(MAX),
+			TestSuiteStartDateTime DATETIMEOFFSET,
+			TestSuiteEndDateTime DATETIMEOFFSET,
+			TestRunStartDateTime DATETIMEOFFSET,
+			TestRunEndDateTime DATETIMEOFFSET,
+			TestCaseSteps NVARCHAR(MAX),
+			TesterName NVARCHAR(100),
+			TestEnvironment NVARCHAR(50),
+			RootId INT)
 	END
 	ELSE
 	BEGIN

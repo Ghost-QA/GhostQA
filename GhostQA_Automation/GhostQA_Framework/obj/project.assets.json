@@ -7088,11 +7088,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj",
+      "projectUniqueName": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj",
       "projectName": "GhostQA_Framework",
-      "projectPath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj",
+      "projectPath": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\GhostQA_Framework.csproj",
       "packagesPath": "C:\\Users\\ermob\\.nuget\\packages\\",
-      "outputPath": "D:\\MechlinTech\\GhostQA_Automation\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\obj\\",
+      "outputPath": "D:\\MechlinTech\\GhostQA\\GhostQA_Automation\\GhostQA_Framework\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\ermob\\AppData\\Roaming\\NuGet\\NuGet.Config",
