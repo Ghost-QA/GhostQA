@@ -87,32 +87,32 @@ export default function Settings() {
         },
       ],
     },
-    {
-      title: 'Functional - Local Testing',
-      path: '/settings',
-      children: [
-        {
-          title: 'Application',
-          path: '/settings/application',
-        },
-        {
-          title: 'Browser',
-          path: '/settings/browser',
-        },
-        {
-          title: 'Environment',
-          path: '/settings/environment',
-        },
-        {
-          title: 'Test Users',
-          path: '/settings/test-user',
-        },
-        {
-          title: 'Integration',
-          path: '/settings/integration',
-        },
-      ],
-    },
+    // {
+    //   title: 'Functional - Local Testing',
+    //   path: '/settings',
+    //   children: [
+    //     {
+    //       title: 'Application',
+    //       path: '/settings/application',
+    //     },
+    //     {
+    //       title: 'Browser',
+    //       path: '/settings/browser',
+    //     },
+    //     {
+    //       title: 'Environment',
+    //       path: '/settings/environment',
+    //     },
+    //     {
+    //       title: 'Test Users',
+    //       path: '/settings/test-user',
+    //     },
+    //     {
+    //       title: 'Integration',
+    //       path: '/settings/integration',
+    //     },
+    //   ],
+    // },
     {
       title: 'Functional - Test Lab',
       path: '/settings',
