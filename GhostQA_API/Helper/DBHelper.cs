@@ -2,7 +2,6 @@
 using GhostQA_API.DTO_s;
 using GhostQA_API.Models;
 using GhostQA_API.Services;
-using GitHub;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -4459,7 +4458,7 @@ namespace GhostQA_API.Helper
         {
             Jira_ProjectDetails projectDetails = new Jira_ProjectDetails();
             List<Dto_ProjectListJira> projectList = await GetProjectListJira(userId);
-            ZephyrService zephyr = new ZephyrService();
+            ZephyrService zephyr = new ZephyrService(_configuration);
             foreach (var project in projectList)
             {
                 Jira_Project projectData = new Jira_Project();
@@ -4468,16 +4467,48 @@ namespace GhostQA_API.Helper
                 projectData.Key = project.key;
 
                 var testCases = await zephyr.GetTestCasesAsync(project.key);
-                //foreach (var testCase in testCases)
-                //{
-                //    //Jira_TestCase _TestCase = new Jira_TestCase();
-                //    //_TestCase.Name = testCase.Name;
-                //    //_TestCase.Label = testCase.Label;
-                //    //projectData.TestCases.Add(_TestCase);
-                //}
+                foreach (var testCase in testCases.Values)
+                {
+                    Jira_TestCase _TestCase = new Jira_TestCase();
+                    _TestCase.Name = testCase.Name;
+                    _TestCase.Label = testCase.Labels[0];
+                    projectData.TestCases.Add(_TestCase);
+                }
                 projectDetails.jira_projectsDetails.Add(projectData);
             }
+
+
+            foreach (var proj in projectDetails.jira_projectsDetails)
+            {
+                int totalAutomated = proj.TestCases.Count(tc => tc.Label == "Automated");
+                int totalNotAutomated = proj.TestCases.Count(tc => tc.Label == "Not_Automated");
+                int totalTestCases = totalAutomated + totalNotAutomated;
+
+                double percentageAutomated = totalTestCases > 0 ? (double)totalAutomated / totalTestCases * 100 : 0;
+                double percentageNotAutomated = totalTestCases > 0 ? (double)totalNotAutomated / totalTestCases * 100 : 0;
+                proj.totalTestcases = totalTestCases;
+                proj.perAutomatedTestcases = percentageAutomated;
+                proj.perNotAutomatedTestcases = percentageNotAutomated;
+            }
+
+            List<string> projectNames = projectDetails.jira_projectsDetails.Select(p => p.Name).ToList();
+            List<Jira_TestCase> allTestCases = projectDetails.jira_projectsDetails.SelectMany(p => p.TestCases).ToList();
+            int totalProjectCoverageTestCases = allTestCases.Count;
+            int totalProjectCoverageAutomated = allTestCases.Count(tc => tc.Label == "Automated");
+            int totalProjectCoverageNotAutomated = allTestCases.Count(tc => tc.Label == "Not_Automated");
+
+            double percentageAutomatedPR = totalProjectCoverageTestCases > 0 ? (double)totalProjectCoverageAutomated / totalProjectCoverageTestCases * 100 : 0;
+            double percentageNotAutomatedPR = totalProjectCoverageTestCases > 0 ? (double)totalProjectCoverageNotAutomated / totalProjectCoverageTestCases * 100 : 0;
+
+            projectDetails.Summary.Projects = projectNames;
+            projectDetails.Summary.TestCases = allTestCases;
+            projectDetails.Summary.TotalTestCases = totalProjectCoverageTestCases;
+            projectDetails.Summary.TotalProject = projectNames.Count;
+            projectDetails.Summary.perAutomatedTestcases = percentageAutomatedPR;
+            projectDetails.Summary.perNotAutomatedTestcases = percentageNotAutomatedPR;
+
             return projectDetails;
+
         }
     }
 }
