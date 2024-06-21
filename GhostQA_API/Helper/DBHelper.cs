@@ -133,7 +133,7 @@ namespace GhostQA_API.Helper
             return DashBoardDetailsJson;
         }
 
-        internal async Task<string> GetRunDetails(string TestSuitName, string TimeZone)
+        internal async Task<string> GetRunDetails(string TestSuitName, int rootId, string TimeZone)
         {
             string RunDetailsJson = string.Empty;
             try
@@ -145,6 +145,7 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@TestSuitName", TestSuitName);
+                        command.Parameters.AddWithValue("@RootId", rootId);
                         command.Parameters.AddWithValue("@TimeZone", TimeZone);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -170,7 +171,7 @@ namespace GhostQA_API.Helper
             return RunDetailsJson;
         }
 
-        internal async Task<string> GetTestCaseDetails(string TestSuitName, string RunID, string TimeZone)
+        internal async Task<string> GetTestCaseDetails(string TestSuitName, int RootId, string RunID, string TimeZone)
         {
             string TestCaseDetailsJson = string.Empty;
             try
@@ -182,6 +183,7 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@TestSuiteName", TestSuitName);
+                        command.Parameters.AddWithValue("@RootId", RootId);
                         command.Parameters.AddWithValue("@TestRunId", RunID);
                         command.Parameters.AddWithValue("@TimeZone", TimeZone);
                         using (SqlDataReader reader = command.ExecuteReader())
@@ -203,7 +205,7 @@ namespace GhostQA_API.Helper
             return TestCaseDetailsJson;
         }
 
-        internal async Task<string> GetTestCaseStepsDetails(string testSuitName, string runId, string testCaseName, string timeZone)
+        internal async Task<string> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName, string timeZone)
         {
             string testCaseStepDetailsJson = string.Empty;
             try
@@ -215,6 +217,7 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@TestSuiteName", testSuitName);
+                        command.Parameters.AddWithValue("@RootId", rootId);
                         command.Parameters.AddWithValue("@TestRunName", runId);
                         command.Parameters.AddWithValue("@TestCaseName", testCaseName);
                         command.Parameters.AddWithValue("@TimeZone", timeZone);
@@ -814,7 +817,7 @@ namespace GhostQA_API.Helper
             return BrowserListJson;
         }
 
-        internal async Task<string> GetDashboardDetails(string testSuitName, string filterType, int filterValue, string timeZone)
+        internal async Task<string> GetDashboardDetails(string testSuitName, int rootId, string filterType, int filterValue, string timeZone)
         {
             string DashBoardDetailsJson = string.Empty;
             try
@@ -826,6 +829,7 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@TestSuitName", testSuitName);
+                        command.Parameters.AddWithValue("@RootId", rootId);
                         command.Parameters.AddWithValue("@FilterType", filterType);
                         command.Parameters.AddWithValue("@FilterValue", filterValue);
                         command.Parameters.AddWithValue("@TimeZone", timeZone);

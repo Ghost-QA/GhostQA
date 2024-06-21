@@ -13,13 +13,13 @@ AS
 PROCEDURE NAME	:	stp_AddUpdateTestSuites
 CREATED BY		:	Mohammad Mobin
 CREATED DATE	:	15 Jan 2024
-MODIFIED BY		:	Mohammad Yaseer
-MODIFIED DATE	:	17 Jan 2024
+MODIFIED BY		:	Lokesh
+MODIFIED DATE	:	12th June, 2024
 PROC EXEC		:
 				EXEC stp_AddUpdateTestSuites 'Mississippi', 0
 **************************************************************************************/
 BEGIN TRY
-	IF EXISTS( SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
+	IF EXISTS(SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
 	BEGIN
 		SELECT [result] = JSON_QUERY((
 			SELECT 'fail' [status], 'Duplicate Custom Test Suite Name' [message]
@@ -28,7 +28,7 @@ BEGIN TRY
 	END
 	ELSE IF @TestSuiteId = 0
 	BEGIN
-		IF NOT EXISTS( SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
+		IF NOT EXISTS(SELECT 1 FROM tbl_TestSuites WHERE [TestSuiteName] = @TestSuiteName AND [TestSuiteId] <> @TestSuiteId)
 		BEGIN
 			INSERT INTO tbl_TestSuites (TestSuiteName, TestSuiteType, ApplicationId, SendEmail, EnvironmentId, SelectedTestCases, [Description], [TestUserId]) 
 			VALUES (@TestSuiteName, @TestSuiteType, @ApplicationId, @SendEmail, @EnvironmentId, @SelectedTestCases, @Description, @TestUserId)

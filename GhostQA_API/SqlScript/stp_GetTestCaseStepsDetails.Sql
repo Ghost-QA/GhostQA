@@ -1,5 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetTestCaseStepsDetails]
 @TestSuiteName		VARCHAR(100),
+@RootId				INT,
 @TestRunName		VARCHAR(100),
 @TestCaseName		VARCHAR(100),
 @TimeZone			VARCHAR(100) = 'India Standard Time'
@@ -22,6 +23,7 @@ BEGIN TRY
 		tbl_TestCase t
 	WHERE
 		[TestSuiteName] = @TestSuiteName
+		AND [RootId] = @RootId
 		AND [TestRunName] = @TestRunName
 		AND [TestCaseName] = @TestCaseName
 

@@ -1710,6 +1710,7 @@ END CATCH
 GO
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetDashBoardChartDetails]
 @TestSuitName			VARCHAR(100),
+@RootId					INT,
 @FilterType				VARCHAR(100),
 @FilterValue			INT = 7,
 @TimeZone				VARCHAR(100) = 'India Standard Time'
@@ -1731,10 +1732,12 @@ BEGIN TRY
 			SELECT 
 				CAST((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATETIME) AS [TestRunStartDate],
 				t.[TestSuiteName],
+				t.[RootId],
 				t.[TestRunName],
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = ''' + @TestSuitName + '''
+			AND t.[RootId] = ''' + CAST(@RootId AS VARCHAR(100)) + '''
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -1747,6 +1750,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -1755,6 +1759,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -1764,6 +1769,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -1773,7 +1779,8 @@ BEGIN TRY
 				GROUP BY
 					tr.[TestSuitename],
 					tr.[TestRunName],
-					Cast(tr.[TestRunStartDate] As Date)
+					Cast(tr.[TestRunStartDate] As Date),
+					tr.[RootId]
 				ORDER BY 
 					Cast(tr.[TestRunStartDate] As Date) DESC, tr.[TestRunName] DESC
         FOR JSON PATH))'
@@ -1786,10 +1793,12 @@ BEGIN TRY
 			SELECT 
 				CAST((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATETIME) AS [TestRunStartDate],
 				t.[TestSuiteName],
+				t.[RootId],
 				t.[TestRunName],
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = @TestSuitName
+			AND t.[RootId] = @RootId
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -1801,6 +1810,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 				) AS [TotalTestCase],
@@ -1808,6 +1818,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Passed%'
@@ -1816,13 +1827,14 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Failed%'
 				) AS [TotalFailedTestCase]
 			FROM TestRuns tr
 			WHERE CAST(tr.[TestRunStartDate] AS DATE) >= CAST(DATEADD(DAY, -@FilterValue, GETDATE() AT TIME ZONE @TimeZone) AS DATE)
-			GROUP BY tr.[TestSuiteName], tr.[TestRunName], Cast(tr.[TestRunStartDate] As Date)
+			GROUP BY tr.[TestSuiteName], tr.[TestRunName], Cast(tr.[TestRunStartDate] As Date), tr.[RootId]
 			ORDER BY Cast(tr.[TestRunStartDate] As Date) DESC, tr.[TestRunName] DESC
         FOR JSON PATH))
 END TRY
@@ -2392,6 +2404,7 @@ END CATCH
 GO
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetRunDetails]
 @TestSuitName		VARCHAR(100),
+@RootId				INT,
 @TimeZone			VARCHAR(100) = 'India Standard Time'
 AS
 /**************************************************************************************
@@ -2424,7 +2437,8 @@ INSERT INTO #tbl_TestCase (TestRunDateYear, TestRunDateString)
 SELECT DISTINCT CAST(FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') AS DATE) AS TestRunDateYear,
 				FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') AS TestRunDateString
 FROM tbl_TestCase (NOLOCK) t
-WHERE t.TestSuiteName = ''' + @TestSuitName + ''';
+WHERE t.TestSuiteName = ''' + @TestSuitName + '''
+AND t.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + ''';
 
 SELECT [RunDetailsJson] = JSON_QUERY ((
 	SELECT t.TestRunDateYear
@@ -2449,7 +2463,8 @@ SELECT [RunDetailsJson] = JSON_QUERY ((
 						ELSE ''Partially Passed''
 					END AS [TestRunStatus]
 				FROM tbl_TestCase (NOLOCK) t1
-					WHERE t1.TestSuiteName = ''' + @TestSuitName + ''' 
+					WHERE t1.TestSuiteName = ''' + @TestSuitName + '''
+					AND t1.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + '''
 					AND FORMAT((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') = t.TestRunDateString
 					GROUP BY t1.[TestSuiteName], t1.[TestRunName]
 					ORDER BY MIN((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''')) DESC
@@ -2486,6 +2501,7 @@ END CATCH
 GO
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetTestCaseDetails]
 @TestSuiteName			VARCHAR(100),
+@RootId					INT,
 @TestRunId				VARCHAR(100),
 @TimeZone				VARCHAR(100) = 'India Standard Time'
 AS
@@ -2517,13 +2533,15 @@ BEGIN TRY
 							, CONVERT(VARCHAR(8), CAST(MIN((CAST(t.[TestRunEndDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone)) AS TIME), 108) AS [TestRunEndTime]
                         FROM tbl_TestCase t1
                         WHERE t1.[TestSuiteName] = t.[TestSuiteName]
+							  AND t1.[RootId] = t.[RootId]
                               AND t1.[TestRunName] = t.[TestRunName]
                         FOR JSON PATH
                     )) [TestCaseDetailsList]
             FROM tbl_TestCase t
             WHERE [TestSuiteName] = @TestSuiteName
+				  AND [RootId] = @RootId
                   AND [TestRunName] = @TestRunId
-            GROUP BY t.[TestSuiteName], t.[TestRunName], t.[TestEnvironment], t.[TesterName]
+            GROUP BY t.[TestSuiteName], t.[TestRunName], t.[TestEnvironment], t.[TesterName], t.[RootId]
             FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
         ))
 END TRY
@@ -2705,6 +2723,7 @@ END CATCH
 GO
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetTestCaseStepsDetails]
 @TestSuiteName		VARCHAR(100),
+@RootId				INT,
 @TestRunName		VARCHAR(100),
 @TestCaseName		VARCHAR(100),
 @TimeZone			VARCHAR(100) = 'India Standard Time'
@@ -2727,6 +2746,7 @@ BEGIN TRY
 		tbl_TestCase t
 	WHERE
 		[TestSuiteName] = @TestSuiteName
+		AND [RootId] = @RootId
 		AND [TestRunName] = @TestRunName
 		AND [TestCaseName] = @TestCaseName
 
