@@ -72,10 +72,10 @@ export default function Navigations() {
     >
       <Routes>
         <Route path="/" element={<Functional />}>
-          {/* <Route path="/" element={<Dashboard />} /> */}
-          <Route path="/" element={<TestLab />} />
+          <Route path="/" element={<Dashboard />} />
+          {/* <Route path="/" element={<TestLab />} /> */}
           <Route path="/check" element={<h1>check</h1>} />
-          {/* <Route path="testLab" element={<TestLab />} /> */}
+          <Route path="testLab" element={<TestLab />} />
           <Route path="testLab/:nodeId" element={<TestLab />} />
           <Route
             path="testLab/createTestcase/:rootId"
