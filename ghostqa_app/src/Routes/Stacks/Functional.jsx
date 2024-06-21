@@ -24,14 +24,14 @@ export default function Functional() {
           width: "100%",
         }}
       >
-        {/* <Grid item>
+        <Grid item>
                     <Link
                         to="/"
                         className={`${classes.linkStyle} ${location.pathname === "/" && classes.activeLink}`}
                     >
                         Local Testing
                     </Link>
-                </Grid> */}
+                </Grid>
         {/* <Grid item>
                     <Link
                         to="/settings/Environment"
@@ -48,7 +48,7 @@ export default function Functional() {
                         Settings
                     </Link>
                 </Grid> */}
-        {/* <Grid item>
+        <Grid item>
 
                     <Link
                         to="/testLab"
@@ -57,8 +57,8 @@ export default function Functional() {
                     >
                          Test Lab
                     </Link>
-                </Grid> */}
-        <Grid item>
+                </Grid>
+        {/* <Grid item>
           <Link
             to="/"
             style={{ marginLeft: "20px" }}
@@ -68,7 +68,7 @@ export default function Functional() {
           >
             Test Lab
           </Link>
-        </Grid>
+        </Grid> */}
         <Grid item>
           {/* <Link
                         to="/testcase"
