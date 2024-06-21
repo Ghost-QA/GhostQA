@@ -1,5 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetDashBoardChartDetails]
 @TestSuitName			VARCHAR(100),
+@RootId					INT,
 @FilterType				VARCHAR(100),
 @FilterValue			INT = 7,
 @TimeZone				VARCHAR(100) = 'India Standard Time'
@@ -21,10 +22,12 @@ BEGIN TRY
 			SELECT 
 				CAST((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATETIME) AS [TestRunStartDate],
 				t.[TestSuiteName],
+				t.[RootId],
 				t.[TestRunName],
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = ''' + @TestSuitName + '''
+			AND t.[RootId] = ''' + CAST(@RootId AS VARCHAR(100)) + '''
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -37,6 +40,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -45,6 +49,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -54,6 +59,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -63,7 +69,8 @@ BEGIN TRY
 				GROUP BY
 					tr.[TestSuitename],
 					tr.[TestRunName],
-					Cast(tr.[TestRunStartDate] As Date)
+					Cast(tr.[TestRunStartDate] As Date),
+					tr.[RootId]
 				ORDER BY 
 					Cast(tr.[TestRunStartDate] As Date) DESC, tr.[TestRunName] DESC
         FOR JSON PATH))'
@@ -76,10 +83,12 @@ BEGIN TRY
 			SELECT 
 				CAST((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATETIME) AS [TestRunStartDate],
 				t.[TestSuiteName],
+				t.[RootId],
 				t.[TestRunName],
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = @TestSuitName
+			AND t.[RootId] = @RootId
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -91,6 +100,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 				) AS [TotalTestCase],
@@ -98,6 +108,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Passed%'
@@ -106,13 +117,14 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
+							AND t1.[RootId] = tr.[RootId]
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Failed%'
 				) AS [TotalFailedTestCase]
 			FROM TestRuns tr
 			WHERE CAST(tr.[TestRunStartDate] AS DATE) >= CAST(DATEADD(DAY, -@FilterValue, GETDATE() AT TIME ZONE @TimeZone) AS DATE)
-			GROUP BY tr.[TestSuiteName], tr.[TestRunName], Cast(tr.[TestRunStartDate] As Date)
+			GROUP BY tr.[TestSuiteName], tr.[TestRunName], Cast(tr.[TestRunStartDate] As Date), tr.[RootId]
 			ORDER BY Cast(tr.[TestRunStartDate] As Date) DESC, tr.[TestRunName] DESC
         FOR JSON PATH))
 END TRY

@@ -1,5 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetTestCaseDetails]
 @TestSuiteName			VARCHAR(100),
+@RootId					INT,
 @TestRunId				VARCHAR(100),
 @TimeZone				VARCHAR(100) = 'India Standard Time'
 AS
@@ -31,13 +32,15 @@ BEGIN TRY
 							, CONVERT(VARCHAR(8), CAST(MIN((CAST(t.[TestRunEndDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone)) AS TIME), 108) AS [TestRunEndTime]
                         FROM tbl_TestCase t1
                         WHERE t1.[TestSuiteName] = t.[TestSuiteName]
+							  AND t1.[RootId] = t.[RootId]
                               AND t1.[TestRunName] = t.[TestRunName]
                         FOR JSON PATH
                     )) [TestCaseDetailsList]
             FROM tbl_TestCase t
             WHERE [TestSuiteName] = @TestSuiteName
+				  AND [RootId] = @RootId
                   AND [TestRunName] = @TestRunId
-            GROUP BY t.[TestSuiteName], t.[TestRunName], t.[TestEnvironment], t.[TesterName]
+            GROUP BY t.[TestSuiteName], t.[TestRunName], t.[TestEnvironment], t.[TesterName], t.[RootId]
             FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
         ))
 END TRY

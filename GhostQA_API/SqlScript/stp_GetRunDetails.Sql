@@ -1,5 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetRunDetails]
 @TestSuitName		VARCHAR(100),
+@RootId				INT,
 @TimeZone			VARCHAR(100) = 'India Standard Time'
 AS
 /**************************************************************************************
@@ -32,7 +33,8 @@ INSERT INTO #tbl_TestCase (TestRunDateYear, TestRunDateString)
 SELECT DISTINCT CAST(FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') AS DATE) AS TestRunDateYear,
 				FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') AS TestRunDateString
 FROM tbl_TestCase (NOLOCK) t
-WHERE t.TestSuiteName = ''' + @TestSuitName + ''';
+WHERE t.TestSuiteName = ''' + @TestSuitName + '''
+AND t.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + ''';
 
 SELECT [RunDetailsJson] = JSON_QUERY ((
 	SELECT t.TestRunDateYear
@@ -57,7 +59,8 @@ SELECT [RunDetailsJson] = JSON_QUERY ((
 						ELSE ''Partially Passed''
 					END AS [TestRunStatus]
 				FROM tbl_TestCase (NOLOCK) t1
-					WHERE t1.TestSuiteName = ''' + @TestSuitName + ''' 
+					WHERE t1.TestSuiteName = ''' + @TestSuitName + '''
+					AND t1.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + '''
 					AND FORMAT((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') = t.TestRunDateString
 					GROUP BY t1.[TestSuiteName], t1.[TestRunName]
 					ORDER BY MIN((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''')) DESC

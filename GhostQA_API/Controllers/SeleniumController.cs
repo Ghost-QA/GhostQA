@@ -56,7 +56,7 @@ namespace GhostQA_API.Controllers
         /// <param name="testSuitName"></param>
         /// <returns></returns>
         [HttpGet("GetRunDetails")]
-        public async Task<ActionResult> GetRunDetails(string testSuitName)
+        public async Task<ActionResult> GetRunDetails(string testSuitName, int rootId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -64,7 +64,7 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetRunDetails(testSuitName, mapping));
+            return Ok(await _helper.GetRunDetails(testSuitName, rootId, mapping));
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace GhostQA_API.Controllers
         /// <param name="runId"></param>
         /// <returns></returns>
         [HttpGet("GetTestCaseDetails")]
-        public async Task<ActionResult> GetTestCaseDetails(string testSuitName, string runId)
+        public async Task<ActionResult> GetTestCaseDetails(string testSuitName, int rootId, string runId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -82,7 +82,7 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetTestCaseDetails(testSuitName, runId, mapping));
+            return Ok(await _helper.GetTestCaseDetails(testSuitName, rootId, runId, mapping));
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace GhostQA_API.Controllers
         /// <param name="testCaseName"></param>
         /// <returns></returns>
         [HttpGet("GetTestCaseStepsDetails")]
-        public async Task<ActionResult> GetTestCaseStepsDetails(string testSuitName, string runId, string testCaseName)
+        public async Task<ActionResult> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -101,7 +101,7 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetTestCaseStepsDetails(testSuitName, runId, testCaseName, mapping));
+            return Ok(await _helper.GetTestCaseStepsDetails(testSuitName, rootId, runId, testCaseName, mapping));
         }
 
         /// <summary>
@@ -398,7 +398,7 @@ namespace GhostQA_API.Controllers
         /// <param name="testSuitName"></param>
         /// <returns></returns>
         [HttpGet("GetChartDetails")]
-        public async Task<ActionResult> GetDashboardDetails(string TestSuiteName, string Filtertype, int FilterValue)
+        public async Task<ActionResult> GetDashboardDetails(string TestSuiteName, int RootId, string Filtertype, int FilterValue)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -409,7 +409,7 @@ namespace GhostQA_API.Controllers
 
             try
             {
-                string result = await _helper.GetDashboardDetails(TestSuiteName, Filtertype, FilterValue, mapping);
+                string result = await _helper.GetDashboardDetails(TestSuiteName, RootId, Filtertype, FilterValue, mapping);
                 return Ok(result);
             }
             catch (Exception)
