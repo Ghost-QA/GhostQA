@@ -18,7 +18,6 @@ namespace GhostQA_API.DTO_s
         public int totalTestcases { get; set; }
         public double perAutomatedTestcases { get; set; }
         public double perNotAutomatedTestcases { get; set; }
-
     }
 
     public class ProjectSummaryCoverageDetails
@@ -30,6 +29,7 @@ namespace GhostQA_API.DTO_s
         public double perAutomatedTestcases { get; set; }
         public double perNotAutomatedTestcases { get; set; }
     }
+
     public class Jira_TestCase
     {
         public string Name { get; set; }
@@ -37,20 +37,20 @@ namespace GhostQA_API.DTO_s
     }
     public class Root
     {
-        [JsonProperty("next")]
-        public object Next { get; set; }
+        //[JsonProperty("next")]
+        //public object Next { get; set; }
 
-        [JsonProperty("startAt")]
-        public int StartAt { get; set; }
+        //[JsonProperty("startAt")]
+        //public int StartAt { get; set; }
 
-        [JsonProperty("maxResults")]
-        public int MaxResults { get; set; }
+        //[JsonProperty("maxResults")]
+        //public int MaxResults { get; set; }
 
-        [JsonProperty("total")]
-        public int Total { get; set; }
+        //[JsonProperty("total")]
+        //public int Total { get; set; }
 
-        [JsonProperty("isLast")]
-        public bool IsLast { get; set; }
+        //[JsonProperty("isLast")]
+        //public bool IsLast { get; set; }
 
         [JsonProperty("values")]
         public List<Value> Values { get; set; }
@@ -58,11 +58,11 @@ namespace GhostQA_API.DTO_s
 
     public class Value
     {
-        [JsonProperty("id")]
-        public long Id { get; set; }
+        //[JsonProperty("id")]
+        //public long Id { get; set; }
 
-        [JsonProperty("key")]
-        public string Key { get; set; }
+        //[JsonProperty("key")]
+        //public string Key { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
