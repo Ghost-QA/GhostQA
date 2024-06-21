@@ -36,7 +36,7 @@ export function EnvironmentTable({ rows,handleEditEnvironment}) {
           <TableRow>
             <StyledTableCell>Environment Name</StyledTableCell>
             <StyledTableCell>Environment Description</StyledTableCell>
-            <StyledTableCell>Application</StyledTableCell>
+            {/* <StyledTableCell>Application</StyledTableCell> */}
             <StyledTableCell>Browser</StyledTableCell>
             <StyledTableCell>Base Url</StyledTableCell>
             <StyledTableCell>Driver path</StyledTableCell>
@@ -57,9 +57,9 @@ export function EnvironmentTable({ rows,handleEditEnvironment}) {
               <StyledTableCell component="th" scope="row" >
                 {row.Description}
                 </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
+              {/* <StyledTableCell component="th" scope="row">
                 {row.ApplicationName}
-              </StyledTableCell>
+              </StyledTableCell> */}
               <StyledTableCell component="th" scope="row">
                 {row.BrowserName}
               </StyledTableCell>

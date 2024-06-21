@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { useStyles } from "./styles";
 import clsx from "clsx";
 import Select from "react-select";
@@ -11,16 +11,19 @@ import {
   Box,
   Card,
 } from "@mui/material";
-import { useDispatch ,useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 // import { AddUpdateEnvironment } from "../../../../redux/actions/settingAction";
 // import { GetApplication, GetBrowser } from "../../../../redux/actions/seleniumAction";
 import { useNavigate } from "react-router-dom";
 import { AddUpdateEnvironment } from "../../../../../redux/actions/settingAction";
-import { GetApplication,GetBrowser } from "../../../../../redux/actions/seleniumAction";
+import {
+  GetApplication,
+  GetBrowser,
+} from "../../../../../redux/actions/seleniumAction";
 
-export default function EditNewEnvironment({ onBack ,rowData}) {
-  const dispatch=useDispatch();
-  const navigate=useNavigate();
+export default function EditNewEnvironment({ onBack, rowData }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [selectedApplication, setSelectedApplication] = useState(() => {
     return rowData
@@ -33,7 +36,9 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
       : null;
   });
 
-  const { applicationList,  browserList,  } =useSelector((state) => state.selenium);
+  const { applicationList, browserList } = useSelector(
+    (state) => state.selenium
+  );
 
   useEffect(() => {
     dispatch(GetApplication());
@@ -57,17 +62,17 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
     DriverPath: rowData ? rowData.DriverPath : "",
     BasePath: rowData ? rowData.BasePath : "",
     selectedBrowser: rowData ? rowData.BrowserName : null,
-    ApplicationId:rowData?rowData.ApplicationId:0,
-    BrowserId:rowData?rowData.BroswerId:0
+    ApplicationId: rowData ? rowData.ApplicationId : 0,
+    BrowserId: rowData ? rowData.BroswerId : 0,
   });
   const [Error, setError] = useState({
     name: "",
     description: "",
-    application: "",
+    // application: "",
     baseUrl: "",
     driverPath: "",
     basePath: "",
-    browser:"",
+    browser: "",
   });
   const applicationOptions = applicationList.map((app) => ({
     value: app.ApplicationId,
@@ -79,26 +84,26 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
   }));
   const handleSubmit = () => {
     let payload = {
-      environmentId:rowData.EnvironmentId,
-      applicationId:formData.ApplicationId,
-      broswerId:formData.BrowserId,
+      environmentId: rowData.EnvironmentId,
+      applicationId: formData.ApplicationId,
+      broswerId: formData.BrowserId,
       environmentName: formData.environmentName,
       description: formData.Description,
-      applicationName:formData.selectedApplication,
-      browserName:formData.selectedBrowser,
-      driverPath:formData.DriverPath,
-      basePath:formData.BasePath,
-      baseurl:formData.Baseurl
-    }
+      applicationName: formData.selectedApplication,
+      browserName: formData.selectedBrowser,
+      driverPath: formData.DriverPath,
+      basePath: formData.BasePath,
+      baseurl: formData.Baseurl,
+    };
     // Check if there are any errors
 
     let error = {};
     if (!formData.environmentName.trim()) {
       error.name = "Environment Name is required";
     }
-    if (!formData.selectedApplication) {
-      error.application = "Application is required";
-    }
+    // if (!formData.selectedApplication) {
+    //   error.application = "Application is required";
+    // }
     if (!formData.selectedBrowser) {
       error.browser = "Browser is required";
     }
@@ -116,10 +121,10 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
     }
     // Update error state
     setError(error);
-      // Check if there are any errors
+    // Check if there are any errors
     if (Object.keys(error).length === 0) {
       // Proceed with form submission
-      dispatch(AddUpdateEnvironment(payload,navigate,onBack));
+      dispatch(AddUpdateEnvironment(payload, navigate, onBack));
       // navigate('/settings/environment')
     }
   };
@@ -127,23 +132,22 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
   const handleFieldChange = (fieldName, value) => {
     // If changing selectedApplication, update both selectedApplication state and ApplicationId in formData
     if (fieldName === "selectedApplication") {
-      const selectedApp = applicationOptions.find(app => app.label === value);
+      const selectedApp = applicationOptions.find((app) => app.label === value);
       setFormData({
         ...formData,
         selectedApplication: value,
-        ApplicationId: selectedApp ? selectedApp.value : 0 // Update ApplicationId based on selected label
+        ApplicationId: selectedApp ? selectedApp.value : 0, // Update ApplicationId based on selected label
       });
     }
     // If changing selectedBrowser, update both selectedBrowser state and BrowserId in formData
     else if (fieldName === "selectedBrowser") {
-      const selectedBrw = browserOptions.find(brw => brw.label === value);
+      const selectedBrw = browserOptions.find((brw) => brw.label === value);
       setFormData({
         ...formData,
         selectedBrowser: value,
-        BrowserId: selectedBrw ? selectedBrw.value : 0 // Update BrowserId based on selected label
+        BrowserId: selectedBrw ? selectedBrw.value : 0, // Update BrowserId based on selected label
       });
-    }
-    else {
+    } else {
       setFormData({
         ...formData,
         [fieldName]: value,
@@ -151,7 +155,7 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
     }
   };
 
-  const selectStyle={
+  const selectStyle = {
     container: (provided) => ({
       ...provided,
       backgroundColor: "rgb(242, 242, 242)",
@@ -163,33 +167,32 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
       "&:hover": {
         borderColor: "#654DF7",
       },
-      borderColor: Error.application || Error.browser
-        ? "red"
-        : state.isFocused
-        ? "#654DF7"
-        : "rgb(242, 242, 242)",
+      borderColor:
+        Error.application || Error.browser
+          ? "red"
+          : state.isFocused
+          ? "#654DF7"
+          : "rgb(242, 242, 242)",
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected
-        ? "#654DF7"
-        : "transparent",
+      backgroundColor: state.isSelected ? "#654DF7" : "transparent",
     }),
     clearIndicator: (provided) => ({
       ...provided,
-      cursor: 'pointer',
-      ':hover': {
-        color: '#654DF7', // Change the color on hover if desired
+      cursor: "pointer",
+      ":hover": {
+        color: "#654DF7", // Change the color on hover if desired
       },
     }),
     dropdownIndicator: (provided) => ({
       ...provided,
-      cursor: 'pointer',
-      ':hover': {
-        color: '#654DF7', // Change the color on hover if desired
+      cursor: "pointer",
+      ":hover": {
+        color: "#654DF7", // Change the color on hover if desired
       },
     }),
-  }
+  };
   return (
     <>
       <Grid
@@ -200,9 +203,8 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
         spacing={2}
       >
         <Grid item xs={6} className={classes.header}>
-        <div className={classes.highlight}>Edit Environment</div>
+          <div className={classes.highlight}>Edit Environment</div>
         </Grid>
-
       </Grid>
 
       {/* Body */}
@@ -243,9 +245,9 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
                     fullWidth
                     error={Error.name ? true : false}
                     value={formData.environmentName} // Update this line
-                     onChange={(e) =>
-                    handleFieldChange("environmentName", e.target.value)
-                     }
+                    onChange={(e) =>
+                      handleFieldChange("environmentName", e.target.value)
+                    }
                     className={clsx(
                       classes.customheight,
                       classes.customFontSize,
@@ -302,7 +304,7 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
             </Grid>
           </Grid>
           <Grid container>
-            <Grid container xs={6}>
+            {/* <Grid container xs={6}>
               <Grid item xs={4}>
                 <Typography
                   variant="subtitle1"
@@ -324,7 +326,7 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
                   menuPosition={"fixed"}
                 />
               </Grid>
-            </Grid>
+            </Grid> */}
             <Grid container xs={6}>
               <Grid item xs={4}>
                 <Typography
@@ -348,7 +350,52 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
                 />
               </Grid>
             </Grid>
-
+            <Grid container xs={6}>
+              <Grid item xs={4}>
+                <Typography
+                  variant="subtitle1"
+                  className={clsx(classes.customFontSize, classes.label)}
+                >
+                  Base Url
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl
+                  fullWidth
+                  className={clsx(classes.textField)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#654DF7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#654DF7",
+                      },
+                      "& fieldset": {
+                        borderColor: "transparent",
+                      },
+                    },
+                    height: "40px",
+                  }}
+                >
+                  <OutlinedInput
+                    id="outlined-adornment-name"
+                    type="text"
+                    fullWidth
+                    value={formData.Baseurl}
+                    error={Error.baseUrl ? true : false}
+                    onChange={(e) =>
+                      handleFieldChange("Baseurl", e.target.value)
+                    }
+                    className={clsx(
+                      classes.customheight,
+                      classes.customFontSize,
+                      classes.customBackgroung
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid container>
             <Grid container xs={6}>
@@ -385,8 +432,8 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
                     fullWidth
                     error={Error.driverPath ? true : false}
                     value={formData.DriverPath} // Update this line
-                    onChange={(e) =>
-                      handleFieldChange("DriverPath", e.target.value) // Update this line
+                    onChange={
+                      (e) => handleFieldChange("DriverPath", e.target.value) // Update this line
                     }
                     className={clsx(
                       classes.customheight,
@@ -431,8 +478,8 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
                     fullWidth
                     value={formData.BasePath} // Update this line
                     error={Error.basePath ? true : false}
-                    onChange={(e) =>
-                      handleFieldChange("BasePath", e.target.value) // Update this line
+                    onChange={
+                      (e) => handleFieldChange("BasePath", e.target.value) // Update this line
                     }
                     className={clsx(
                       classes.customheight,
@@ -444,55 +491,7 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid container>
-          <Grid container xs={6}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="subtitle1"
-                  className={clsx(classes.customFontSize, classes.label)}
-                >
-                  Base Url
-                </Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <FormControl
-                  fullWidth
-                  className={clsx(classes.textField)}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "&:hover fieldset": {
-                        borderColor: "#654DF7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#654DF7",
-                      },
-                      "& fieldset": {
-                        borderColor: "transparent",
-                      },
-                    },
-                    height: "40px",
-                  }}
-                >
-                  <OutlinedInput
-                    id="outlined-adornment-name"
-                    type="text"
-                    fullWidth
-                    value={formData.Baseurl}
-                    error={Error.baseUrl ? true : false}
-                    onChange={(e) =>
-                    handleFieldChange("Baseurl", e.target.value)
-                      }
-                    className={clsx(
-                      classes.customheight,
-                      classes.customFontSize,
-                      classes.customBackgroung
-                    )}
-                  />
-                </FormControl>
-              </Grid>
-            </Grid>
-
-          </Grid>
+          <Grid container></Grid>
         </Card>
       </Grid>
 
@@ -504,7 +503,7 @@ export default function EditNewEnvironment({ onBack ,rowData}) {
               variant="contained"
               color="primary"
               className={classes.button}
-              onClick={()=> onBack()}
+              onClick={() => onBack()}
               sx={{
                 backgroundColor: "rgb(101, 77, 247)",
                 "&:hover": {

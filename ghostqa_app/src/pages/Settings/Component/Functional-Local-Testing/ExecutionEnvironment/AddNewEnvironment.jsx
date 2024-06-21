@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useStyles } from "./styles";
 import clsx from "clsx";
 import Select from "react-select";
@@ -16,11 +16,14 @@ import {
 // import { AddUpdateEnvironment } from "../../../../redux/actions/settingAction";
 import { useNavigate } from "react-router-dom";
 import { AddUpdateEnvironment } from "../../../../../redux/actions/settingAction";
-import { GetApplication,GetBrowser } from "../../../../../redux/actions/seleniumAction";
+import {
+  GetApplication,
+  GetBrowser,
+} from "../../../../../redux/actions/seleniumAction";
 
 export default function AddNewEnvironment({ onBack }) {
-  const navigate=useNavigate();
-  const dispatch=useDispatch();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     dispatch(GetApplication());
     dispatch(GetBrowser());
@@ -28,7 +31,9 @@ export default function AddNewEnvironment({ onBack }) {
 
   const classes = useStyles();
 
-  const { applicationList,  browserList,  } =useSelector((state) => state.selenium);
+  const { applicationList, browserList } = useSelector(
+    (state) => state.selenium
+  );
   const [formData, setFormData] = useState({
     environmentName: "",
     environmentDescription: "",
@@ -36,16 +41,16 @@ export default function AddNewEnvironment({ onBack }) {
     baseUrl: "",
     driverPath: "",
     basePath: "",
-    selectedBrowser:null,
+    selectedBrowser: null,
   });
   const [Error, setError] = useState({
     name: "",
     description: "",
-    application: "",
+    // application: "",
     baseUrl: "",
     driverPath: "",
     basePath: "",
-    browser:"",
+    browser: "",
   });
   const applicationOptions = applicationList.map((app) => ({
     value: app.ApplicationId,
@@ -59,22 +64,22 @@ export default function AddNewEnvironment({ onBack }) {
     let payload = {
       environmentName: formData.environmentName,
       description: formData.environmentDescription,
-      applicationId:formData.selectedApplication?.value,
-      applicationName:formData.selectedApplication?.label,
-      broswerId:formData.selectedBrowser?.value,
-      browserName:formData.selectedBrowser?.label,
-      driverPath:formData.driverPath,
-      basePath:formData.basePath,
-      baseurl:formData.baseUrl
-    }
+      applicationId: formData.selectedApplication?.value,
+      applicationName: formData.selectedApplication?.label,
+      broswerId: formData.selectedBrowser?.value,
+      browserName: formData.selectedBrowser?.label,
+      driverPath: formData.driverPath,
+      basePath: formData.basePath,
+      baseurl: formData.baseUrl,
+    };
 
     let error = {};
     if (!formData.environmentName.trim()) {
       error.name = "Environment Name is required";
     }
-    if (!formData.selectedApplication) {
-      error.application = "Application is required";
-    }
+    // if (!formData.selectedApplication) {
+    //   error.application = "Application is required";
+    // }
     if (!formData.selectedBrowser) {
       error.browser = "Browser is required";
     }
@@ -92,15 +97,15 @@ export default function AddNewEnvironment({ onBack }) {
     }
     // Update error state
     setError(error);
-    console.log("error",error);
-    console.log("Errorstate",Error);
+    console.log("error", error);
+    console.log("Errorstate", Error);
 
     // Check if there are any errors
     if (Object.keys(error).length === 0) {
       // Proceed with form submission
       console.log("handleSubmit", formData);
       console.log("payload", payload);
-      dispatch(AddUpdateEnvironment(payload,navigate,onBack));
+      dispatch(AddUpdateEnvironment(payload, navigate, onBack));
       // navigate('/settings/environment')
     }
 
@@ -114,7 +119,7 @@ export default function AddNewEnvironment({ onBack }) {
     });
   };
 
-  const selectStyle={
+  const selectStyle = {
     container: (provided) => ({
       ...provided,
       backgroundColor: "rgb(242, 242, 242)",
@@ -126,33 +131,32 @@ export default function AddNewEnvironment({ onBack }) {
       "&:hover": {
         borderColor: "#654DF7",
       },
-      borderColor: Error.application || Error.browser
-        ? "red"
-        : state.isFocused
-        ? "#654DF7"
-        : "rgb(242, 242, 242)",
+      borderColor:
+        Error.application || Error.browser
+          ? "red"
+          : state.isFocused
+          ? "#654DF7"
+          : "rgb(242, 242, 242)",
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isSelected
-        ? "#654DF7"
-        : "transparent",
+      backgroundColor: state.isSelected ? "#654DF7" : "transparent",
     }),
     clearIndicator: (provided) => ({
       ...provided,
-      cursor: 'pointer',
-      ':hover': {
-        color: '#654DF7', // Change the color on hover if desired
+      cursor: "pointer",
+      ":hover": {
+        color: "#654DF7", // Change the color on hover if desired
       },
     }),
     dropdownIndicator: (provided) => ({
       ...provided,
-      cursor: 'pointer',
-      ':hover': {
-        color: '#654DF7', // Change the color on hover if desired
+      cursor: "pointer",
+      ":hover": {
+        color: "#654DF7", // Change the color on hover if desired
       },
     }),
-  }
+  };
   return (
     <>
       <Grid
@@ -163,7 +167,7 @@ export default function AddNewEnvironment({ onBack }) {
         spacing={2}
       >
         <Grid item xs={6} className={classes.header}>
-        <div className={classes.highlight}>Add New Environment</div>
+          <div className={classes.highlight}>Add New Environment</div>
         </Grid>
         {/* <Grid item>
           <Button
@@ -230,14 +234,13 @@ export default function AddNewEnvironment({ onBack }) {
                     onChange={(e) =>
                       handleFieldChange("environmentName", e.target.value)
                     }
-
                     className={clsx(
                       classes.customheight,
                       classes.customFontSize,
                       classes.customBackgroung
                     )}
                   />
-                   {/* {Error.name && (
+                  {/* {Error.name && (
                       <Typography variant="caption" color="error">
                         {Error.name}
                       </Typography>
@@ -290,7 +293,6 @@ export default function AddNewEnvironment({ onBack }) {
                       classes.customFontSize,
                       classes.customBackgroung
                     )}
-
                   />
                   {/* {Error.description && (
                       <Typography variant="caption" color="error">
@@ -302,7 +304,7 @@ export default function AddNewEnvironment({ onBack }) {
             </Grid>
           </Grid>
           <Grid container>
-            <Grid container xs={6}>
+            {/* <Grid container xs={6}>
               <Grid item xs={4}>
                 <Typography
                   variant="subtitle1"
@@ -322,13 +324,10 @@ export default function AddNewEnvironment({ onBack }) {
                   styles={selectStyle}
                   menuPosition={"fixed"}
                 />
-                {/* {Error.application && (
-                      <Typography variant="caption" color="error">
-                        {Error.application}
-                      </Typography>
-                    )} */}
+                
               </Grid>
-            </Grid>
+            </Grid> */}
+
             <Grid container xs={6}>
               <Grid item xs={4}>
                 <Typography
@@ -356,7 +355,58 @@ export default function AddNewEnvironment({ onBack }) {
                     )} */}
               </Grid>
             </Grid>
-
+            <Grid container xs={6}>
+              <Grid item xs={4}>
+                <Typography
+                  variant="subtitle1"
+                  className={clsx(classes.customFontSize, classes.label)}
+                >
+                  Base Url
+                </Typography>
+              </Grid>
+              <Grid item xs={8}>
+                <FormControl
+                  fullWidth
+                  className={clsx(classes.textField)}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": {
+                        borderColor: "#654DF7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#654DF7",
+                      },
+                      "& fieldset": {
+                        borderColor: "transparent",
+                      },
+                    },
+                    height: "40px",
+                  }}
+                >
+                  <OutlinedInput
+                    id="outlined-adornment-name"
+                    type="text"
+                    placeholder="Enter your base url"
+                    fullWidth
+                    value={formData.baseUrl}
+                    error={Error.baseUrl ? true : false}
+                    onChange={(e) =>
+                      handleFieldChange("baseUrl", e.target.value)
+                    }
+                    className={clsx(
+                      classes.customheight,
+                      classes.customFontSize,
+                      classes.customBackgroung
+                    )}
+                  />
+                  {/* {Error.baseUrl && (
+                      <Typography variant="caption" color="error">
+                        {Error.baseUrl}
+                      </Typography>
+                    )} */}
+                </FormControl>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid container>
             <Grid container xs={6}>
@@ -464,61 +514,6 @@ export default function AddNewEnvironment({ onBack }) {
               </Grid>
             </Grid>
           </Grid>
-          <Grid container>
-          <Grid container xs={6}>
-              <Grid item xs={4}>
-                <Typography
-                  variant="subtitle1"
-                  className={clsx(classes.customFontSize, classes.label)}
-                >
-                  Base Url
-                </Typography>
-              </Grid>
-              <Grid item xs={8}>
-                <FormControl
-                  fullWidth
-                  className={clsx(classes.textField)}
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "&:hover fieldset": {
-                        borderColor: "#654DF7",
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#654DF7",
-                      },
-                      "& fieldset": {
-                        borderColor: "transparent",
-                      },
-                    },
-                    height: "40px",
-                  }}
-                >
-                  <OutlinedInput
-                    id="outlined-adornment-name"
-                    type="text"
-                    placeholder="Enter your base url"
-                    fullWidth
-                    value={formData.baseUrl}
-                    error={Error.baseUrl ? true : false}
-                    onChange={(e) =>
-                      handleFieldChange("baseUrl", e.target.value)
-                    }
-                    className={clsx(
-                      classes.customheight,
-                      classes.customFontSize,
-                      classes.customBackgroung
-                    )}
-                  />
-                  {/* {Error.baseUrl && (
-                      <Typography variant="caption" color="error">
-                        {Error.baseUrl}
-                      </Typography>
-                    )} */}
-                </FormControl>
-              </Grid>
-            </Grid>
-
-          </Grid>
         </Card>
       </Grid>
 
@@ -530,7 +525,7 @@ export default function AddNewEnvironment({ onBack }) {
               variant="contained"
               color="primary"
               className={classes.button}
-              onClick={()=> onBack()}
+              onClick={() => onBack()}
               sx={{
                 backgroundColor: "rgb(101, 77, 247)",
                 "&:hover": {

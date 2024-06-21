@@ -443,7 +443,7 @@ export default function AddTestSuite() {
                               value={selectedEnvironment}
                               onChange={(newValue) => {
                                 setSelectedEnvironment(newValue);
-                                handleApplication(newValue);
+                                // handleApplication(newValue);
                               }}
                               styles={selectStyle}
                               menuPosition={"fixed"} // Set menuPosition to fixed
@@ -464,20 +464,20 @@ export default function AddTestSuite() {
                               className={clsx(classes.customFontSize)}
                             >
                               Application :{" "}
-                              {selectedApplication
+                              {/* {selectedApplication
                                 ? selectedApplication.ApplicationName
-                                : ""}
+                                : ""} */}
                             </Typography>
-                            {/* <Select
+                            <Select
                               getOptionLabel={(option) =>
                                 option.ApplicationName
                               }
                               getOptionValue={(option) => option.ApplicationId}
                               options={applicationList}
                               value={selectedApplication}
-                              // onChange={(newValue) => {
-                              //   setSelectedApplication(newValue);
-                              // }}
+                              onChange={(newValue) => {
+                                setSelectedApplication(newValue);
+                              }}
                               // onChange={selectedApplication}
                               styles={{
                                 container: (provided) => ({
@@ -511,10 +511,10 @@ export default function AddTestSuite() {
                               menuPosition={"fixed"} // Set menuPosition to fixed
                             />
                             {Error.application && (
-                              <Typography className={classes.inputError}>
+                              <Typography>
                                 {Error.application}
                               </Typography>
-                            )} */}
+                            )}
                           </div>
                         </Grid>
 
