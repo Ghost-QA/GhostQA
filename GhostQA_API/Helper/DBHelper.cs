@@ -1,6 +1,8 @@
 ﻿using ExcelDataReader;
 using GhostQA_API.DTO_s;
 using GhostQA_API.Models;
+using GhostQA_API.Services;
+using GitHub;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -4379,7 +4381,7 @@ namespace GhostQA_API.Helper
                     //command.Parameters.AddWithValue("@RecurringInterval", model.RecurringInterval);
                     command.Parameters.AddWithValue("@Interval", model.Interval);
                     command.Parameters.AddWithValue("@SuiteName", model.SuiteName);
-                   // command.Parameters.AddWithValue("@StartTime", model.StartTime);
+                    // command.Parameters.AddWithValue("@StartTime", model.StartTime);
                     //command.Parameters.AddWithValue("@EndTime", model.EndTime);
                     command.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     //command.Parameters.AddWithValue("@CroneExpression", model.CroneExpression);
@@ -4446,11 +4448,32 @@ namespace GhostQA_API.Helper
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
                 return string.Empty;
             }
         }
+        public async Task<Jira_ProjectDetails> GetJiraProjectDetails(string userId)
+        {
+            Jira_ProjectDetails projectDetails = new Jira_ProjectDetails();
+            List<Dto_ProjectListJira> projectList = await GetProjectListJira(userId);
+            ZephyrService zephyr = new ZephyrService();
+            foreach (var project in projectList)
+            {
+                Jira_Project projectData = new Jira_Project();
+                projectData.Id = project.id;
+                projectData.Name = project.name;
+                projectData.Key = project.key;
 
-
+                var testCases = await zephyr.GetTestCasesAsync(project.key);
+                //foreach (var testCase in testCases)
+                //{
+                //    //Jira_TestCase _TestCase = new Jira_TestCase();
+                //    //_TestCase.Name = testCase.Name;
+                //    //_TestCase.Label = testCase.Label;
+                //    //projectData.TestCases.Add(_TestCase);
+                //}
+                projectDetails.jira_projectsDetails.Add(projectData);
+            }
+            return projectDetails;
+        }
     }
 }
