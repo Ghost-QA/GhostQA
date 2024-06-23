@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Box,
   Container,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     display: "flex",
     justifyContent: "center",
+    alignItems: "center",
   },
   column: {
     padding: theme.spacing(2),
@@ -47,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    padding: theme.spacing(2),
     boxShadow: theme.shadows[2],
     borderRadius: theme.shape.borderRadius,
   },
@@ -57,11 +56,11 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
   },
   chartContainer: {
-    width: "100%",
-    height: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
   overallAutomationCard: {
     width: "100%",
@@ -75,9 +74,21 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
   },
   projectHeading: {
-    marginBottom: theme.spacing(2),
     textAlign: "center",
     fontWeight: "bold",
+    padding: theme.spacing(2),
+  },
+  chartSize: {
+    width: "400px",
+    height: "250px",
+  },
+  cardContent: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    padding: 0, // Remove padding
   },
 }));
 
@@ -113,11 +124,11 @@ const Dashboard = () => {
       </Grid>
       <Grid container className={classes.contentRow} spacing={2}>
         {jiraIntegrationList?.jira_projectsDetails
-          ?.filter((project) => project.testCases.length > 0) // Only include projects with test cases
+          ?.filter((project) => project.testCases.length > 0)
           .map((project) => (
             <Grid item key={project.id} xs={12} md={6} className={classes.column}>
               <Card className={classes.card}>
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                   <Typography
                     variant="h5"
                     component="h2"
@@ -152,7 +163,7 @@ const Dashboard = () => {
                         Math.round(project.perNotAutomatedTestcases),
                       ]}
                       type="pie"
-                      width="100%"
+                      className={classes.chartSize} 
                     />
                   </div>
                 </CardContent>
