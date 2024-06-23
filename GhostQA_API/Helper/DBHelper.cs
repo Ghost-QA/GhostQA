@@ -1,6 +1,7 @@
 ﻿using ExcelDataReader;
 using GhostQA_API.DTO_s;
 using GhostQA_API.Models;
+using GhostQA_API.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -4450,11 +4451,112 @@ namespace GhostQA_API.Helper
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
                 return string.Empty;
             }
         }
 
+        public async Task<Jira_ProjectDetails> GetJiraProjectDetails(string userId)
+        {
+            Jira_ProjectDetails projectDetails = new Jira_ProjectDetails();
+            try
+            {
+                // Get Project List From Jira
+                List<Dto_ProjectListJira> projectList = await GetProjectListJira(userId);
+                // Bind Project Details and Get Test Cases Details from Zephyr using project id
+                projectDetails = await GetJiraProjectsTestCases(projectList);
+                // Perform Calculation based on project Id to get details Total Test Cases, percentage of Test cases
+                projectDetails = await GetJiraProjectTestCaseCalculation(projectDetails);
+                // Perform Calulation to Get Overall Project Details Coverage and update project details
+                projectDetails = await GetJiraProjectCoverageDetails(projectDetails);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return projectDetails;
+        }
 
+        private async Task<Jira_ProjectDetails> GetJiraProjectsTestCases(List<Dto_ProjectListJira> projectList)
+        {
+            Jira_ProjectDetails projectDetails = new Jira_ProjectDetails();
+            ZephyrService zephyr = new ZephyrService(_configuration);
+
+            try
+            {
+                foreach (var project in projectList)
+                {
+                    Jira_Project projectData = new Jira_Project();
+                    projectData.Id = project.id;
+                    projectData.Name = project.name;
+                    projectData.Key = project.key;
+
+                    var testCases = await zephyr.GetTestCasesAsync(project.key);
+                    foreach (var testCase in testCases.Values)
+                    {
+                        Jira_TestCase _TestCase = new Jira_TestCase();
+                        _TestCase.Name = testCase.Name;
+                        _TestCase.Label = testCase.Labels[0];
+                        projectData.TestCases.Add(_TestCase);
+                    }
+                    projectDetails.jira_projectsDetails.Add(projectData);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return projectDetails;
+        }
+
+        private async Task<Jira_ProjectDetails> GetJiraProjectTestCaseCalculation(Jira_ProjectDetails projectDetails)
+        {
+            try
+            {
+                foreach (var proj in projectDetails.jira_projectsDetails)
+                {
+                    int totalAutomated = proj.TestCases.Count(tc => tc.Label == "Automated");
+                    int totalNotAutomated = proj.TestCases.Count(tc => tc.Label == "Not_Automated");
+                    int totalTestCases = totalAutomated + totalNotAutomated;
+
+                    double percentageAutomated = totalTestCases == 0 ? 0 : Math.Round((double)totalAutomated / totalTestCases * 100, 2);
+                    double percentageNotAutomated = totalTestCases == 0 ? 0 : Math.Round((double)totalNotAutomated / totalTestCases * 100, 2);
+                    proj.totalTestcases = totalTestCases;
+                    proj.perAutomatedTestcases = percentageAutomated;
+                    proj.perNotAutomatedTestcases = percentageNotAutomated;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return projectDetails;
+        }
+
+        private async Task<Jira_ProjectDetails> GetJiraProjectCoverageDetails(Jira_ProjectDetails projectDetails)
+        {
+            try
+            {
+                List<string> projectNames = projectDetails.jira_projectsDetails.Select(p => p.Name).ToList();
+                List<Jira_TestCase> allTestCases = projectDetails.jira_projectsDetails.SelectMany(p => p.TestCases).ToList();
+                int totalProjectCoverageTestCases = allTestCases.Count;
+                int totalProjectCoverageAutomated = allTestCases.Count(tc => tc.Label == "Automated");
+                int totalProjectCoverageNotAutomated = allTestCases.Count(tc => tc.Label == "Not_Automated");
+
+                double percentageAutomatedPR = totalProjectCoverageTestCases == 0 ? 0 : Math.Round((double)totalProjectCoverageAutomated / totalProjectCoverageTestCases * 100, 2);
+                double percentageNotAutomatedPR = totalProjectCoverageTestCases == 0 ? 0 : Math.Round((double)totalProjectCoverageNotAutomated / totalProjectCoverageTestCases * 100, 2);
+
+                projectDetails.Summary.Projects = projectNames;
+                projectDetails.Summary.TestCases = allTestCases;
+                projectDetails.Summary.TotalTestCases = totalProjectCoverageTestCases;
+                projectDetails.Summary.TotalProject = projectNames.Count;
+                projectDetails.Summary.perAutomatedTestcases = percentageAutomatedPR;
+                projectDetails.Summary.perNotAutomatedTestcases = percentageNotAutomatedPR;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return projectDetails;
+        }
     }
 }

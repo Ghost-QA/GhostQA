@@ -106,26 +106,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\linux\selenium-manager" />
+		<None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\linux\selenium-manager" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\macos\selenium-manager" />
+		<None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\macos\selenium-manager" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\windows\selenium-manager.exe" />
+		<None Remove="C:\Users\Hosting\.nuget\packages\selenium.webdriver\4.8.2\buildTransitive\..\manager\windows\selenium-manager.exe" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="UploadedLogos\" />
-	  <Folder Include="UploadedLogos\" />
-	  <Folder Include="wwwroot\Driver\" />
-	  <Folder Include="wwwroot\Driver\" />
+		<Folder Include="UploadedLogos\" />
+		<Folder Include="wwwroot\Driver\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\GhostQA_Automation\GhostQA_FrameworkTests\GhostQA_FrameworkTests.csproj" />
+		<ProjectReference Include="..\GhostQA_Automation\GhostQA_FrameworkTests\GhostQA_FrameworkTests.csproj" />
 	</ItemGroup>
 
 </Project>
