@@ -24,14 +24,27 @@ export default function Functional() {
           width: "100%",
         }}
       >
+       
+        {/* <Grid item>
+        <Link
+            to="/"
+            className={`${classes.linkStyle} ${
+              location.pathname === "/" && classes.activeLink
+            }`}
+          >
+            Dashboard
+          </Link>
+        </Grid> */}
         <Grid item>
-                    <Link
-                        to="/"
-                        className={`${classes.linkStyle} ${location.pathname === "/" && classes.activeLink}`}
-                    >
-                        Local Testing
-                    </Link>
-                </Grid>
+          <Link
+            to="/"
+            className={`${classes.linkStyle} ${
+              location.pathname === "/" && classes.activeLink
+            }`}
+          >
+            Dashboard
+          </Link>
+        </Grid>
         {/* <Grid item>
                     <Link
                         to="/settings/Environment"
@@ -48,16 +61,28 @@ export default function Functional() {
                         Settings
                     </Link>
                 </Grid> */}
+                <Grid item>
+          <Link
+            to="/local-testing"
+            style={{ marginLeft: "20px" }}
+            className={`${classes.linkStyle} ${
+              location.pathname.startsWith("/local-testing") && classes.activeLink
+            }`}
+          >
+             Local Testing
+          </Link>
+        </Grid>
         <Grid item>
-
-                    <Link
-                        to="/testLab"
-                        style={{ marginLeft: "20px" }}
-                        className={`${classes.linkStyle} ${location.pathname.startsWith("/testLab") && classes.activeLink}`}
-                    >
-                         Test Lab
-                    </Link>
-                </Grid>
+          <Link
+            to="/testLab"
+            style={{ marginLeft: "20px" }}
+            className={`${classes.linkStyle} ${
+              location.pathname.startsWith("/testLab") && classes.activeLink
+            }`}
+          >
+            Test Lab
+          </Link>
+        </Grid>
         {/* <Grid item>
           <Link
             to="/"
