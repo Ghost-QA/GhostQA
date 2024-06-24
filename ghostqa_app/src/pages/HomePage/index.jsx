@@ -113,11 +113,10 @@ const Dashboard = () => {
 
   // useEffect(() => {
   //   // if (!location.pathname.startsWith('/settings')) {
-     
+
   //   // }
   //   console.log("location.pathname",location.pathname)
   // }, [location.pathname, dispatch]);
-  
 
   useEffect(() => {
     if (userId) {
@@ -236,6 +235,13 @@ const Dashboard = () => {
                                 },
                               },
                             ],
+                            tooltip: {
+                              y: {
+                                formatter: function (val) {
+                                  return val.toFixed(1) + "%";
+                                },
+                              },
+                            },
                           }}
                           series={[
                             project.perAutomatedTestcases,

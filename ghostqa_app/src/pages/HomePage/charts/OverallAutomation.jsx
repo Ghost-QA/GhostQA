@@ -14,8 +14,12 @@ const OverallAutomation = ({ data }) => {
     dataLabels: {
       enabled: true,
       formatter: function (val, opts) {
-        const total = opts.w.globals.series.reduce((a, b) => a + b, 0);
-        const percentage = ((val / total) * 100).toFixed(1) + "%";
+        const total = opts.w.globals.series.reduce(
+          (a, b) => a + b,
+          0
+        );
+        const percentage =
+          ((val / total) * 100).toFixed(1) + "%";
         return percentage;
       },
       offsetX: -10,
@@ -59,6 +63,13 @@ const OverallAutomation = ({ data }) => {
         },
       },
     ],
+    tooltip: {
+      y: {
+        formatter: function (val) {
+          return val.toFixed(1) + "%";
+        },
+      },
+    },
   };
 
   const series = [data?.perAutomatedTestcases, data?.perNotAutomatedTestcases];
@@ -71,4 +82,3 @@ const OverallAutomation = ({ data }) => {
 };
 
 export default OverallAutomation;
-

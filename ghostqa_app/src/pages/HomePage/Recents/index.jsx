@@ -24,7 +24,7 @@ const RecentsTable = ({ data }) => {
           <TableRow>
             <StyledTableCell>Suite Name</StyledTableCell>
             <StyledTableCell>Run By</StyledTableCell>
-            <StyledTableCell>Executed</StyledTableCell>
+            <StyledTableCell>Last Executed</StyledTableCell>
             <StyledTableCell >Status</StyledTableCell>
           </TableRow>
         </TableHead>
