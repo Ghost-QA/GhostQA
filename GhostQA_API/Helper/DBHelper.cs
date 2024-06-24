@@ -4495,7 +4495,7 @@ namespace GhostQA_API.Helper
                     {
                         Jira_TestCase _TestCase = new Jira_TestCase();
                         _TestCase.Name = testCase.Name;
-                        _TestCase.Label = testCase.Labels.Any(x => x == "Automated") ? null : "Not_Automated";
+                        _TestCase.Label = testCase.Labels.Any(x => x == "Automated") ? "Automated" : "Not_Automated";
                         projectData.TestCases.Add(_TestCase);
                     }
                     projectDetails.jira_projectsDetails.Add(projectData);
@@ -4557,6 +4557,30 @@ namespace GhostQA_API.Helper
                 throw ex;
             }
             return projectDetails;
+        }
+
+        internal async Task<string> GetRecentSuiteRunData(string mapping)
+        {
+            string result = string.Empty;
+            using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand("stp_GetRecentSuiteRunData", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@TimeZone", mapping);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read();
+                            result = reader["result"].ToString();
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return result;
         }
     }
 }

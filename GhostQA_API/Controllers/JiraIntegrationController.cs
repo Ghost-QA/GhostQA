@@ -2,6 +2,7 @@ using GhostQA_API.Helper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.Extensions.Primitives;
 
 namespace GhostQA_API.Controllers
 {
@@ -27,6 +28,22 @@ namespace GhostQA_API.Controllers
         public async Task<ActionResult> GetProjectDetailswithTestCase(string userId)
         {
             return Ok(await _helper.GetJiraProjectDetails(userId));
+        }
+
+        /// <summary>
+        /// Get Recent Suite Run Data
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetRecentSuiteRunData")]
+        public async Task<ActionResult> GetRecentSuiteRunData()
+        {
+            if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
+            {
+                return BadRequest("Timezone header is missing.");
+            }
+
+            string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
+            return Ok(await _helper.GetRecentSuiteRunData(mapping));
         }
     }
 }
