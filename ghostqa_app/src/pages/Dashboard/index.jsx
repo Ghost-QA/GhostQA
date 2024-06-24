@@ -24,7 +24,7 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CircularProgress from "@mui/material/CircularProgress";
 import LoadingWave from "./Modal/LoadingWave";
 import DeleteSuite from "./Modal/DeleteSuite";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Graph from "./Components/Graph";
 import { Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
@@ -33,6 +33,7 @@ export default function Dashboard() {
   const classess = useStyles();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { SuiteName } = useParams();
   const { userId } = useSelector((store) => store.auth);
   const {
     testSuits,
@@ -51,6 +52,13 @@ export default function Dashboard() {
   const [inprogress, setInProgress] = useState(false);
 
   useEffect(() => {
+    if (SuiteName) {
+      dispatch(setSelectedSuite(SuiteName));
+      dispatch(setSelectedTab('1')); // Select History tab if SuiteName is provided
+    }
+  }, [SuiteName]);
+
+  useEffect(() => {
     // dispatch(ExecuteTestCasesByTestSuite(data, controlLoading));
     console.log("testSuiteAdded", testSuiteAdded);
     if (testSuiteAdded?.actionType == "SaveAndExecute") {
@@ -66,6 +74,8 @@ export default function Dashboard() {
   const handleAddSuite = () => {
     navigate("/add-suite");
   };
+
+console.log("useParems",SuiteName)
 
   const handleTabChange = (event, newValue) => {
     // setTabNo(newValue);
