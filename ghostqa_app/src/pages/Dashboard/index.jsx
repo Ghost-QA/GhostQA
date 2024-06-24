@@ -354,7 +354,7 @@ export default function Dashboard() {
                           }}
                         >
                           <Tab
-                            label="Dashboard"
+                            label="Trends"
                             value="1"
                             style={tabHeaderStyle}
                           />
