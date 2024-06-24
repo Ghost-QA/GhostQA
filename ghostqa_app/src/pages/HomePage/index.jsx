@@ -99,7 +99,9 @@ const Dashboard = () => {
   const { jiraIntegrationList } = useSelector((store) => store.dashboard);
 
   useEffect(() => {
-    dispatch(getJiraDeatils(userId));
+    if (userId) {
+      dispatch(getJiraDeatils(userId));
+    }
   }, [dispatch, userId]);
 
   return (
@@ -159,8 +161,8 @@ const Dashboard = () => {
                         ],
                       }}
                       series={[
-                        Math.round(project.perAutomatedTestcases),
-                        Math.round(project.perNotAutomatedTestcases),
+                       (project.perAutomatedTestcases),
+                       (project.perNotAutomatedTestcases),
                       ]}
                       type="pie"
                       className={classes.chartSize} 

@@ -23,7 +23,7 @@ const OverallAutomation = ({ data }) => {
     ],
   };
 
-  const series = [Math.round(data?.perAutomatedTestcases), Math.round(data?.perNotAutomatedTestcases)];
+  const series = [data?.perAutomatedTestcases, data?.perNotAutomatedTestcases];
 
   return (
     <div id="chart">
