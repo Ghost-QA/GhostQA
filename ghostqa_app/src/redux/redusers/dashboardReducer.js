@@ -1,7 +1,8 @@
-import { GET_JIRA_INTEGRATION_LIST } from "../actions/dashboardAction";
+import { GET_JIRA_INTEGRATION_LIST, GET_RECENTS_RUNS } from "../actions/dashboardAction";
   
   const initialState = {
     jiraIntegrationList: [],
+    recentsRunsList:[]
   };
   
   const dashboardReducer = (state = initialState, action) => {
@@ -11,6 +12,12 @@ import { GET_JIRA_INTEGRATION_LIST } from "../actions/dashboardAction";
           ...state,
           jiraIntegrationList: action.payload,
         };
+      }
+      case GET_RECENTS_RUNS: {
+        return {
+          ...state,
+          recentsRunsList: action.payload
+        }
       }
       default:
         return state;

@@ -75,6 +75,7 @@ export default function Navigations() {
         <Route path="/" element={<Functional />}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/local-testing" element={<LocalTesting />} />
+          <Route path="/local-testing/:SuiteName" element={<LocalTesting />} />
           {/* <Route path="/" element={<TestLab />} /> */}
           <Route path="/check" element={<h1>check</h1>} />
           <Route path="testLab" element={<TestLab />} />
