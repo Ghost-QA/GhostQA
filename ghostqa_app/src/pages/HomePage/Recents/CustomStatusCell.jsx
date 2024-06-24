@@ -2,7 +2,6 @@ import React from "react";
 import { TableCell, Chip } from "@mui/material";
 
 const CustomStatusCell = ({ status }) => {
-    console.log("status",status)
   const capitalizeFirstLetter = (string) => {
     return string?.charAt(0).toUpperCase() + string?.slice(1);
   };
@@ -10,7 +9,7 @@ const CustomStatusCell = ({ status }) => {
   const getStatusStyle = () => {
     let style = {
       backgroundColor:
-        status === "passed"
+        status === "Passed"
           ? "rgb(7, 217, 176)"
           : status === "Failed" 
           ? "rgb(247, 77, 77)"

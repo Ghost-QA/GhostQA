@@ -24,7 +24,7 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import CircularProgress from "@mui/material/CircularProgress";
 import LoadingWave from "./Modal/LoadingWave";
 import DeleteSuite from "./Modal/DeleteSuite";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Graph from "./Components/Graph";
 import { Tooltip } from "@mui/material";
 import { toast } from "react-toastify";
@@ -34,6 +34,7 @@ export default function Dashboard() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { SuiteName } = useParams();
+  const location = useLocation();
   const { userId } = useSelector((store) => store.auth);
   const {
     testSuits,
@@ -52,30 +53,33 @@ export default function Dashboard() {
   const [inprogress, setInProgress] = useState(false);
 
   useEffect(() => {
+    if (location.pathname.startsWith('/local-testing')) {
+      dispatch(setSelectedSuite(null));
+      dispatch(setSelectedTab('1'));
+    }
+  }, [location.pathname, dispatch]);
+  
+
+  useEffect(() => {
     if (SuiteName) {
       dispatch(setSelectedSuite(SuiteName));
-      dispatch(setSelectedTab('1')); // Select History tab if SuiteName is provided
+      dispatch(setSelectedTab('1')); 
     }
   }, [SuiteName]);
 
   useEffect(() => {
-    // dispatch(ExecuteTestCasesByTestSuite(data, controlLoading));
-    console.log("testSuiteAdded", testSuiteAdded);
     if (testSuiteAdded?.actionType == "SaveAndExecute") {
       let data = {
         TestSuiteName: testSuiteAdded.testSuiteName,
         TestSuiteFlag: "Custom",
       };
-      // dispatch(ExecuteTestCasesByTestSuite(data, controlLoading));
-      // console.log("data",data)
       handleExecuteClick(data);
     }
   }, [testSuiteAdded]);
+
   const handleAddSuite = () => {
     navigate("/add-suite");
   };
-
-console.log("useParems",SuiteName)
 
   const handleTabChange = (event, newValue) => {
     // setTabNo(newValue);

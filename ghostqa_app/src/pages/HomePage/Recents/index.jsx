@@ -25,7 +25,7 @@ const RecentsTable = ({ data }) => {
             <StyledTableCell>Suite Name</StyledTableCell>
             <StyledTableCell>Run By</StyledTableCell>
             <StyledTableCell>Executed</StyledTableCell>
-            <StyledTableCell>Action</StyledTableCell>
+            <StyledTableCell >Status</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -45,13 +45,13 @@ const RecentsTable = ({ data }) => {
                   {row.TestSuiteName}
                 </Link>
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell style={{marginLeft:'10px'}}>
                 {row.TesterName}
               </StyledTableCell>
-              <StyledTableCell>
+              <StyledTableCell >
                 {row.TestSuiteEndDate}
               </StyledTableCell>
-              <StyledTableCell className="p-4">
+              <StyledTableCell>
                 <CustomStatusCell status={row.TestCaseStatus} />
               </StyledTableCell>
             </TableRow>

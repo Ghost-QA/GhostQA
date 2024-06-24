@@ -19,7 +19,7 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
         backgroundColor: "rgb(242, 242, 242)",
         color: "#5c5c5c",
-        padding: "10px 20px",
+        padding: "10px 15px",
         fontFamily: "Lexend Deca",
         fontSize: "12px",
         borderTop: "1px solid rgb(217, 217, 217)",
@@ -27,7 +27,8 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
     [`&.${tableCellClasses.body}`]: {
         // backgroundColor: "#fdfdfd",
-        padding: "0px 20px",
+        // padding: "15px !important",
+        padding: "10px 15px",
         fontSize: "12px",
         lineHeight: "18px",
         letterSpacing: "normal",
