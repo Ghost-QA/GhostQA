@@ -4495,7 +4495,7 @@ namespace GhostQA_API.Helper
                     {
                         Jira_TestCase _TestCase = new Jira_TestCase();
                         _TestCase.Name = testCase.Name;
-                        _TestCase.Label = testCase.Labels[0];
+                        _TestCase.Label = testCase.Labels.Any(x => x == "Automated") ? null : "Not_Automated";
                         projectData.TestCases.Add(_TestCase);
                     }
                     projectDetails.jira_projectsDetails.Add(projectData);
