@@ -1,11 +1,13 @@
 ﻿using GhostQA_API.DTO_s;
 using GhostQA_API.Helper;
 using GhostQA_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhostQA_API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [EnableCors("AllowAll")]
     [ApiController]

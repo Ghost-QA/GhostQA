@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GhostQA_API.Interfaces;
+using System.ComponentModel.DataAnnotations;
 
 namespace GhostQA_API.Models
 {
-    public class TestData
+    public class TestData : BaseModel
     {
         [Key]
         public int Id { get; set; }

@@ -1,17 +1,16 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GhostQA_API.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
-    public class Environments
+    public class Environments : BaseModel
     {
         [Key]
         public int EnvironmentId { get; set; }
 
         [Required(ErrorMessage = "Environment Name is required."), Column("EnvironmentName", TypeName = "varchar(100)")]
         public string EnvironmentName { get; set; }
-
-        public int ApplicationId { get; set; }
 
         [Required(ErrorMessage = "Baseurl is required."), Column("Baseurl", TypeName = "varchar(1000)")]
         public string? Baseurl { get; set; }

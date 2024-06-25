@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GhostQA_API.Interfaces;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
-    public class TestCase
+    public class TestCase : BaseModel
     {
         [Key]
         public int TestCaseId { get; set; }
@@ -45,11 +46,5 @@ namespace GhostQA_API.Models
 
         public int? TestUserId { get; set; }
         public int RootId { get; set; }
-
-        public int? ApplicationId { get; set; }
-
-        public Guid? TenantId { get; set; }
-
-        public Guid? OrganizationId { get; set; }
     }
 }

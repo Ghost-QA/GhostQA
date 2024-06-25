@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using GhostQA_API.Interfaces;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
-    public class InternalTestExecution
+    public class InternalTestExecution : BaseModel
     {
         [Column("TestSuite", TypeName = "VARCHAR(100)")]
         public string TestSuite { get; set; }

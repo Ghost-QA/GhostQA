@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace GhostQA_API.Models
+﻿namespace GhostQA_API.DTO_s
 {
-    public class Integration
+    public class Dto_IntegrationRespnse
     {
-        [Key]
         public int Id { get; set; }
-
         public string UserId { get; set; }
         public string AppName { get; set; }
         public bool IsIntegrated { get; set; }
@@ -16,6 +12,6 @@ namespace GhostQA_API.Models
         public string UpdatedOn { get; set; }
         public string Domain { get; set; }
         public string Email { get; set; }
-        public byte[] APIKey { get; set; }
+        public string APIKey { get; set; }
     }
 }

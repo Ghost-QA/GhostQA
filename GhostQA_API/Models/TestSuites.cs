@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using GhostQA_API.Interfaces;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
-    public class TestSuites
+    public class TestSuites : BaseModel
     {
         [Key]
         public int TestSuiteId { get; set; }
@@ -13,9 +14,6 @@ namespace GhostQA_API.Models
         public string TestSuiteName { get; set; }
 
         public string? TestSuiteType { get; set; } // "BuiltIn" or "Custom"
-
-        [Required(ErrorMessage = "Application is required.")]
-        public int ApplicationId { get; set; }
 
         public bool SendEmail { get; set; }
 

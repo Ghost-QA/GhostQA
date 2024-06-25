@@ -3142,48 +3142,81 @@ PROC EXEC		:
 				EXEC stp_InsertBuiltInTestSuiteDetails @DynamicObject
 **************************************************************************************/
 BEGIN TRY
-	
 	BEGIN
-		INSERT INTO tbl_TestCase (
-			TestSuiteName,
-			TestRunName,
-			TestCaseName,
-			TestCaseStatus,
-			TestCaseVideoURL,
-			TestSuiteStartDateTime,
-			TestSuiteEndDateTime,
-			TestRunStartDateTime,
-			TestRunEndDateTime,
-			TestCaseSteps,
-			TesterName,
-			TestEnvironment)
-		SELECT
-			TestSuiteName,
-			TestRunName,
-			TestCaseName,
-			TestCaseStatus,
-			TestCaseVideoURL,
-			CONVERT(datetimeoffset, TestSuiteStartDateTime),
-			CONVERT(datetimeoffset, TestSuiteEndDateTime),
-			CONVERT(datetimeoffset, TestRunStartDateTime),
-			CONVERT(datetimeoffset, TestRunEndDateTime),
-			TestCaseSteps,
-			TesterName,
-			TestEnvironment
+		DECLARE @APPLICATIONNAME NVARCHAR(100), @APPLICATIONID INT
+
+		SELECT @APPLICATIONNAME = ApplicationName
 		FROM OPENJSON(@DynamicObject) WITH (
-			TestSuiteName NVARCHAR(100),
-			TestRunName NVARCHAR(100),
-			TestCaseName NVARCHAR(100),
-			TestCaseStatus NVARCHAR(50),
-			TestCaseVideoURL NVARCHAR(MAX),
-			TestSuiteStartDateTime DATETIMEOFFSET,
-			TestSuiteEndDateTime DATETIMEOFFSET,
-			TestRunStartDateTime DATETIMEOFFSET,
-			TestRunEndDateTime DATETIMEOFFSET,
-			TestCaseSteps NVARCHAR(MAX),
-			TesterName NVARCHAR(100),
-			TestEnvironment NVARCHAR(50))
- END
+			ApplicationName NVARCHAR(100))
+
+		IF @APPLICATIONNAME IS NOT NULL
+		BEGIN
+			IF NOT EXISTS(SELECT TOP 1 1 FROM tbl_Applications (NOLOCK) WHERE ApplicationName = @APPLICATIONNAME)
+			BEGIN
+				INSERT INTO tbl_Applications(ApplicationName)
+				SELECT @APPLICATIONNAME
+
+				SET @APPLICATIONID = SCOPE_IDENTITY()
+			END
+			ELSE
+			BEGIN
+				SELECT @APPLICATIONID = ApplicationId FROM tbl_Applications (NOLOCK) WHERE ApplicationName = @APPLICATIONNAME
+			END
+
+			INSERT INTO tbl_TestCase (
+				TestSuiteName,
+				TestRunName,
+				TestCaseName,
+				TestCaseStatus,
+				TestCaseVideoURL,
+				TestSuiteStartDateTime,
+				TestSuiteEndDateTime,
+				TestRunStartDateTime,
+				TestRunEndDateTime,
+				TestCaseSteps,
+				TesterName,
+				TestEnvironment,
+				ApplicationId,
+				TenantId,
+				OrganizationId)
+			SELECT
+				TestSuiteName,
+				TestRunName,
+				TestCaseName,
+				TestCaseStatus,
+				TestCaseVideoURL,
+				CONVERT(datetimeoffset, TestSuiteStartDateTime),
+				CONVERT(datetimeoffset, TestSuiteEndDateTime),
+				CONVERT(datetimeoffset, TestRunStartDateTime),
+				CONVERT(datetimeoffset, TestRunEndDateTime),
+				TestCaseSteps,
+				TesterName,
+				TestEnvironment,
+				@APPLICATIONID,
+				NULL,
+				NULL
+			FROM OPENJSON(@DynamicObject) WITH (
+				TestSuiteName NVARCHAR(100),
+				TestRunName NVARCHAR(100),
+				TestCaseName NVARCHAR(100),
+				TestCaseStatus NVARCHAR(50),
+				TestCaseVideoURL NVARCHAR(MAX),
+				TestSuiteStartDateTime DATETIMEOFFSET,
+				TestSuiteEndDateTime DATETIMEOFFSET,
+				TestRunStartDateTime DATETIMEOFFSET,
+				TestRunEndDateTime DATETIMEOFFSET,
+				TestCaseSteps NVARCHAR(MAX),
+				TesterName NVARCHAR(100),
+				TestEnvironment NVARCHAR(50))
+		END
+		ELSE
+		BEGIN
+			SELECT [result] = JSON_QUERY((
+				SELECT 'fail' [status], 'No Application Name Found' [message]
+				FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+			))
+		END
+	 END
 
 	IF @@ERROR = 0
 	BEGIN
