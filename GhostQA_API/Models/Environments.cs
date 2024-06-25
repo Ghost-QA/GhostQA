@@ -1,10 +1,9 @@
-﻿using GhostQA_API.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GhostQA_API.Models
 {
-    public class Environments : BaseModel
+    public class Environments
     {
         [Key]
         public int EnvironmentId { get; set; }
@@ -26,9 +25,6 @@ namespace GhostQA_API.Models
         public DateTime? CreatedOn { get; set; }
         public string? ModifiedBy { get; set; }
         public DateTime? ModifiedOn { get; set; }
-
-        [NotMapped]
-        public string ApplicationName { get; set; }
 
         [NotMapped]
         public string BrowserName { get; set; }

@@ -588,7 +588,6 @@ namespace GhostQA_API.Helper
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@EnvironmentId", model.EnvironmentId);
                         command.Parameters.AddWithValue("@EnvironmentName", model.EnvironmentName);
-                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
                         command.Parameters.AddWithValue("@BrowserId", model.BroswerId);
                         command.Parameters.AddWithValue("@Baseurl", model.Baseurl);
                         command.Parameters.AddWithValue("@BasePath", model.BasePath);
@@ -729,7 +728,6 @@ namespace GhostQA_API.Helper
                             {
                                 reader.Read();
                                 environment.EnvironmentId = Convert.ToInt32(reader["EnvironmentId"]);
-                                environment.ApplicationId = Convert.ToInt32(reader["ApplicationId"]);
                                 environment.EnvironmentName = reader["EnvironmentName"].ToString();
                                 environment.DriverPath = reader["DriverPath"].ToString();
                                 environment.BasePath = reader["BasePath"].ToString();
