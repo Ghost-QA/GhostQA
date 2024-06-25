@@ -1,6 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetRunDetails]
 @TestSuitName		VARCHAR(100),
-@RootId				INT,
+@RootId				INT = 0,
 @TimeZone			VARCHAR(100) = 'India Standard Time'
 AS
 /**************************************************************************************
@@ -34,7 +34,7 @@ SELECT DISTINCT CAST(FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT
 				FORMAT((CAST(t.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') AS TestRunDateString
 FROM tbl_TestCase (NOLOCK) t
 WHERE t.TestSuiteName = ''' + @TestSuitName + '''
-AND t.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + ''';
+AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + ''');
 
 SELECT [RunDetailsJson] = JSON_QUERY ((
 	SELECT t.TestRunDateYear
@@ -47,8 +47,8 @@ SELECT [RunDetailsJson] = JSON_QUERY ((
 					CONVERT(VARCHAR(8), CAST(MIN((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''')) AS TIME), 108) AS [TestRunStartTime],
 					CONVERT(VARCHAR(8), CAST(MAX((CAST(t1.[TestRunEndDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''')) AS TIME), 108) AS [TestRunEndTime],
 					COUNT(t1.[TestCaseName]) AS [TotalTestCases],
-					(SELECT COUNT([TestCaseStatus]) FROM tbl_TestCase WHERE [TestCaseStatus] LIKE ''%Passed%'' AND [TestSuiteName] = t1.[TestSuiteName] AND [TestRunName] = t1.[TestRunName]) AS [PassedTestCases],
-					(SELECT COUNT([TestCaseStatus]) FROM tbl_TestCase WHERE [TestCaseStatus] LIKE ''%Failed%'' AND [TestSuiteName] = t1.[TestSuiteName] AND [TestRunName] = t1.[TestRunName]) AS [FailedTestCases],
+					(SELECT COUNT([TestCaseStatus]) FROM tbl_TestCase WHERE [TestCaseStatus] LIKE ''%Passed%'' AND [TestSuiteName] = t1.[TestSuiteName] AND [TestRunName] = t1.[TestRunName] AND [RootId] = t1.[RootId]) AS [PassedTestCases],
+					(SELECT COUNT([TestCaseStatus]) FROM tbl_TestCase WHERE [TestCaseStatus] LIKE ''%Failed%'' AND [TestSuiteName] = t1.[TestSuiteName] AND [TestRunName] = t1.[TestRunName] AND [RootId] = t1.[RootId]) AS [FailedTestCases],
 					CASE
 						WHEN SUM(CASE WHEN t1.[TestCaseStatus] LIKE ''%Passed%'' THEN 1 ELSE 0 END) = 0 THEN ''Failed''
 						WHEN SUM(CASE WHEN t1.[TestCaseStatus] LIKE ''%Failed%'' THEN 1 ELSE 0 END) = 0 THEN ''Passed''
@@ -60,9 +60,9 @@ SELECT [RunDetailsJson] = JSON_QUERY ((
 					END AS [TestRunStatus]
 				FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.TestSuiteName = ''' + @TestSuitName + '''
-					AND t1.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + '''
+					AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t1.RootId = ''' + CAST(@RootId AS VARCHAR(100)) + ''')
 					AND FORMAT((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + '''), ''MMMM dd yyyy'') = t.TestRunDateString
-					GROUP BY t1.[TestSuiteName], t1.[TestRunName]
+					GROUP BY t1.[TestSuiteName], t1.[TestRunName], t1.[RootId]
 					ORDER BY MIN((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''')) DESC
 				FOR JSON PATH
 			))

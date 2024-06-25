@@ -1,6 +1,6 @@
 CREATE OR ALTER PROCEDURE [dbo].[stp_GetDashBoardChartDetails]
 @TestSuitName			VARCHAR(100),
-@RootId					INT,
+@RootId					INT = 0,
 @FilterType				VARCHAR(100),
 @FilterValue			INT = 7,
 @TimeZone				VARCHAR(100) = 'India Standard Time'
@@ -27,7 +27,7 @@ BEGIN TRY
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = ''' + @TestSuitName + '''
-			AND t.[RootId] = ''' + CAST(@RootId AS VARCHAR(100)) + '''
+			AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t.[RootId] = ''' + CAST(@RootId AS VARCHAR(100)) + ''')
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -40,7 +40,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t1.[RootId] = tr.[RootId])
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -49,7 +49,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t1.[RootId] = tr.[RootId])
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -59,7 +59,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (''' + CAST(@RootId AS VARCHAR(100)) + ''' = ''0'' OR t1.[RootId] = tr.[RootId])
 							AND t1.TestRunName = tr.TestRunName
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE ''' + @TimeZone + ''') AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
@@ -88,7 +88,7 @@ BEGIN TRY
 				t.[TestCaseStatus]
 			FROM tbl_TestCase (NOLOCK) t
 			WHERE t.[TestSuiteName] = @TestSuitName
-			AND t.[RootId] = @RootId
+			AND (@RootId = 0 OR t.[RootId] = @RootId)
 		)
 
         SELECT [DashBoardDetailsJson] = JSON_QUERY((
@@ -100,7 +100,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (@RootId = 0 OR t1.[RootId] = tr.[RootId])
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 				) AS [TotalTestCase],
@@ -108,7 +108,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (@RootId = 0 OR t1.[RootId] = tr.[RootId])
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Passed%'
@@ -117,7 +117,7 @@ BEGIN TRY
 					SELECT COUNT(t1.[TestRunName])
 					FROM tbl_TestCase (NOLOCK) t1
 					WHERE t1.[TestSuiteName] = tr.[TestSuiteName]
-							AND t1.[RootId] = tr.[RootId]
+							AND (@RootId = 0 OR t1.[RootId] = tr.[RootId])
 							AND CAST((CAST(t1.[TestRunStartDateTime] AS DATETIMEOFFSET) AT TIME ZONE @TimeZone) AS DATE) 
 							= CAST(tr.[TestRunStartDate] AS DATE)
 							AND t1.[TestCaseStatus] LIKE '%Failed%'
