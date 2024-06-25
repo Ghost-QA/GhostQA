@@ -47,6 +47,7 @@ export default function TestSuitsDetails() {
   const [activeRow, setActiveRow] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [inprogress, setInProgress] = useState(false);
   const { performanceIntegration, jiraIssueList } = useSelector(
     (state) => state.settings
   );
@@ -59,7 +60,7 @@ export default function TestSuitsDetails() {
 
   useEffect(() => {
     if (userId) {
-      dispatch(getPerformanceIntegrationList(userId));
+      dispatch(getPerformanceIntegrationList(userId, setInProgress));
       dispatch(GetAllJiraIssue(userId));
     }
   }, [userId, dispatch]);

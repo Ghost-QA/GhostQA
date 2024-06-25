@@ -33,6 +33,7 @@ export default function Integration() {
   const [openTeamsModal, setOpenTeamsModal] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [inprogress, setInProgress] = useState(false);
   const [errors, setErrors] = useState({
     accountUrl: false,
     userEmail: false,
@@ -45,8 +46,8 @@ export default function Integration() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (userId) dispatch(getPerformanceIntegrationList(userId));
-  }, [userId, dispatch]);
+    if (userId) dispatch(getPerformanceIntegrationList(userId, setInProgress));
+  }, [userId, dispatch, openModal, openTeamsModal]);
 
   const handleCloseTeamsModal = () => {
     resetFormData();

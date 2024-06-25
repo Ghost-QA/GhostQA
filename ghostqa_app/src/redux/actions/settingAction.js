@@ -291,8 +291,9 @@ export const DeleteUser = (id) => {
 
 // performance
 
-export const getPerformanceIntegrationList = (userId) => {
+export const getPerformanceIntegrationList = (userId, setInProgress) => {
   return async (dispatch) => {
+    setInProgress(true)
     try {
       const BASE_URL = await getBaseUrl();
       const response = await axios.get(
@@ -304,8 +305,10 @@ export const getPerformanceIntegrationList = (userId) => {
         type: GET_PERFORMANCE_INTEGRATION,
         payload: response.data,
       });
+      setInProgress(false)
     } catch (error) {
       console.error("Error in getTestSuites:", error);
+      setInProgress(false)
     }
   };
 };
@@ -345,7 +348,7 @@ export const updateZiraIntegration = (
           setOpenModal(false);
           setLoading(false);
         }
-        dispatch(getPerformanceIntegrationList(data.userId));
+        // dispatch(getPerformanceIntegrationList(data.userId));
         callback(true);
       } else if (response.data.message == "Not Found") {
         toast.warn("Invalid Information Entered");
@@ -400,7 +403,7 @@ export const updateTeamsIntegration = (
           setOpenTeamsModal(false);
           setLoading(false);
         }
-        dispatch(getPerformanceIntegrationList(data.userId));
+        // dispatch(getPerformanceIntegrationList(data.userId));
         callback(true);
       } else if (response.data.message == "Not Found") {
         toast.warn("Invalid Information Entered");
