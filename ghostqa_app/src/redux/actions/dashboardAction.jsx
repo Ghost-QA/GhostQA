@@ -20,7 +20,8 @@ export const getJiraDeatils = (userId) => {
           payload: response.data,
         });
       } catch (error) {
-        toast.error("NETWORK ERROR");
+        // toast.error("NETWORK ERROR");
+        console.log("error",error)
       }
     };
   };

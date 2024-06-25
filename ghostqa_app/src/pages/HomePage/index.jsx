@@ -10,6 +10,7 @@ import {
 } from "../../redux/actions/dashboardAction";
 import RecentsTable from "./Recents";
 import { useLocation } from "react-router-dom";
+import { getPerformanceIntegrationList } from "../../redux/actions/settingAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -73,6 +74,12 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "21px",
     padding: "10px 22px",
   },
+  overallHeading: {
+    textAlign: "center",
+    fontSize: "16px",
+    lineHeight: "21px",
+    padding: "10px 22px",
+  },
   projectHeading: {
     textAlign: "center",
     fontWeight: "bold",
@@ -110,13 +117,7 @@ const Dashboard = () => {
   const { jiraIntegrationList, recentsRunsList } = useSelector(
     (store) => store.dashboard
   );
-
-  // useEffect(() => {
-  //   // if (!location.pathname.startsWith('/settings')) {
-
-  //   // }
-  //   console.log("location.pathname",location.pathname)
-  // }, [location.pathname, dispatch]);
+  const { performanceIntegration } = useSelector((state) => state.settings);
 
   useEffect(() => {
     if (userId) {
@@ -124,6 +125,16 @@ const Dashboard = () => {
       dispatch(getRecentsRunList());
     }
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getPerformanceIntegrationList(userId));
+    }
+  }, [userId, dispatch]);
+
+  const isJiraIntegrated = performanceIntegration?.some(
+    (integration) => integration.AppName === "Jira" && integration.IsIntegrated
+  );
 
   return (
     <div className={classes.root}>
@@ -138,22 +149,34 @@ const Dashboard = () => {
                 className={`${classes.card} ${classes.overallAutomationCard}`}
               >
                 <CardContent>
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    className={classes.overallAutomationHeading}
-                  >
-                    Overall Automation
-                  </Typography>
-                  {jiraIntegrationList.summary && (
-                    <OverallAutomation data={jiraIntegrationList.summary} />
+                  {isJiraIntegrated ? (
+                    <>
+                      <Typography
+                        variant="h4"
+                        component="h2"
+                        className={classes.overallAutomationHeading}
+                      >
+                        Overall Automation
+                      </Typography>
+                      {jiraIntegrationList.summary && (
+                        <OverallAutomation data={jiraIntegrationList.summary} />
+                      )}
+                    </>
+                  ) : (
+                    <Typography
+                      variant="h4"
+                      component="h2"
+                      className={classes.overallHeading}
+                    >
+                       Please enable Test Management (JIRA/ADO etc.) under Settings -&gt; Functional -&gt; Local Testing -&gt; Integration
+                    </Typography>
                   )}
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
           <Grid container className={classes.contentRow} spacing={2}>
-            {jiraIntegrationList?.jira_projectsDetails
+            {isJiraIntegrated && jiraIntegrationList?.jira_projectsDetails
               ?.filter((project) => project.testCases.length > 0)
               .map((project) => (
                 <Grid
