@@ -19,7 +19,7 @@ namespace GhostQA_API.Models
 
         [Required(ErrorMessage = "DriverPath  is required."), Column("DriverPath", TypeName = "varchar(1000)")]
         public string? DriverPath { get; set; }
-
+        public int ApplicationId { get; set; }
         public int BroswerId { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
