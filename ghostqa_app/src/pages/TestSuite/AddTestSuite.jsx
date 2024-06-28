@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   OutlinedInput,
   FormControl,
@@ -38,6 +38,7 @@ export default function AddTestSuite() {
   }, []);
   const classes = useStyles();
   const navigate = useNavigate();
+  const { id } = useParams();
   const [selectedSuiteValue, setSelectedSuiteValue] = useState("custom-Suites");
   const [selectedRecepentValue, setSelectedRecepentValue] =
     useState("only-for-me");
@@ -78,6 +79,8 @@ export default function AddTestSuite() {
   const handleRadioChangeRecepent = (event) => {
     setSelectedRecepentValue(event.target.value);
   };
+
+  // console.log("id",id)
 
   const handleNameChange = (e) => {
     // setName(e.target.value);
@@ -127,6 +130,7 @@ export default function AddTestSuite() {
       EnvironmentId: selectedEnvironment?.EnvironmentId,
       // browser: selectedBrowser.BrowserId,
       SelectedTestCases: testCaseNames,
+      rootId:id,
       AllTestCases: [
         {
           disabled: true,

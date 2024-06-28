@@ -2,8 +2,6 @@ import React from "react";
 import { useStyles } from "../../Layout/styles";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { Grid } from "@material-ui/core";
-import { StyledDashBoardIcon } from "../../comman/icons";
-import * as Flatted from "flatted";
 
 export default function Functional() {
   const classes = useStyles();
@@ -24,7 +22,6 @@ export default function Functional() {
           width: "100%",
         }}
       >
-       
         {/* <Grid item>
         <Link
             to="/"
@@ -61,15 +58,16 @@ export default function Functional() {
                         Settings
                     </Link>
                 </Grid> */}
-                <Grid item>
+        <Grid item>
           <Link
             to="/local-testing"
             style={{ marginLeft: "20px" }}
             className={`${classes.linkStyle} ${
-              location.pathname.startsWith("/local-testing") && classes.activeLink
+              location.pathname.startsWith("/local-testing") &&
+              classes.activeLink
             }`}
           >
-             Local Testing
+            Local Testing
           </Link>
         </Grid>
         <Grid item>

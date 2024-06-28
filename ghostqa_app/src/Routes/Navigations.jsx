@@ -24,7 +24,8 @@ import Members from "../pages/Settings/Component/Organization/Members";
 import TestLabSuitsDetails from "../pages/TestLab/Result/TestSuitsDetails/index";
 import Integration from "../pages/Settings/Component/Functional-Local-Testing/Integration";
 const Dashboard = lazy(() => import("../pages/HomePage/"));
-const LocalTesting = lazy(() => import("../pages/Dashboard/"));
+// const LocalTesting = lazy(() => import("../pages/Dashboard/"));
+const LocalTesting = lazy(() => import("../pages/LocalTesting"))
 const Environment = lazy(() => import("../pages/Settings/Component/Functional-Local-Testing/ExecutionEnvironment/index"));
 const Application = lazy(() => import( "../pages/Settings/Component/Functional-Local-Testing/Application/index"));
 const Browser = lazy(() => import("../pages/Settings/Component/Functional-Local-Testing/Browser/index")
@@ -79,6 +80,7 @@ export default function Navigations() {
           {/* <Route path="/" element={<TestLab />} /> */}
           <Route path="/check" element={<h1>check</h1>} />
           <Route path="testLab" element={<TestLab />} />
+          {/* <Route path="/new_design" element={<LocalTestingNew />} /> */}
           <Route path="testLab/:nodeId" element={<TestLab />} />
           <Route
             path="testLab/createTestcase/:rootId"
@@ -139,12 +141,13 @@ export default function Navigations() {
         <Route path="/accordian" element={<BasicAccordion />} />
         <Route path="/myaccount" element={<Account />} />
         <Route
-          path="/test/:testSuiteName/:testRunName"
+          path="/test/:testSuiteName/:testRunName/:RootId"
           element={<TestSuitsDetails />}
         />
         <Route path="/add-suite" element={<AddTestSuite />} />
-        <Route path="/edit/:suiteName" element={<EditTestSuite />} />
+        <Route path="/edit/:suiteName/:id/:rootid" element={<EditTestSuite />} />
         <Route path="/AcceptInvitation/:toEmail" element={<Invitation />} />
+        <Route path="/add-suite/:id" element={<AddTestSuite />} />
         <Route path="settings" element={<MainSettings />}>
           <Route path="location" element={<Location />} />
           <Route path="view-agent/:id" element={<ViewAgent />} />

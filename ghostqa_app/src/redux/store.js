@@ -16,6 +16,7 @@ import userReducer from "./redusers/userReducer";
 import testCaseReducer from "./redusers/testlab/designReducer";
 import executionHistoryReducer from "./redusers/testlab/resultReducer";
 import dashboard from "./redusers/dashboardReducer"
+import localsuiteReducer from "./redusers/localsuiteReducer";
 
 const rootReducer = combineReducers({
   auth: authReduser,
@@ -31,7 +32,8 @@ const rootReducer = combineReducers({
   testlabTestCase:testCaseReducer,
   user:userReducer,
   testlabResult:executionHistoryReducer,
-  dashboard:dashboard
+  dashboard:dashboard,
+  localTest:localsuiteReducer
 });
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));

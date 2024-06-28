@@ -65,7 +65,7 @@ export const getTestCaseRundetailsByTestName = (data, setInProgress) => {
     try {
       const BASE_URL = await getBaseUrl();
       const response = await axios.get(
-        `${BASE_URL}/Selenium/GetRunDetails?testSuitName=${data}`,
+        `${BASE_URL}/Selenium/GetRunDetails?testSuitName=${data.suiteName}&RootId=${data.rootId}`,
         header()
       );
       console.log("getTestCaseRundetailsByTestName", response.data);
@@ -133,7 +133,7 @@ export const GetTestCaseDetails = (data, setLoading) => {
     try {
       const BASE_URL = await getBaseUrl();
       const response = await axios.get(
-        `${BASE_URL}/Selenium/GetTestCaseDetails?testSuitName=${data.testSuitName}&runId=${data.runId}`,
+        `${BASE_URL}/Selenium/GetTestCaseDetails?testSuitName=${data.testSuitName}&runId=${data.runId}&RootId=${data.RootId !== undefined ? data.RootId : 0}`,
         header()
       );
       console.log("GetTestCaseDetails====", response.data);
@@ -155,7 +155,7 @@ export const GetTestCaseStepsDetails = (data) => {
     try {
       const BASE_URL = await getBaseUrl();
       const response = await axios.get(
-        `${BASE_URL}/Selenium/GetTestCaseStepsDetails?testSuitName=${data.testSuitName}&runId=${data.runId}&testCaseName=${data.testCaseName}`,
+        `${BASE_URL}/Selenium/GetTestCaseStepsDetails?testSuitName=${data.testSuitName}&runId=${data.runId}&testCaseName=${data.testCaseName}&RootId=${data.RootId}&testCaseName=${data.testCaseName}`,
         header()
       );
       console.log("GetTestCaseStepsDetails", response.data);
@@ -312,10 +312,10 @@ export const setExecutingSuite = (suiteName)=>{
     payload:suiteName
   }
 }
-export const setSelectedSuite = (suiteName)=>{
+export const setSelectedSuite = (data)=>{
   return {
     type:SELECETED_SUITE,
-    payload:suiteName
+    payload:data
   }
 }
 
@@ -332,12 +332,12 @@ export const setExpandedAccord = (acc)=>{
     payload:acc
   }
 }
-export const Getsuitebyname = (suitName) => {
+export const Getsuitebyname = (suitName, rootid) => {
   return async (dispatch) => {
     try {
       const BASE_URL = await getBaseUrl();
       const res = await axios.get(
-        `${BASE_URL}/Selenium/GetTestSuiteByName?TestSuiteName=${suitName}`,
+        `${BASE_URL}/Selenium/GetTestSuiteByName?TestSuiteName=${suitName}&RootId=${rootid}`,
         header()
       );
       console.log("suite detail to edit ", res.data);

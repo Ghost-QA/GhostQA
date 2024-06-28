@@ -36,7 +36,7 @@ export default function EditTestSuite() {
 
   const classes = useStyles();
   const navigate = useNavigate();
-  const { suiteName } = useParams();
+  const { suiteName, id, rootid } = useParams();
   const [selectedSuiteValue, setSelectedSuiteValue] = useState("custom-Suites");
   const [selectedRecepentValue, setSelectedRecepentValue] = useState("");
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -70,13 +70,15 @@ export default function EditTestSuite() {
   const [isExecuting, setisExecuting] = useState(false);
   const [nameLengthError, setnameLengthError] = useState(false);
 
+  console.log("edit_id, rootid", id, rootid)
+
   useEffect(() => {
     dispatch(GetApplication());
     dispatch(GetEnvironment());
     dispatch(GetTestUserList());
     dispatch(GetTestCases());
     if (!suiteToEdit) {
-      dispatch(Getsuitebyname(suiteName));
+      dispatch(Getsuitebyname(suiteName, rootid));
     }
     setName(suiteToEdit?.TestSuiteName);
     setSelectedApplication(() => {
@@ -186,6 +188,7 @@ export default function EditTestSuite() {
       SendEmail: selectedRecepentValue === "only-for-me" ? true : false,
       EnvironmentId: selectedEnvironment?.EnvironmentId,
       // browser: selectedBrowser.BrowserId,
+      rootId: parseInt(rootid),
       SelectedTestCases: testCaseNames,
       AllTestCases: [
         {
@@ -204,9 +207,9 @@ export default function EditTestSuite() {
     if (!name.trim()) {
       error.name = "Name is required";
     }
-    if (!selectedApplication) {
-      error.application = "Application is required";
-    }
+    // if (!selectedApplication) {
+    //   error.application = "Application is required";
+    // }
     if (!selectedEnvironment) {
       error.environment = "Environment is required";
     }

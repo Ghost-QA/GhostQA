@@ -40,7 +40,7 @@ import {
 } from "../../redux/actions/settingAction";
 
 export default function TestSuitsDetails() {
-  const { testSuiteName, testRunName } = useParams();
+  const { testSuiteName, testRunName, RootId } = useParams();
   const classess = useStyles();
   const dispatch = useDispatch();
   const [isButtonClicked, setButtonClicked] = useState(false);
@@ -90,7 +90,9 @@ export default function TestSuitsDetails() {
       testSuitName: payload.TestSuiteName,
       runId: payload.TestRunName,
       testCaseName: payload.TestCaseName,
+      RootId:parseInt(RootId)
     };
+    console.log("payloadpayload",data)
     dispatch(GetTestCaseStepsDetails(data));
     setButtonClicked(true);
     setActiveRow((prevSuite) => (prevSuite === payload ? null : payload));
