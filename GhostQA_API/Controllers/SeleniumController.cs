@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Security.Claims;
 
 namespace GhostQA_API.Controllers
@@ -26,37 +27,25 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Test Suites Name on Page Load of Report to showcase in Report
         /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetDataTestSuits")]
-        public async Task<ActionResult> GetDataTestSuits()
+        public async Task<ActionResult> GetDataTestSuits(int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetDataTestSuits());
+            return Ok(await _helper.GetDataTestSuits(applicationId, organizationId));
         }
 
         /// <summary>
         /// Get Test Run Over All Details by TestSuite Name
         /// </summary>
         /// <param name="testSuitName"></param>
-        /// <returns></returns>
-        [HttpGet("GetDashboardDetails")]
-        public async Task<ActionResult> GetDashboardDetails(string testSuitName)
-        {
-            if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
-            {
-                return BadRequest("Timezone header is missing.");
-            }
-
-            string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetDashboardDetails(testSuitName, mapping));
-        }
-
-        /// <summary>
-        /// Get Test Run Over All Details by TestSuite Name
-        /// </summary>
-        /// <param name="testSuitName"></param>
+        /// <param name="rootId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetRunDetails")]
-        public async Task<ActionResult> GetRunDetails(string testSuitName, int rootId)
+        public async Task<ActionResult> GetRunDetails(string testSuitName, int rootId, int applicationId, Guid? organizationId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -64,17 +53,20 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetRunDetails(testSuitName, rootId, mapping));
+            return Ok(await _helper.GetRunDetails(testSuitName, rootId, mapping, applicationId, organizationId));
         }
 
         /// <summary>
         /// Get Test Case Details By TestSuite and Test Run Name
         /// </summary>
         /// <param name="testSuitName"></param>
+        /// <param name="rootId"></param>
         /// <param name="runId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestCaseDetails")]
-        public async Task<ActionResult> GetTestCaseDetails(string testSuitName, int rootId, string runId)
+        public async Task<ActionResult> GetTestCaseDetails(string testSuitName, int rootId, string runId, int applicationId, Guid? organizationId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -82,18 +74,21 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetTestCaseDetails(testSuitName, rootId, runId, mapping));
+            return Ok(await _helper.GetTestCaseDetails(testSuitName, rootId, runId, mapping, applicationId, organizationId));
         }
 
         /// <summary>
         /// Get Test Steps Details By TestSuite Name, Test Run Name and Test Case Name
         /// </summary>
         /// <param name="testSuitName"></param>
+        /// <param name="rootId"></param>
         /// <param name="runId"></param>
         /// <param name="testCaseName"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestCaseStepsDetails")]
-        public async Task<ActionResult> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName)
+        public async Task<ActionResult> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName, int applicationId, Guid? organizationId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -101,7 +96,7 @@ namespace GhostQA_API.Controllers
             }
 
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
-            return Ok(await _helper.GetTestCaseStepsDetails(testSuitName, rootId, runId, testCaseName, mapping));
+            return Ok(await _helper.GetTestCaseStepsDetails(testSuitName, rootId, runId, testCaseName, mapping, applicationId, organizationId));
         }
 
         /// <summary>
@@ -123,11 +118,12 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Application Data
         /// </summary>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetApplication")]
-        public async Task<ActionResult> GetApplication()
+        public async Task<ActionResult> GetApplication(Guid? organizationId)
         {
-            return Ok(await _helper.GetApplications());
+            return Ok(await _helper.GetApplications(organizationId));
         }
 
         /// <summary>
@@ -143,21 +139,25 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Test Suites in Json Format
         /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestSuites")]
-        public async Task<ActionResult> GetTestSuites()
+        public async Task<ActionResult> GetTestSuites(int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetTestSuitesJson());
+            return Ok(await _helper.GetTestSuitesJson(applicationId, organizationId));
         }
 
         /// <summary>
         /// Get Test Cases in Json Format
         /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestCases")]
-        public async Task<ActionResult> GetTestCases()
+        public async Task<ActionResult> GetTestCases(int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetTestCasesJson());
+            return Ok(await _helper.GetTestCasesJson(applicationId, organizationId));
         }
 
         /// <summary>
@@ -166,20 +166,22 @@ namespace GhostQA_API.Controllers
         /// <param name="TestSuiteId"></param>
         /// <returns></returns>
         [HttpPost("DeleteTestSuites")]
-        public async Task<ActionResult> DeleteTestSuites(string TestSuiteName)
+        public async Task<ActionResult> DeleteTestSuites(string TestSuiteName, int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.DeleteTestSuites(TestSuiteName));
+            return Ok(await _helper.DeleteTestSuites(TestSuiteName, applicationId, organizationId));
         }
 
         /// <summary>
         /// Get Test Suite Details in Json Format by Name
         /// </summary>
         /// <param name="TestSuiteName"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestSuiteByName")]
-        public async Task<ActionResult> GetTestSuiteByName(string TestSuiteName)
+        public async Task<ActionResult> GetTestSuiteByName(string TestSuiteName, int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetTestSuiteByName(TestSuiteName));
+            return Ok(await _helper.GetTestSuiteByName(TestSuiteName, applicationId, organizationId));
         }
 
         /// <summary>
@@ -206,12 +208,12 @@ namespace GhostQA_API.Controllers
             string mapping = TimeZoneMappings.GetDBTimeZone(timeZoneHeader.ToString());
 
             List<object> _result = new List<object>();
-            string _testRunName = await _helper.GetRunId(model.testSuiteName);
-            string _testSuiteDetailsJson = await _helper.GetTestSuiteByName(model.testSuiteName);
+            string _testRunName = await _helper.GetRunId(model.testSuiteName, model.ApplicationId, model.OrganizationId);
+            string _testSuiteDetailsJson = await _helper.GetTestSuiteByName(model.testSuiteName, model.ApplicationId, model.OrganizationId);
             TestSuiteNameData _testSuiteNameData = Newtonsoft.Json.JsonConvert.DeserializeObject<TestSuiteNameData>(_testSuiteDetailsJson);
             string testerName = User.FindFirst(ClaimTypes.Email)?.Value.ToString();
             string result = string.Empty;
-            string projectName = _testSuiteNameData.Application.ApplicationName.ToString();
+            string applicationName = _testSuiteNameData.Application.ApplicationName.ToString();
 
             Models.Environments _environmentDetails = await _helper.GetEnvironmentById(Convert.ToInt32(_testSuiteNameData.Environment.EnvironmentId));
             if (_testSuiteNameData.SelectedTestCases != null && _testSuiteNameData.SelectedTestCases.Length > 0)
@@ -220,7 +222,7 @@ namespace GhostQA_API.Controllers
                 int counter = 0;
                 foreach (var testCaseName in _testSuiteNameData.SelectedTestCases.Split(","))
                 {
-                    string _testCaseJsonData = await _helper.RunTestCase(projectName, model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
+                    string _testCaseJsonData = await _helper.RunTestCase(applicationName, model.testSuiteName, testCaseName.ToString(), _testRunName, testerName, _testSuiteNameData.Environment.BaseUrl, _testSuiteNameData.Environment.BasePath, _testSuiteNameData.Environment.EnvironmentName, _environmentDetails.BrowserName, _testSuiteNameData.Environment.DriverPath, _testSuiteNameData.TestUser.UserName, _testSuiteNameData.TestUser.Password);
 
                     if (string.IsNullOrEmpty(_testCaseJsonData))
                     {
@@ -236,6 +238,9 @@ namespace GhostQA_API.Controllers
                         _testSuiteData.TestBrowserName = _environmentDetails?.BrowserName;
                         _testSuiteData.TestCaseName = testCaseName;
                         _testSuiteData.RootId = model.rootId;
+                        _testSuiteData.ApplicationId = model.ApplicationId;
+                        _testSuiteData.OrganizationId = model.OrganizationId;
+                        _testSuiteData.TenantId = model.TenantId;
                         result = await _helper.SaveTestCaseData(Newtonsoft.Json.JsonConvert.SerializeObject(_testSuiteData));
                         _result.Add(result);
                     }
@@ -387,18 +392,23 @@ namespace GhostQA_API.Controllers
         /// <param Name="Name"></param>
         /// <returns></returns>
         [HttpGet("GetRunId")]
-        public async Task<ActionResult> GetRunId(string testSuiteName)
+        public async Task<ActionResult> GetRunId(string testSuiteName, int applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetRunId(testSuiteName));
+            return Ok(await _helper.GetRunId(testSuiteName, applicationId, organizationId));
         }
 
         /// <summary>
-        /// Get Test Run Over All Details by TestSuite Name
+        /// Get Chart Details for Dashboard Local Testing
         /// </summary>
-        /// <param name="testSuitName"></param>
+        /// <param name="TestSuiteName"></param>
+        /// <param name="RootId"></param>
+        /// <param name="Filtertype"></param>
+        /// <param name="FilterValue"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetChartDetails")]
-        public async Task<ActionResult> GetDashboardDetails(string TestSuiteName, int RootId, string Filtertype, int FilterValue)
+        public async Task<ActionResult> GetDashboardChartDetails(string TestSuiteName, int RootId, string Filtertype, int FilterValue, int applicationId, Guid? organizationId)
         {
             if (!Request.Headers.TryGetValue("X-Api-Timezone", out StringValues timeZoneHeader))
             {
@@ -409,7 +419,7 @@ namespace GhostQA_API.Controllers
 
             try
             {
-                string result = await _helper.GetDashboardDetails(TestSuiteName, RootId, Filtertype, FilterValue, mapping);
+                string result = await _helper.GetDashboardChartDetails(TestSuiteName, RootId, Filtertype, FilterValue, mapping, applicationId, organizationId);
                 return Ok(result);
             }
             catch (Exception)
@@ -421,12 +431,13 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Delete Application By ApplicationId
         /// </summary>
-        /// <param Int="ApplicationId"></param>
+        /// <param name="ApplicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpPost("DeleteApplication")]
-        public async Task<ActionResult> DeleteApplication(int ApplicationId)
+        public async Task<ActionResult> DeleteApplication(int ApplicationId, Guid? organizationId)
         {
-            return Ok(await _helper.DeleteApplication(ApplicationId));
+            return Ok(await _helper.DeleteApplication(ApplicationId, organizationId));
         }
 
         /// <summary>
@@ -574,6 +585,8 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Add Functional Suite Relation
         /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("AddUpdateFunctionalSuiteRelation")]
         public async Task<ActionResult> AddUpdateFunctionalSuiteRelation(FunctionalSuiteRelation model)
         {

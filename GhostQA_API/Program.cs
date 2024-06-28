@@ -1,9 +1,11 @@
 using GhostQA_API.DBContext;
 using GhostQA_API.Helper;
 using GhostQA_API.Models;
+using GhostQA_API.TenantInfra.EntityMigration;
 using GhostQA_FrameworkTests.Arum.Mississippi.TestFile;
 using Hangfire;
 using Hangfire.SqlServer;
+using Mailosaur.Operations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -115,6 +117,7 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddTransient<TestExecutor>();
 builder.Services.AddScoped<DBHelper>();
+builder.Services.AddScoped<Migration_Helper>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

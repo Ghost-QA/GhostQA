@@ -1,6 +1,8 @@
-﻿namespace GhostQA_API.DTO_s
+﻿using GhostQA_API.Interfaces;
+
+namespace GhostQA_API.DTO_s
 {
-    public class Dto_Load
+    public class Dto_Load : BaseModel
     {
         public int PerformancefileId { get; set; }
         public int TotalUsers { get; set; }

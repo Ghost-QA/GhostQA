@@ -278,6 +278,10 @@ D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\EntityFramework.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\ExcelDataReader.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\ExcelDataReader.DataSet.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\ExtentReports.dll
+D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Hangfire.AspNetCore.dll
+D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Hangfire.Core.dll
+D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Hangfire.NetCore.dll
+D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Hangfire.SqlServer.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\HtmlAgilityPack.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Humanizer.dll
 D:\MechlinTech\GhostQA\GhostQA_API\bin\Debug\net6.0\Mailosaur.dll
