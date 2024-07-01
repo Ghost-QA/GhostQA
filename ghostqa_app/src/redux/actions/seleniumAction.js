@@ -77,7 +77,7 @@ export const getTestCaseRundetailsByTestName = (data, setInProgress) => {
     } catch (error) {
       setInProgress(false);
       console.error(error);
-      toast.error("NETWORK ERROR");
+      // toast.error("NETWORK ERROR");
     }
   };
 };

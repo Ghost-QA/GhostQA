@@ -1,6 +1,6 @@
 {
-  "REACT_APP_BASE_URL": "/api",
+  "REACT_APP_BASE_URL": "https://mtus.dyndns.org:3001/api",
   "REACT_TESTSUITE_VIDEO_URL": "",
   "REACT_TESTSUITE_IMAGE_URL": "",
-  "coreEngineBaseUrl": ""
+  "coreEngineBaseUrl": "https://dev.ghostqa.com"
 }
