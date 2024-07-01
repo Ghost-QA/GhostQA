@@ -1,18 +1,16 @@
 ﻿using GhostQA_API.Interfaces;
-using System.ComponentModel.DataAnnotations;
 
-namespace GhostQA_API.Models
+namespace GhostQA_API.DTO_s
 {
-    public class SuiteScheduleInfo : BaseModel
+    public class Dto_SuiteScheduledInfo : BaseModel
     {
-        [Key]
         public int Id { get; set; }
         public string Interval { get; set; }
         public string SuiteName { get; set; }
         public int RootId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDate { get; set; }
-        public string DaysOfWeek { get; set; }
+        public List<DayOfWeek> DaysOfWeek { get; set; } = new List<DayOfWeek>();
         public int DayOfMonth { get; set; }
         public int RepeatEvery { get; set; }
         public string JobId { get; set; }

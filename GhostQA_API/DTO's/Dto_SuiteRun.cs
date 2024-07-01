@@ -6,6 +6,7 @@
         public string SuiteName { get; set; }
         public string Header { get; set; }
         public string UserId { get; set; }
-        public string Token { get; set; }
+        public DateTime EndDate { get; set; }
+        public int RootId { get; set; }
     }
 }

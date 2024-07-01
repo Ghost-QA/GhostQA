@@ -1,11 +1,10 @@
 using GhostQA_API.DBContext;
 using GhostQA_API.Helper;
 using GhostQA_API.Models;
-using GhostQA_API.TenantInfra.EntityMigration;
+using GhostQA_API.Services;
 using GhostQA_FrameworkTests.Arum.Mississippi.TestFile;
 using Hangfire;
 using Hangfire.SqlServer;
-using Mailosaur.Operations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -99,16 +98,15 @@ builder.Services.AddSwaggerGen(option =>
 });
 
 builder.Services.AddHangfire(config => config
-    .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
     .UseSqlServerStorage(builder.Configuration.GetConnectionString("AppDBContextConnection"), new SqlServerStorageOptions
     {
         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-        QueuePollInterval = TimeSpan.Zero,
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(8),
+        QueuePollInterval = TimeSpan.FromSeconds(2),
         UseRecommendedIsolationLevel = true,
-        UsePageLocksOnDequeue = true,
         DisableGlobalLocks = true
     }));
 
@@ -117,7 +115,8 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddTransient<TestExecutor>();
 builder.Services.AddScoped<DBHelper>();
-builder.Services.AddScoped<Migration_Helper>();
+builder.Services.AddTransient<SuiteService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

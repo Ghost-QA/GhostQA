@@ -1,16 +1,11 @@
 ﻿using GhostQA_API.DTO_s;
 using GhostQA_API.Helper;
 using GhostQA_API.Models;
-using GhostQA_API.TenantInfra.EntityMigration;
-using GhostQA_API.TenantInfra.EntityModal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace GhostQA_API.Controllers
 {
@@ -21,16 +16,14 @@ namespace GhostQA_API.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DBHelper _helper;
-        private readonly Migration_Helper _migrationHelper;
 
-        public LoginController(UserManager<ApplicationUser> userManager, DBHelper helper, Migration_Helper migrationHelper)
+        public LoginController(UserManager<ApplicationUser> userManager, DBHelper helper)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _helper = helper ?? throw new ArgumentNullException(nameof(helper));
-            _migrationHelper = migrationHelper ?? throw new ArgumentNullException(nameof(migrationHelper));
         }
 
-        [HttpPost("Login")]
+        [HttpPost]
         public async Task<IActionResult> LoginAsync(Dto_Login loginDTO)
         {
             try
@@ -90,18 +83,6 @@ namespace GhostQA_API.Controllers
             }
         }
 
-        [HttpPost("UserSignUpTenantCreation")]
-        public async Task<IActionResult> UserSignUpTenantCreation(Dto_Tenant _tenant)
-        {
-            try
-            {
-                await _migrationHelper.RunMigrations(_tenant);
-                return Ok(new Dto_Response { status = "true", message = "Tenant created successfully" });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new Dto_Response { status = "false", message = $"Error creating tenant: {ex.Message}" });
-            }
-        }
+        
     }
 }

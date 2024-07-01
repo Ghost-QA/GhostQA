@@ -4988,6 +4988,9 @@ BEGIN TRY
 	--Deleting related custom suites
 	DELETE FROM dbo.tbl_TestSuites WHERE RootId = @ParentRootId;
 
+	--Deleting related custom suites execution data
+	DELETE FROM dbo.tbl_TestCase WHERE RootId = @ParentRootId
+
     IF @@ERROR = 0
     BEGIN
 		DROP TABLE #temp
@@ -5013,5 +5016,56 @@ BEGIN CATCH
         SELECT 'error' [status], ERROR_MESSAGE() [message]
         FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
     ))
+END CATCH
+GO
+CREATE OR ALTER PROCEDURE [dbo].[stp_SaveSuiteSchedulerInfo]
+@Interval                 VARCHAR(100),
+@SuiteName	              VARCHAR(100),
+@RootId					  INT,
+@StartDateTime	          DateTime,
+@EndDate  			      DateTime,
+@DaysOfWeek               VARCHAR(100) = NULL,
+@DayOfMonth               INT = NULL,
+@RepeatEvery			  INT = NULL,
+@JobId			          VARCHAR(100),
+@CreatedBy			      VARCHAR(100),
+@ApplicationId			  INT = NULL,
+@TenantId			      VARCHAR(100) = NULL,
+@OrganizationId			  VARCHAR(100) = NULL
+AS
+/**************************************************************************************
+PROCEDURE NAME	:	stp_SaveSuiteSchedulerInfo
+CREATED BY		:	Mohammed Yaseer
+CREATED DATE	:	28th March 2024
+MODIFIED BY		:	
+MODIFIED DATE	:	
+PROC EXEC		:  EXEC stp_SaveSuiteSchedulerInfo
+				
+**************************************************************************************/
+BEGIN TRY
+	BEGIN
+		INSERT INTO [dbo].[tbl_SuiteScheduleInfo] ([Interval], [SuiteName], [RootId], [StartDateTime], [EndDate], [DaysOfWeek], [DayOfMonth], [RepeatEvery], [JobId], [CreatedBy], [CreatedOn], [ModifiedBy], [ModifiedOn],  [ApplicationId], [TenantId],[OrganizationId]) 
+		VALUES (@Interval, @SuiteName, @RootId, @StartDateTime, @EndDate, @DaysOfWeek, @DayOfMonth, @RepeatEvery, @JobId, @CreatedBy, GETDATE(), NULL, NULL, @ApplicationId, @TenantId, @OrganizationId)
+		IF @@ERROR = 0
+		BEGIN
+			SELECT [Result] = JSON_QUERY((
+				SELECT 'success' [status], 'Save Schedule Successfully' [message]
+			FOR JSON PATH,WITHOUT_ARRAY_WRAPPER 
+			))
+		END
+		ELSE
+		BEGIN
+			SELECT [result] = JSON_QUERY((
+				SELECT 'fail' [status], CAST(@@ERROR AS NVARCHAR(20)) [message]
+				FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+			))
+		END
+	END
+END TRY
+BEGIN CATCH
+	SELECT [result] = JSON_QUERY((
+		SELECT 'fail' [status], ERROR_MESSAGE() [message]
+		FOR JSON PATH, WITHOUT_ARRAY_WRAPPER
+	))
 END CATCH
 GO

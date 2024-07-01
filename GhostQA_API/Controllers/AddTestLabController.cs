@@ -1,13 +1,12 @@
 ﻿using GhostQA_API.DTO_s;
 using GhostQA_API.Helper;
 using GhostQA_API.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhostQA_API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [EnableCors("AllowAll")]
     [ApiController]
@@ -100,23 +99,10 @@ namespace GhostQA_API.Controllers
         /// </summary>
         /// <param RootId="RootId"></param>
         /// <returns></returns>
-        [HttpPost("GetTestCaseDetailsByRootId")]
+        [HttpGet("GetTestCaseDetailsByRootId")]
         public async Task<ActionResult> GetTestCaseDetailsByRootId(int RootId)
         {
             return Ok(await _helper.GetTestCaseDetailsByRootId(RootId));
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param ApplicationId="ApplicationId"></param>
-        /// <param TenantId="TenantId"></param>
-        /// <param OrganizationId="OrganizationId"></param>
-        /// <returns></returns>
-        [HttpPost("GetTestCaseDetailsByApplicationId")]
-        public async Task<ActionResult> GetTestCaseDetailsByApplicationId(int ApplicationId, Guid? TenantId, Guid? OrganizationId)
-        {
-            return Ok(await _helper.GetTestCaseDetailsByApplicationId(ApplicationId));
         }
 
         /// <summary>
