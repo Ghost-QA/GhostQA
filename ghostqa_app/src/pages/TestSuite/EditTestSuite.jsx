@@ -27,6 +27,8 @@ import {
   AddUpdateTestSuites,
   Getsuitebyname,
   GetTestUser,
+  GetTestCaseByApplicationId,
+  setSelectedTab,
 } from "../../redux/actions/seleniumAction";
 import { useParams } from "react-router-dom";
 import { GetTestUserList } from "../../redux/actions/settingAction";
@@ -36,7 +38,7 @@ export default function EditTestSuite() {
 
   const classes = useStyles();
   const navigate = useNavigate();
-  const { suiteName } = useParams();
+  const { suiteName, id, rootid } = useParams();
   const [selectedSuiteValue, setSelectedSuiteValue] = useState("custom-Suites");
   const [selectedRecepentValue, setSelectedRecepentValue] = useState("");
   const [selectedApplication, setSelectedApplication] = useState(null);
@@ -62,8 +64,8 @@ export default function EditTestSuite() {
     applicationList,
     environementList,
     suiteToEdit,
-    testCasesList,
     executingSuite,
+    testCaseListByApplication
   } = useSelector((state) => state.selenium);
 
   const { testUserList } = useSelector((state) => state.settings);
@@ -71,19 +73,26 @@ export default function EditTestSuite() {
   const [nameLengthError, setnameLengthError] = useState(false);
 
   useEffect(() => {
+    if (suiteToEdit?.Application?.ApplicationId !== undefined) {
+      dispatch(GetTestCaseByApplicationId(suiteToEdit.Application.ApplicationId));
+    }
+  }, [suiteToEdit]);
+  
+
+  useEffect(() => {
     dispatch(GetApplication());
     dispatch(GetEnvironment());
     dispatch(GetTestUserList());
     dispatch(GetTestCases());
     if (!suiteToEdit) {
-      dispatch(Getsuitebyname(suiteName));
+      dispatch(Getsuitebyname(suiteName, rootid));
     }
     setName(suiteToEdit?.TestSuiteName);
     setSelectedApplication(() => {
-      const x = applicationList?.find(
-        (app) => app.ApplicationId === suiteToEdit?.Application?.ApplicationId
+      return applicationList?.find(
+        (app) => app.ApplicationId == suiteToEdit?.Application?.ApplicationId
       );
-      return x;
+      // return x;
     });
     //work on all-user
     setSelectedRecepentValue(
@@ -91,47 +100,32 @@ export default function EditTestSuite() {
     );
     setSelectedEnvironment(() => {
       return environementList?.find(
-        (env) => env.EnvironmentId === suiteToEdit?.Environment.EnvironmentId
+        (env) => env.EnvironmentId === suiteToEdit?.Environment?.EnvironmentId
       );
     });
-    // setSelectedEnvironment(() => {
-    //   return environementList?.find(
-    //     (env) => env.EnvironmentId === suiteToEdit?.Environment.EnvironmentId
-    //   );
-    // });
+ 
     setSelectedTestUser(() => {
       return testUserList?.find(
         (env) => env.UserId === suiteToEdit?.TestUser?.TestUserId
       );
     });
     setDescription(suiteToEdit?.Description);
-    // setSelectedRows(() => {
-    //   const selectedTestCasesArray = suiteToEdit?.SelectedTestCases
-    //     ? suiteToEdit.SelectedTestCases.split(",")
-    //     : [];
-    //   console.log("suiteToEdit", selectedTestCasesArray, testCasesList);
-    //   return testCasesList.filter((test) =>
-    //     selectedTestCasesArray.some(
-    //       (selectedTestCase) => selectedTestCase.trim() === test.TestCaseName
-    //     )
-    //   );
-    // });
   }, [dispatch, suiteToEdit]);
 
   useEffect(() => {
-    if (suiteToEdit && testCasesList.length > 0) {
+    if (suiteToEdit && testCaseListByApplication.length > 0) {
       setSelectedRows(() => {
         const selectedTestCasesArray = suiteToEdit.SelectedTestCases
           ? suiteToEdit.SelectedTestCases.split(",")
           : [];
-        return testCasesList.filter((test) =>
+        return testCaseListByApplication.filter((test) =>
           selectedTestCasesArray.some(
             (selectedTestCase) => selectedTestCase.trim() === test.TestCaseName
           )
         );
       });
     }
-  }, [suiteToEdit, testCasesList]);
+  }, [suiteToEdit, testCaseListByApplication]);
 
   const handleRadioChange = (event) => {
     setSelectedSuiteValue(event.target.value);
@@ -172,7 +166,7 @@ export default function EditTestSuite() {
   const handleLoading = (status) => {
     // setopenLoadingModal(false)
     setisExecuting(false);
-    if (status === "pass") navigate("/");
+    if (status === "pass") navigate("/local-testing");
   };
   const handleSubmit = (action) => {
     const testCaseNames = getTestcaseNameOnly();
@@ -186,6 +180,7 @@ export default function EditTestSuite() {
       SendEmail: selectedRecepentValue === "only-for-me" ? true : false,
       EnvironmentId: selectedEnvironment?.EnvironmentId,
       // browser: selectedBrowser.BrowserId,
+      rootId: parseInt(rootid),
       SelectedTestCases: testCaseNames,
       AllTestCases: [
         {
@@ -204,9 +199,9 @@ export default function EditTestSuite() {
     if (!name.trim()) {
       error.name = "Name is required";
     }
-    if (!selectedApplication) {
-      error.application = "Application is required";
-    }
+    // if (!selectedApplication) {
+    //   error.application = "Application is required";
+    // }
     if (!selectedEnvironment) {
       error.environment = "Environment is required";
     }
@@ -243,7 +238,7 @@ export default function EditTestSuite() {
           (selectedRow) => selectedRow.TestCaseName !== row.TestCaseName
         );
     setSelectedRows(checkedRows);
-    if (checkedRows.length === testCasesList.length) setSelectAll(true);
+    if (checkedRows.length === testCaseListByApplication.length) setSelectAll(true);
     else setSelectAll(false);
   };
 
@@ -251,13 +246,17 @@ export default function EditTestSuite() {
     const checked = event.target.checked;
     console.log("checked in all selection ", checked);
     setSelectAll(checked);
-    setSelectedRows(checked ? testCasesList : []);
+    setSelectedRows(checked ? testCaseListByApplication : []);
   };
   // const filteredTestCaseData = testCasesList.filter((data) =>
   //   data?.TestCaseName?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   // );
 
-  const filteredTestCaseData = testCasesList
+  const handleGetTestCase = (application) => {
+    dispatch(GetTestCaseByApplicationId(application?.ApplicationId));
+  };
+
+  const filteredTestCaseData = testCaseListByApplication
     .map((data) => ({
       ...data,
       isChecked:
@@ -305,6 +304,12 @@ export default function EditTestSuite() {
       },
     }),
   };
+
+  const handleCancel = () => {
+    navigate(-1)
+    dispatch(setSelectedTab("custom"));
+  }
+
   return (
     <Suspense
       fallback={
@@ -553,10 +558,24 @@ export default function EditTestSuite() {
                               className={clsx(classes.customFontSize)}
                             >
                               Application :{" "}
-                              {selectedApplication
+                              {/* {selectedApplication
                                 ? selectedApplication.ApplicationName
-                                : ""}
+                                : ""} */}
                             </Typography>
+                            <Select
+                              getOptionLabel={(option) =>
+                                option.ApplicationName
+                              }
+                              getOptionValue={(option) => option.ApplicationId}
+                              options={applicationList}
+                              value={selectedApplication}
+                              onChange={(newValue) => {
+                                setSelectedApplication(newValue);
+                                handleGetTestCase(newValue);
+                              }}
+                              styles={selectStyle}
+                              menuPosition={"fixed"} // Set menuPosition to fixed
+                            />
                           </div>
                         </Grid>
 
@@ -750,7 +769,7 @@ export default function EditTestSuite() {
                   <Button
                     color="primary"
                     className={classes.button}
-                    onClick={() => navigate("/")}
+                    onClick={handleCancel}
                     sx={{
                       backgroundColor: "rgb(108, 117, 125)",
                       color: "#f1f1f1",

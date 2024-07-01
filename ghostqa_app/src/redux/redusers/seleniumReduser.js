@@ -15,8 +15,7 @@ import {
   SELECETED_SUITE,
   SELECETED_TAB,
   EXPANDED_ACC,
-  JIRA_ISSUE_TYPES,
-  JIRA_PROJECT_LIST,
+  GET_TESTCASE_BY_APPLICATION
 } from "../actions/seleniumAction";
 
 const initialState = {
@@ -35,6 +34,7 @@ const initialState = {
   selectedSuite: null,
   selectedTab: "1",
   expandedAccord: null,
+  testCaseListByApplication:[]
 };
 
 const seleniumReduser = (state = initialState, action) => {
@@ -133,6 +133,12 @@ const seleniumReduser = (state = initialState, action) => {
       return {
         ...state,
         expandedAccord: action.payload,
+      };
+    }
+    case GET_TESTCASE_BY_APPLICATION: {
+      return {
+        ...state,
+        testCaseListByApplication: action.payload,
       };
     }
     default:

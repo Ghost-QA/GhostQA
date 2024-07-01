@@ -25,6 +25,7 @@
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\ermob\.nuget\packages\microsoft.codeanalysis.analyzers\1.1.0</PkgMicrosoft_CodeAnalysis_Analyzers>
     <PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets Condition=" '$(PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets)' == '' ">C:\Users\ermob\.nuget\packages\microsoft.visualstudio.azure.containers.tools.targets\1.19.5</PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\ermob\.nuget\packages\microsoft.entityframeworkcore.tools\6.0.25</PkgMicrosoft_EntityFrameworkCore_Tools>
+    <PkgHangfire_SqlServer Condition=" '$(PkgHangfire_SqlServer)' == '' ">C:\Users\ermob\.nuget\packages\hangfire.sqlserver\1.8.14</PkgHangfire_SqlServer>
     <PkgFontAwesome Condition=" '$(PkgFontAwesome)' == '' ">C:\Users\ermob\.nuget\packages\fontawesome\4.7.0</PkgFontAwesome>
     <PkgEntityFramework Condition=" '$(PkgEntityFramework)' == '' ">C:\Users\ermob\.nuget\packages\entityframework\6.4.4</PkgEntityFramework>
   </PropertyGroup>

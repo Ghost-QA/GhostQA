@@ -31,10 +31,13 @@ export function TableData({ rows }) {
   const [loading ,setLoading] = useState(false);
 
   const handleRowClick = (payload) => {
+    
     let data = {
       testSuitName: payload.TestSuiteName,
       runId: payload.TestRunName,
+      RootId: payload.RootId
     };
+    console.log("payload",payload)
     dispatch(GetTestCaseDetails(data,setLoading));
     setActiveRow((prevSuite) => (prevSuite === payload ? null : payload));
   };
@@ -62,7 +65,7 @@ export function TableData({ rows }) {
             >
               <StyledTableCell component="th" scope="row" >
                 <Link
-                  to={`/test/${row?.TestSuiteName}/${row.TestRunName}`}
+                  to={`/test/${row?.TestSuiteName}/${row.TestRunName}/${row.RootId ? row.RootId : 0}`}
                   style={{ textDecoration: "none",cursor:"pointer" }}
                   onClick={() => handleRowClick(row)}
                 >

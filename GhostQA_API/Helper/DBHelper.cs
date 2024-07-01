@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SendGrid;
 using SendGrid.Helpers.Mail;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,6 +19,7 @@ using System.Reflection;
 using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 using Environments = GhostQA_API.Models.Environments;
 
 namespace GhostQA_API.Helper
@@ -70,7 +72,7 @@ namespace GhostQA_API.Helper
             return isValidUser;
         }
 
-        internal async Task<string> GetDataTestSuits()
+        internal async Task<string> GetDataTestSuits(int applicationId, Guid? organizationId)
         {
             string TestSuites = "";
             try
@@ -81,6 +83,9 @@ namespace GhostQA_API.Helper
                     using (SqlCommand command = new SqlCommand("stp_GetTestSuits", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -100,39 +105,7 @@ namespace GhostQA_API.Helper
             return TestSuites;
         }
 
-        internal async Task<string> GetDashboardDetails(string testSuitName, string timeZone)
-        {
-            string DashBoardDetailsJson = string.Empty;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_GetDashBoardDetails", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@TestSuitName", testSuitName);
-                        command.Parameters.AddWithValue("@TimeZone", timeZone);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                DashBoardDetailsJson = reader["DashBoardDetailsJson"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return DashBoardDetailsJson;
-        }
-
-        internal async Task<string> GetRunDetails(string TestSuitName, int rootId, string TimeZone)
+        internal async Task<string> GetRunDetails(string TestSuitName, int rootId, string TimeZone, int applicationId, Guid? organizationId)
         {
             string RunDetailsJson = string.Empty;
             try
@@ -146,6 +119,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@TestSuitName", TestSuitName);
                         command.Parameters.AddWithValue("@RootId", rootId);
                         command.Parameters.AddWithValue("@TimeZone", TimeZone);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -170,7 +146,7 @@ namespace GhostQA_API.Helper
             return RunDetailsJson;
         }
 
-        internal async Task<string> GetTestCaseDetails(string TestSuitName, int RootId, string RunID, string TimeZone)
+        internal async Task<string> GetTestCaseDetails(string TestSuitName, int RootId, string RunID, string TimeZone, int applicationId, Guid? organizationId)
         {
             string TestCaseDetailsJson = string.Empty;
             try
@@ -185,6 +161,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@RootId", RootId);
                         command.Parameters.AddWithValue("@TestRunId", RunID);
                         command.Parameters.AddWithValue("@TimeZone", TimeZone);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -204,7 +183,7 @@ namespace GhostQA_API.Helper
             return TestCaseDetailsJson;
         }
 
-        internal async Task<string> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName, string timeZone)
+        internal async Task<string> GetTestCaseStepsDetails(string testSuitName, int rootId, string runId, string testCaseName, string timeZone, int applicationId, Guid? organizationId)
         {
             string testCaseStepDetailsJson = string.Empty;
             try
@@ -220,6 +199,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@TestRunName", runId);
                         command.Parameters.AddWithValue("@TestCaseName", testCaseName);
                         command.Parameters.AddWithValue("@TimeZone", timeZone);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -239,50 +221,6 @@ namespace GhostQA_API.Helper
             return testCaseStepDetailsJson;
         }
 
-        internal JwtSecurityToken GetToken(List<Claim> authClaims)
-        {
-            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:ValidIssuer"],
-                audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddHours(3),
-                claims: authClaims,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
-
-            return token;
-        }
-
-        internal async Task<string> GetTestSuitesJson()
-        {
-            string testSuiteListJson = string.Empty;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_GetCustomTestSuites", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                testSuiteListJson = reader["testSuiteListJson"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return testSuiteListJson;
-        }
-
         internal async Task<string> AddUpdateTestSuitesJson(Dto_TestSuiteDetailsData model)
         {
             string result = string.Empty;
@@ -296,7 +234,6 @@ namespace GhostQA_API.Helper
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@TestSuiteName", model.TestSuiteName);
                         command.Parameters.AddWithValue("@TestSuiteType", model.TestSuiteType ?? "");
-                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
                         command.Parameters.AddWithValue("@SendEmail", model.SendEmail);
                         command.Parameters.AddWithValue("@EnvironmentId", model.EnvironmentId);
                         command.Parameters.AddWithValue("@TestSuiteId", model.TestSuiteId);
@@ -304,6 +241,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@Description", model.Description);
                         command.Parameters.AddWithValue("@TestUserId", model.TestUserId);
                         command.Parameters.AddWithValue("@RootId", model.RootId);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -323,100 +263,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> DeleteTestSuites(string TestSuiteName)
-        {
-            string result = string.Empty;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_DeleteTestSuites", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@TestSuiteName", TestSuiteName);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                result = reader["result"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return result;
-        }
-
-        internal async Task<string> GetTestSuiteByName(string TestSuiteName)
-        {
-            string result = string.Empty;
-            Dto_TestSuiteDetailsData testSuites = new Dto_TestSuiteDetailsData();
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_GetTestSuitsByName", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@TestSuiteName", TestSuiteName);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                result = reader["result"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return result;
-        }
-
-        internal async Task<string> GetTestCasesJson()
-        {
-            string TestCasesListJson = string.Empty;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_GetTestCases", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                TestCasesListJson = reader["TestCasesListJson"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return TestCasesListJson;
-        }
-
-        internal async Task<string> GetApplications()
+        internal async Task<string> GetApplications(Guid? OrganizationId)
         {
             string ApplicationListJson = string.Empty;
             try
@@ -427,6 +274,8 @@ namespace GhostQA_API.Helper
                     using (SqlCommand command = new SqlCommand("stp_GetApplications", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@OrganizationId", OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -476,14 +325,254 @@ namespace GhostQA_API.Helper
             return EnvironmentListJson;
         }
 
-        internal async Task<string> RunTestCase(string projectName, string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
+        internal async Task<string> GetTestSuitesJson(int applicationId, Guid? organizationId)
+        {
+            string testSuiteListJson = string.Empty;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_GetCustomTestSuites", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                testSuiteListJson = reader["testSuiteListJson"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return testSuiteListJson;
+        }
+
+        internal async Task<string> GetTestCasesJson(int applicationId, Guid? organizationId)
+        {
+            string TestCasesListJson = string.Empty;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_GetTestCases", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                TestCasesListJson = reader["TestCasesListJson"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return TestCasesListJson;
+        }
+
+        internal async Task<string> DeleteTestSuites(string TestSuiteName, int applicationId, Guid? organizationId)
+        {
+            string result = string.Empty;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_DeleteTestSuites", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TestSuiteName", TestSuiteName);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                result = reader["result"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        internal async Task<string> GetTestSuiteByName(string TestSuiteName, int? applicationId, Guid? organizationId)
+        {
+            string result = string.Empty;
+            Dto_TestSuiteDetailsData testSuites = new Dto_TestSuiteDetailsData();
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_GetTestSuitsByName", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TestSuiteName", TestSuiteName);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                result = reader["result"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        internal async Task<bool> IsAnySuiteRunning()
+        {
+            bool result = false;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_CheckIfAnySuiteRunning", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                result = Convert.ToBoolean(reader["IsExistingSuiteRunning"]);
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return result;
+        }
+
+        internal async Task UpdateSuiteRunStatus(bool isSuiteRunning)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_UpdateSuiteRunStatus", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@IsSuiteRunning", isSuiteRunning);
+                        await command.ExecuteNonQueryAsync();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        internal async Task<string> GetDashboardChartDetails(string testSuitName, int rootId, string filterType, int filterValue, string timeZone, int applicationId, Guid? organizationId)
+        {
+            string DashBoardDetailsJson = string.Empty;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand("stp_GetDashBoardChartDetails", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TestSuitName", testSuitName);
+                        command.Parameters.AddWithValue("@RootId", rootId);
+                        command.Parameters.AddWithValue("@FilterType", filterType);
+                        command.Parameters.AddWithValue("@FilterValue", filterValue);
+                        command.Parameters.AddWithValue("@TimeZone", timeZone);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            if (reader.HasRows)
+                            {
+                                reader.Read();
+                                DashBoardDetailsJson = reader["DashBoardDetailsJson"].ToString();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return DashBoardDetailsJson;
+        }
+
+
+
+        internal JwtSecurityToken GetToken(List<Claim> authClaims)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(3),
+                claims: authClaims,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
+        }
+
+        internal async Task<string> RunTestCase(string applicationName, string testSuiteName, string testCaseName, string testRun, string testerName, string baseURL, string basePath, string environmentName, string browserName, string driverPath, string TestUserName, string Password)
         {
             string TestCaseJsonData = string.Empty;
             try
             {
                 SaveExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
-                TestCaseJsonData = InvokeTestExecutor(projectName, browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
-                //TestCaseJsonData = _testExecutor.ExecuteTestCases(browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
+                TestCaseJsonData = InvokeTestExecutor(applicationName, browserName, environmentName, testCaseName, baseURL, basePath, driverPath, testerName, TestUserName, Password);
                 UpdateExecutionProgress(testSuiteName, testCaseName, testRun, testerName, environmentName);
             }
             catch (Exception)
@@ -646,26 +735,28 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetRunId(string testSuiteName)
+        internal async Task<string> GetRunId(string testSuiteName, int? applicationId, Guid? organizationId)
         {
             string TestRunName = "";
             try
             {
                 using (SqlConnection connection = new SqlConnection(GetConnectionString()))
                 {
-                    SqlCommand cmd = new SqlCommand("stp_GetRunId", connection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-
                     connection.Open();
-                    SqlParameter sqlParameter = cmd.Parameters.AddWithValue("@TestSuite", testSuiteName);
-                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    using (SqlCommand command = new SqlCommand("stp_GetRunId", connection))
                     {
-                        while (reader.Read())
+                        command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@TestSuite", testSuiteName);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
+                        using (SqlDataReader reader = command.ExecuteReader())
                         {
-                            // Access data from the result set
-                            TestRunName = reader["TestRunName"].ToString();
+                            while (reader.Read())
+                            {
+                                // Access data from the result set
+                                TestRunName = reader["TestRunName"].ToString();
+                            }
                         }
                     }
                     connection.Close();
@@ -814,42 +905,8 @@ namespace GhostQA_API.Helper
             return BrowserListJson;
         }
 
-        internal async Task<string> GetDashboardDetails(string testSuitName, int rootId, string filterType, int filterValue, string timeZone)
-        {
-            string DashBoardDetailsJson = string.Empty;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_GetDashBoardChartDetails", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@TestSuitName", testSuitName);
-                        command.Parameters.AddWithValue("@RootId", rootId);
-                        command.Parameters.AddWithValue("@FilterType", filterType);
-                        command.Parameters.AddWithValue("@FilterValue", filterValue);
-                        command.Parameters.AddWithValue("@TimeZone", timeZone);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                DashBoardDetailsJson = reader["DashBoardDetailsJson"].ToString();
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return DashBoardDetailsJson;
-        }
 
-        internal async Task<string> DeleteApplication(int ApplicationId)
+        internal async Task<string> DeleteApplication(int ApplicationId, Guid? organizationId)
         {
             string result = string.Empty;
             try
@@ -861,6 +918,7 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@ApplicationId", ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1613,7 +1671,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetProjectData()
+        internal async Task<string> GetProjectData(int? ApplicationId, Guid? OrganizationId)
         {
             string result = string.Empty;
             try
@@ -1624,6 +1682,9 @@ namespace GhostQA_API.Helper
                     using (SqlCommand command = new SqlCommand("stp_GetProjectRootRelation", connection))
                     {
                         command.CommandType = CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ApplicationId", ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1656,6 +1717,9 @@ namespace GhostQA_API.Helper
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@ParentId", model.ParentId);
                         command.Parameters.AddWithValue("@Name", model.Name);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1687,6 +1751,9 @@ namespace GhostQA_API.Helper
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@Id", model.Id);
                         command.Parameters.AddWithValue("@Name", model.Name);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1718,6 +1785,9 @@ namespace GhostQA_API.Helper
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@Id", model.Id);
                         command.Parameters.AddWithValue("@ParentId", model.ParentId);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1793,6 +1863,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@TestCaseName", model.TestCaseName);
                         command.Parameters.AddWithValue("@FileName", fileName); // Save file name instead of full path
                         command.Parameters.AddWithValue("@FilePath", filePath);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         await command.ExecuteNonQueryAsync();
                     }
                 }
@@ -1808,7 +1881,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetPerformanceFileByRootId(int RootId)
+        internal async Task<string> GetPerformanceFileByRootId(int RootId, int? applicationId, Guid? organizationId)
         {
             string result = string.Empty;
             try
@@ -1820,6 +1893,9 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@RootId", RootId);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1931,6 +2007,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@Name", model.Name);
                         command.Parameters.AddWithValue("@NumberUser", model.NumberUser);
                         command.Parameters.AddWithValue("@PercentageTraffic", model.PercentageTraffic);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -1949,7 +2028,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetLocationByPerformanceFileId(int PerformanceFileId)
+        internal async Task<string> GetLocationByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
             string result = string.Empty;
             try
@@ -1961,6 +2040,9 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PerformanceFileId", PerformanceFileId);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -2023,6 +2105,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@PerformanceFileId", model.PerformanceFileId);
                         command.Parameters.AddWithValue("@Name", model.Name);
                         command.Parameters.AddWithValue("@Value", model.Value);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         await command.ExecuteNonQueryAsync();
                     }
                 }
@@ -2036,7 +2121,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetPropertyByPerformanceFileId(int PerformanceFileId)
+        internal async Task<string> GetPropertyByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
             string result = string.Empty;
             try
@@ -2048,6 +2133,9 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PerformanceFileId", PerformanceFileId);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -2163,6 +2251,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@Name", name);
                         command.Parameters.AddWithValue("@JsonData", JsonData);
                         command.Parameters.AddWithValue("@FilePath", filePath);
+                        command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         await command.ExecuteNonQueryAsync();
                     }
                 }
@@ -2176,7 +2267,7 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<string> GetTestDataByPerformanceFileId(int PerformanceFileId)
+        internal async Task<string> GetTestDataByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
             string result = string.Empty;
             try
@@ -2188,6 +2279,9 @@ namespace GhostQA_API.Helper
                     {
                         command.CommandType = CommandType.StoredProcedure;
                         command.Parameters.AddWithValue("@PerformanceFileId", PerformanceFileId);
+                        command.Parameters.AddWithValue("@ApplicationId", applicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", organizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.HasRows)
@@ -2253,6 +2347,9 @@ namespace GhostQA_API.Helper
                         command.Parameters.AddWithValue("@DurationMin", loadData.DurationInMinutes);
                         command.Parameters.AddWithValue("@RampupTime", loadData.RampupTime);
                         command.Parameters.AddWithValue("@Steps", loadData.RampupSteps);
+                        command.Parameters.AddWithValue("@ApplicationId", loadData.ApplicationId);
+                        command.Parameters.AddWithValue("@OrganizationId", loadData.OrganizationId);
+                        command.Parameters.AddWithValue("@TenantId", null);
                         await command.ExecuteNonQueryAsync();
                     }
                 }
@@ -4208,58 +4305,6 @@ namespace GhostQA_API.Helper
             return result;
         }
 
-        internal async Task<bool> IsAnySuiteRunning()
-        {
-            bool result = false;
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_CheckIfAnySuiteRunning", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.HasRows)
-                            {
-                                reader.Read();
-                                result = Convert.ToBoolean(reader["IsExistingSuiteRunning"]);
-                            }
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return result;
-        }
-
-        internal async Task UpdateSuiteRunStatus(bool isSuiteRunning)
-        {
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(GetConnectionString()))
-                {
-                    connection.Open();
-                    using (SqlCommand command = new SqlCommand("stp_UpdateSuiteRunStatus", connection))
-                    {
-                        command.CommandType = CommandType.StoredProcedure;
-                        command.Parameters.AddWithValue("@IsSuiteRunning", isSuiteRunning);
-                        await command.ExecuteNonQueryAsync();
-                    }
-                    connection.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
         internal async Task<object> PostReportInTeams(string TestSuiteName, string TestRunName, string TesterName, string Environment, string Webhook, string Url, string TimeZone)
         {
             int indexOfAt = TesterName.IndexOf("@");
@@ -4309,6 +4354,9 @@ namespace GhostQA_API.Helper
                     command.Parameters.AddWithValue("@Id", model.Id);
                     command.Parameters.AddWithValue("@Parent", model.Parent);
                     command.Parameters.AddWithValue("@Name", model.Name);
+                    command.Parameters.AddWithValue("@ApplicationId", model.ApplicationId);
+                    command.Parameters.AddWithValue("@OrganizationId", model.OrganizationId);
+                    command.Parameters.AddWithValue("@TenantId", null);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
