@@ -29,7 +29,7 @@ export const fetchTestCases = (selectedNodeId) => async (dispatch) => {
 
   try {
     const BASE_URL = await getBaseUrl();
-    const response = await axios.post(
+    const response = await axios.get(
       `${BASE_URL}/AddTestLab/GetTestCaseDetailsByRootId?RootId=${selectedNodeId}`,
       header()
     );
