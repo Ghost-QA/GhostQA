@@ -30,7 +30,7 @@ namespace GhostQA_API.Controllers
             _migrationHelper = migrationHelper ?? throw new ArgumentNullException(nameof(migrationHelper));
         }
 
-        [HttpPost("Login")]
+        [HttpPost]
         public async Task<IActionResult> LoginAsync(Dto_Login loginDTO)
         {
             try
