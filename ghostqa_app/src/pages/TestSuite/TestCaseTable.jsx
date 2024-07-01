@@ -39,7 +39,7 @@ export function TestCaseTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows?.map((row) => (
             <TableRow
               key={row.TestCaseName}
               className={`${classes.tableRow}`}

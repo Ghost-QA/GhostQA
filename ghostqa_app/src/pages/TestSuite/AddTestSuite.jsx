@@ -25,6 +25,8 @@ import {
   GetEnvironment,
   GetTestCases,
   AddUpdateTestSuites,
+  GetTestCaseByApplicationId,
+  setSelectedTab,
 } from "../../redux/actions/seleniumAction";
 import { GetTestUserList } from "../../redux/actions/settingAction";
 
@@ -43,15 +45,15 @@ export default function AddTestSuite() {
   const [selectedRecepentValue, setSelectedRecepentValue] =
     useState("only-for-me");
   const [name, setName] = useState("");
-  const { applicationList, environementList, testCasesList, executingSuite } = useSelector(
-    (state) => state.selenium
-  );
+  const {
+    applicationList,
+    environementList,
+    testCasesList,
+    executingSuite,
+    testCaseListByApplication,
+  } = useSelector((state) => state.selenium);
 
   const { testUserList } = useSelector((state) => state.settings);
-
-  // console.log("environment",environementList)
-  // console.log("browser",browserList)
-  // console.log("testcases",testCasesList)
   const [selectedApplication, setSelectedApplication] = useState(null);
   const [selectedEnvironment, setSelectedEnvironment] = useState(null);
   const [selectedTestUser, setSelectedTestUser] = useState(null);
@@ -68,7 +70,6 @@ export default function AddTestSuite() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
-  // const [openLoadingModal, setopenLoadingModal] = useState(false);
   const [isExecuting, setisExecuting] = useState(false);
   const [nameLengthError, setnameLengthError] = useState(false);
 
@@ -79,8 +80,6 @@ export default function AddTestSuite() {
   const handleRadioChangeRecepent = (event) => {
     setSelectedRecepentValue(event.target.value);
   };
-
-  // console.log("id",id)
 
   const handleNameChange = (e) => {
     // setName(e.target.value);
@@ -100,8 +99,11 @@ export default function AddTestSuite() {
           ApplicationName: env.ApplicationName,
         }
       : null;
-    console.log("app ", app);
     setSelectedApplication(app);
+  };
+
+  const handleGetTestCase = (application) => {
+    dispatch(GetTestCaseByApplicationId(application?.ApplicationId));
   };
 
   const getTestcaseNameOnly = () => {
@@ -115,7 +117,7 @@ export default function AddTestSuite() {
   const handleLoading = (status) => {
     // setopenLoadingModal(false)
     setisExecuting(false);
-    if (status === "pass") navigate("/");
+    if (status === "pass") navigate("/local-testing");
   };
   const handleSubmit = (action) => {
     const testCaseNames = getTestcaseNameOnly();
@@ -123,14 +125,14 @@ export default function AddTestSuite() {
       TestSuiteName: name,
       Description: description,
       TestSuiteId: 0,
-      TestUserId:selectedTestUser?.UserId,
+      TestUserId: selectedTestUser?.UserId,
       TestSuiteType: selectedSuiteValue,
       ApplicationId: selectedApplication?.ApplicationId,
       SendEmail: selectedRecepentValue === "only-for-me" ? true : false,
       EnvironmentId: selectedEnvironment?.EnvironmentId,
       // browser: selectedBrowser.BrowserId,
       SelectedTestCases: testCaseNames,
-      rootId:id,
+      rootId: id,
       AllTestCases: [
         {
           disabled: true,
@@ -186,19 +188,25 @@ export default function AddTestSuite() {
       ? [...selectedRows, row]
       : selectedRows.filter((selectedRow) => selectedRow !== row);
     setSelectedRows(checkedRows);
-    if (checkedRows.length === testCasesList.length) setSelectAll(true);
+    if (checkedRows.length === testCaseListByApplication.length)
+      setSelectAll(true);
     else setSelectAll(false);
   };
 
   const handleSelectAllChange = (event) => {
     const checked = event.target.checked;
     setSelectAll(checked);
-    setSelectedRows(checked ? testCasesList : []);
+    setSelectedRows(checked ? testCaseListByApplication : []);
   };
 
-  const filteredTestCaseData = testCasesList?.filter((data) =>
+  const filteredTestCaseData = testCaseListByApplication?.filter((data) =>
     data?.TestCaseName?.toLowerCase()?.includes(searchTerm?.toLowerCase())
   );
+
+  const handleCancel = () => {
+    navigate(-1)
+    dispatch(setSelectedTab("custom"));
+  }
 
   const selectStyle = {
     container: (provided) => ({
@@ -238,6 +246,8 @@ export default function AddTestSuite() {
       },
     }),
   };
+
+  console.log("testCaseListByApplication", testCaseListByApplication);
   return (
     <>
       <div className={classes.main}>
@@ -354,7 +364,10 @@ export default function AddTestSuite() {
                               value={description}
                               onChange={(e) => {
                                 setDescription(e.target.value);
-                                setError((prev) => ({ ...prev, description: "" }));
+                                setError((prev) => ({
+                                  ...prev,
+                                  description: "",
+                                }));
                               }}
                               InputProps={{
                                 sx: {
@@ -447,7 +460,7 @@ export default function AddTestSuite() {
                               value={selectedEnvironment}
                               onChange={(newValue) => {
                                 setSelectedEnvironment(newValue);
-                                handleApplication(newValue);
+                                // handleApplication(newValue);
                               }}
                               styles={selectStyle}
                               menuPosition={"fixed"} // Set menuPosition to fixed
@@ -468,57 +481,29 @@ export default function AddTestSuite() {
                               className={clsx(classes.customFontSize)}
                             >
                               Application :{" "}
-                              {selectedApplication
+                              {/* {selectedApplication
                                 ? selectedApplication.ApplicationName
-                                : ""}
+                                : ""} */}
                             </Typography>
-                            {/* <Select
+                            <Select
                               getOptionLabel={(option) =>
                                 option.ApplicationName
                               }
                               getOptionValue={(option) => option.ApplicationId}
                               options={applicationList}
                               value={selectedApplication}
-                              // onChange={(newValue) => {
-                              //   setSelectedApplication(newValue);
-                              // }}
-                              // onChange={selectedApplication}
-                              styles={{
-                                container: (provided) => ({
-                                  ...provided,
-                                  backgroundColor: "rgb(242, 242, 242)",
-                                  zIndex: 999, // Adjust the zIndex value
-                                }),
-                                control: (provided, state) => ({
-                                  ...provided,
-                                  backgroundColor: "rgb(242, 242, 242)",
-                                  "&:hover": {
-                                    borderColor: "#654DF7",
-                                  },
-                                  borderColor: Error.application
-                                    ? "red"
-                                    : state.isFocused
-                                    ? "#654DF7"
-                                    : "rgb(242, 242, 242)",
-                                }),
-                                option: (provided, state) => ({
-                                  ...provided,
-                                  backgroundColor: state.isSelected
-                                    ? "#654DF7"
-                                    : "transparent",
-                                }),
-                                clearIndicator: (base) => ({
-                                  ...base,
-                                  cursor: 'pointer',
-                                }),
+                              onChange={(newValue) => {
+                                setSelectedApplication(newValue);
+                                handleGetTestCase(newValue);
                               }}
+                              styles={selectStyle}
                               menuPosition={"fixed"} // Set menuPosition to fixed
                             />
                             {Error.application && (
-                              <Typography className={classes.inputError}>
+                              <StyledTypography>
                                 {Error.application}
-                              </Typography>
-                            )} */}
+                              </StyledTypography>
+                            )}
                           </div>
                         </Grid>
 
@@ -671,79 +656,68 @@ export default function AddTestSuite() {
               </Grid>
             </Grid>
           </Grid>
-
           {/* Right Section */}
+          {/* { filteredTestCaseData.length > 0 ? ( */}
           <Grid item xs={12} sm={8}>
             <Grid container>
-              <Grid item xs={12}>
-                <Card
-                  style={
-                    {
-                      // paddingBottom: "30px",
-                      // Height: "92vh"
-                    }
-                  }
-                >
-                  <Box
-                    className={classes.sideBar}
-                    style={{ paddingLeft: "5vh" }}
-                  >
-                    <b> Test Cases </b>
-                  </Box>
-                  <Grid
-                    container
-                    // spacing={2}
-                    alignItems="center"
-                    style={{ marginBottom: "5px", paddingLeft: "5vh" }}
-                  >
-                    {/* Search Box */}
-                    <Grid item xs={12} sm={4}>
-                      <SearchField
-                        placeholder="Search Test Cases..."
-                        onChange={(value) => setSearchTerm(value)}
-                      />
-                    </Grid>
-                  </Grid>
-
-                  {/* Table with some space */}
-                  <div
-                    style={{
-                      overflow: "auto",
-                      // maxHeight: "calc(100vh - 50px)",
-                      maxHeight: "400px",
-                      // marginBottom: "20px",
-                      border: Error.testCaseError,
-                    }}
-                  >
-                    <TestCaseTable
-                      rows={filteredTestCaseData}
-                      selectedRows={selectedRows}
-                      handleSelectAllChange={handleSelectAllChange}
-                      handleCheckboxChange={handleCheckboxChange}
-                      selectAll={selectAll}
-                    />
-                    <Box className={classes.testCaseErrorStyle}>
-                      {Error.testCaseErrorText}
+              {filteredTestCaseData.length > 0 && (
+                <Grid item xs={12}>
+                  <Card>
+                    <Box
+                      className={classes.sideBar}
+                      style={{ paddingLeft: "5vh" }}
+                    >
+                      <b> Test Cases </b>
                     </Box>
-                  </div>
-                </Card>
-              </Grid>
+                    <Grid
+                      container
+                      // spacing={2}
+                      alignItems="center"
+                      style={{ marginBottom: "5px", paddingLeft: "5vh" }}
+                    >
+                      {/* Search Box */}
+                      <Grid item xs={12} sm={4}>
+                        <SearchField
+                          placeholder="Search Test Cases..."
+                          onChange={(value) => setSearchTerm(value)}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    {/* Table with some space */}
+                    <div
+                      style={{
+                        overflow: "auto",
+                        // maxHeight: "calc(100vh - 50px)",
+                        maxHeight: "400px",
+                        // marginBottom: "20px",
+                        border: Error.testCaseError,
+                      }}
+                    >
+                      <TestCaseTable
+                        rows={filteredTestCaseData}
+                        selectedRows={selectedRows}
+                        handleSelectAllChange={handleSelectAllChange}
+                        handleCheckboxChange={handleCheckboxChange}
+                        selectAll={selectAll}
+                      />
+                      <Box className={classes.testCaseErrorStyle}>
+                        {Error.testCaseErrorText}
+                      </Box>
+                    </div>
+                  </Card>
+                </Grid>
+              )}
             </Grid>
 
             <Grid container style={{ paddingTop: "10px" }}>
               <Grid item xs={12}>
-                {/* <Card
-                  style={{
-                    // paddingBottom: "30px",
-                    height: "8vh",
-                  }}
-                  className={classes.buttonContainer}
-                > */}
                 <Box className={classes.buttonContainer}>
                   <Button
                     variant="contained"
                     color="primary"
                     className={classes.button}
+                    disabled={filteredTestCaseData.length === 0}
                     onClick={() => handleSubmit("Save")}
                     sx={{
                       backgroundColor: "rgb(101, 77, 247)",
@@ -760,7 +734,8 @@ export default function AddTestSuite() {
                     variant="contained"
                     color="primary"
                     className={classes.button}
-                    disabled={executingSuite?true:false}
+                    // disabled={executingSuite ? true : false}
+                    disabled={executingSuite || filteredTestCaseData.length === 0}
                     onClick={() => handleSubmit("SaveAndExecute")}
                     sx={{
                       backgroundColor: "rgb(101, 77, 247)",
@@ -770,24 +745,13 @@ export default function AddTestSuite() {
                       },
                     }}
                   >
-                    {/* {!isExecuting ? (
-                      "Save & Execute"
-                    ) : (
-                      <CircularProgress
-                        size={25}
-                        style={{
-                          marginRight: "8px",
-                          color: "#fff",
-                        }}
-                      />
-                    )} */}
                     Save & Execute
                   </Button>
 
                   <Button
                     color="primary"
                     className={classes.button}
-                    onClick={() => navigate("/")}
+                    onClick={handleCancel}
                     sx={{
                       backgroundColor: "rgb(108, 117, 125)",
                       color: "#f1f1f1",
@@ -799,7 +763,6 @@ export default function AddTestSuite() {
                     Cancel
                   </Button>
                 </Box>
-                {/* </Card> */}
               </Grid>
             </Grid>
           </Grid>

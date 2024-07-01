@@ -19,9 +19,7 @@ import clsx from "clsx";
 const Graph = (props) => {
   const classes = useStyles();
   const { selectedSuite } = useSelector((state) => state.selenium);
-
-  console.log("selectedSuite",selectedSuite)
-
+  
   const [data, setData] = useState({
     options: {
       chart: {

@@ -17,7 +17,7 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Add } from "@mui/icons-material";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Graph from "./component/InbuiltSuite/Components/Graph";
 import { Tooltip } from "@mui/material";
 import DeleteSuite from "./component/InbuiltSuite/Modal/DeleteSuite";
@@ -57,21 +57,29 @@ export default function Dashboard() {
   const [addNewProject, setAddNewProject] = useState(false);
   const [depth, setdepth] = useState(0);
   const [formData, setFormData] = useState({ name: "" });
+  const { SuiteName } = useParams();
 
   useEffect(() => {
-    dispatch(setSelectedTab("inbuilt"));
+    dispatch(setSelectedTab("custom"));
     dispatch(getTestSuites());
   }, [dispatch]);
 
   useEffect(() => {
-    if (testSuiteAdded?.actionType === "SaveAndExecute") {
-      let data = {
-        TestSuiteName: testSuiteAdded.testSuiteName,
-        TestSuiteFlag: "Custom",
-      };
-      handleExecuteClick(data);
+    if (SuiteName) {
+      dispatch(setSelectedSuite(SuiteName));
+      // dispatch(setSelectedTab('1')); 
     }
-  }, [testSuiteAdded]);
+  }, [SuiteName]);
+
+  // useEffect(() => {
+  //   if (testSuiteAdded?.actionType === "SaveAndExecute") {
+  //     let data = {
+  //       TestSuiteName: testSuiteAdded.testSuiteName,
+  //       TestSuiteFlag: "Custom",
+  //     };
+  //     handleExecuteClick(data);
+  //   }
+  // }, [testSuiteAdded]);
 
    const handleTabChange = (event, newValue) => {
     dispatch(setSelectedTab(newValue));
@@ -128,15 +136,15 @@ export default function Dashboard() {
     dispatch(getTestCaseRundetailsByTestName(data, setInProgress));
   };
 
-  const handleExecuteClick = (suite) => {
-    dispatch(setExecutingSuite(suite.TestSuiteName));
-    let data = {
-      testSuiteName: suite.TestSuiteName,
-      userId: userId,
-    };
-    dispatch(ExecuteTestCasesByTestSuite(data));
-  };
-console.log("selectedSuite", selectedSuite, filteredTestSuiteData)
+  // const handleExecuteClick = (suite) => {
+  //   dispatch(setExecutingSuite(suite.TestSuiteName));
+  //   let data = {
+  //     testSuiteName: suite.TestSuiteName,
+  //     userId: userId,
+  //   };
+  //   dispatch(ExecuteTestCasesByTestSuite(data));
+  // };
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!formData.name.trim()) {
@@ -226,15 +234,16 @@ console.log("selectedSuite", selectedSuite, filteredTestSuiteData)
                         }}
                       >
                         <Tab
-                          label="In-built Suite"
-                          value="inbuilt"
-                          style={tabHeaderStyle}
-                        />
-                        <Tab
                           label="Custom Suite"
                           value="custom"
                           style={tabHeaderStyle}
                         />
+                        <Tab
+                          label="In-built Suite"
+                          value="inbuilt"
+                          style={tabHeaderStyle}
+                        />
+                        
                       </TabList>
                     </Box>
                   </TabContext>

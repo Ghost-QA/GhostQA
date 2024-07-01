@@ -19,7 +19,7 @@ export const EXECUTING_SUITE= "EXECUTING_SUITE"
 export const SELECETED_SUITE= "SELECETED_SUITE"
 export const SELECETED_TAB= "SELECETED_TAB"
 export const EXPANDED_ACC= "EXPANDED_ACC"
-// const BASE_URL = process.env.REACT_APP_BASE_URL || 'api';
+export const GET_TESTCASE_BY_APPLICATION = "GET_TESTCASE_BY_APPLICATION"
 
 export const getTestSuites = () => {
   return async (dispatch) => {
@@ -190,6 +190,26 @@ export const GetApplication = () => {
   };
 };
 
+export const GetTestCaseByApplicationId = (id) => {
+  return async (dispatch) => {
+    try {
+      const BASE_URL = await getBaseUrl();
+      const response = await axios.get(
+        `${BASE_URL}/Selenium/GetTestCaseDetailsByApplicationId?ApplicationId=${id}`,
+        header()
+      );
+
+      dispatch({
+        type: GET_TESTCASE_BY_APPLICATION,
+        payload: response.data,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("NETWORK ERROR");
+    }
+  };
+};
+
 export const GetEnvironment = () => {
   return async (dispatch) => {
     try {
@@ -297,6 +317,10 @@ export const AddUpdateTestSuites = (data, action, handleLoading) => {
           type: ADD_TEST_SUITE,
           payload: res.data.data,
         });
+        dispatch({
+          type: GET_TESTCASE_BY_APPLICATION,
+          payload: [],
+        });
       }
     } catch (error) {
       handleLoading("error");
@@ -307,6 +331,7 @@ export const AddUpdateTestSuites = (data, action, handleLoading) => {
 };
 
 export const setExecutingSuite = (suiteName)=>{
+  console.log("suiteName",suiteName)
   return {
     type:EXECUTING_SUITE,
     payload:suiteName

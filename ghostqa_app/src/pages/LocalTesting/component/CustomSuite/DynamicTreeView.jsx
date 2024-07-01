@@ -56,7 +56,7 @@ const Card = ({
   expandedInputId,
   setExpandedInputId,
   handleTask,
-  executingSuite,
+  // executingSuite,
   selectedSuite,
   keyData = 0,
   handleExecuteClick,
@@ -66,7 +66,8 @@ const Card = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { selectedNodeId, expanded } = useSelector((state) => state.testcase);
-
+  const { executingSuite } = useSelector((state) => state.selenium);
+  
   useEffect(() => {
     function updateNodeDepth(data, parentId, depth) {
       const children = data.filter((node) => node.parentId === parentId);
@@ -175,25 +176,26 @@ const Card = ({
                   </div>
                   <div className={styleClass.crud}>
                     {nodeCount == 3 && (
-                      // <PlayCircleIcon
+                      // <CircularProgress
                       //   style={{
                       //     marginRight: "8px",
+                      //     color: "#654df7"
                       //   }}
                       // />
                       <>
-                        {executingSuite && executingSuite === item.name ? (
+                        {executingSuite && executingSuite == item.name ? (
                           <CircularProgress
                             size={25}
                             style={{
                               marginRight: "8px",
-                              // color:
-                              //   selectedSuite === item.name
-                              //     ? "#fff"
-                              //     : "rgb(101, 77, 247)",
                               color:
-                                selectedNodeId === item.id
-                                  ? "white"
-                                  : "#654df7",
+                              executingSuite === item.name
+                                  ? "#fff"
+                                  : "rgb(101, 77, 247)",
+                              // color:
+                              //   selectedNodeId === item.id
+                              //     ? "white"
+                              //     : "#654df7",
                             }}
                           />
                         ) : (
@@ -406,7 +408,8 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
     } else if (value === 2) {
       navigate(`/add-suite/${parentId}`);
     } else {
-      alert("Maximum node limit reached.");
+      // alert("Maximum node limit reached.");
+      console.log("somethings wrong")
     }
   };
   const handleCRUDAtParent = async (newItem) => {
@@ -459,7 +462,8 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
           setNewElementName("");
         }
       } else {
-        alert("Maximum node limit reached.");
+        // alert("Maximum node limit reached.");
+        console.log("somethings wrong ")
       }
       console.log(listData);
     },
@@ -599,6 +603,7 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
   };
 
   const handleExecuteClick = (suite) => {
+    console.log("handleExecuteClick",suite)
     dispatch(setExecutingSuite(suite.name));
     let data = {
       testSuiteName: suite.name,
