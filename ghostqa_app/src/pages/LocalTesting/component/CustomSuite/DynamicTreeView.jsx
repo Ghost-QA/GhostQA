@@ -30,6 +30,7 @@ import {
   setSelectedSuite,
   ExecuteTestCasesByTestSuite,
   setExecutingSuite,
+  Getsuitebyname,
 } from "../../../../redux/actions/seleniumAction";
 
 const Card = ({
@@ -188,14 +189,14 @@ const Card = ({
                             size={25}
                             style={{
                               marginRight: "8px",
-                              color:
-                              executingSuite === item.name
-                                  ? "#fff"
-                                  : "rgb(101, 77, 247)",
                               // color:
-                              //   selectedNodeId === item.id
-                              //     ? "white"
-                              //     : "#654df7",
+                              // executingSuite === item.name
+                              //     ? "#fff"
+                              //     : "rgb(101, 77, 247)",
+                              color:
+                                selectedNodeId === item.id
+                                  ? "white"
+                                  : "#654df7",
                             }}
                           />
                         ) : (
@@ -572,7 +573,7 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
 
         header()
       );
-      console.log("respons", response);
+      
       if (response.data.status == "success") {
         setopenDelModal(false);
         toast.info("Successfully deleted", {
@@ -615,7 +616,7 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
   };
 
   const handleSuiteEdit = (item) => {
-   console.log(" itemId, name", item)
+   dispatch(Getsuitebyname(item.name, item.parentId));
    navigate(`/edit/${item.name}/${item.id}/${item.parentId}`);
   }
 
