@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GhostQA_API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+858285e3c06adeea2ff801528e722a9b2ea3ff29")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+13dd1d1172617158c3b1fa45b639e07f01d1d877")]
 [assembly: System.Reflection.AssemblyProductAttribute("GhostQA_API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GhostQA_API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

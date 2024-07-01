@@ -21,11 +21,13 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Project Root Relation
         /// </summary>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetProjectData")]
-        public async Task<ActionResult> GetProjectData()
+        public async Task<ActionResult> GetProjectData(int? applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetProjectData());
+            return Ok(await _helper.GetProjectData(applicationId, organizationId));
         }
 
         /// <summary>
@@ -77,11 +79,14 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Performance File By Id RootId
         /// </summary>
+        /// <param name="RootId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetPerformanceFileByRootId")]
-        public async Task<ActionResult> GetPerformanceFileByRootId(int RootId)
+        public async Task<ActionResult> GetPerformanceFileByRootId(int RootId, int? applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetPerformanceFileByRootId(RootId));
+            return Ok(await _helper.GetPerformanceFileByRootId(RootId, applicationId, organizationId));
         }
 
         /// <summary>
@@ -111,9 +116,9 @@ namespace GhostQA_API.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetLocationByPerformanceFileId")]
-        public async Task<ActionResult> GetLocationByPerformanceFileId(int PerformanceFileId)
+        public async Task<ActionResult> GetLocationByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetLocationByPerformanceFileId(PerformanceFileId));
+            return Ok(await _helper.GetLocationByPerformanceFileId(PerformanceFileId, applicationId, organizationId));
         }
 
         /// <summary>
@@ -141,11 +146,14 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Property By PerformanceFileId
         /// </summary>
+        /// <param name="PerformanceFileId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetPropertyByPerformanceFileId")]
-        public async Task<ActionResult> GetPropertyByPerformanceFileId(int PerformanceFileId)
+        public async Task<ActionResult> GetPropertyByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetPropertyByPerformanceFileId(PerformanceFileId));
+            return Ok(await _helper.GetPropertyByPerformanceFileId(PerformanceFileId, applicationId, organizationId));
         }
 
         /// <summary>
@@ -173,11 +181,14 @@ namespace GhostQA_API.Controllers
         /// <summary>
         /// Get Test Data By PerformanceFileId
         /// </summary>
+        /// <param name="PerformanceFileId"></param>
+        /// <param name="applicationId"></param>
+        /// <param name="organizationId"></param>
         /// <returns></returns>
         [HttpGet("GetTestDataByPerformanceFileId")]
-        public async Task<ActionResult> GetTestDataByPerformanceFileId(int PerformanceFileId)
+        public async Task<ActionResult> GetTestDataByPerformanceFileId(int PerformanceFileId, int? applicationId, Guid? organizationId)
         {
-            return Ok(await _helper.GetTestDataByPerformanceFileId(PerformanceFileId));
+            return Ok(await _helper.GetTestDataByPerformanceFileId(PerformanceFileId, applicationId, organizationId));
         }
 
         /// <summary>
