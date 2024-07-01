@@ -5,7 +5,6 @@ import BasicAccordion from "../../comman/Accordion";
 import {
   getTestCaseRundetailsByTestName,
   getTestSuites,
-  ExecuteTestCasesByTestSuite,
   setExecutingSuite,
   setSelectedSuite,
   setSelectedTab,

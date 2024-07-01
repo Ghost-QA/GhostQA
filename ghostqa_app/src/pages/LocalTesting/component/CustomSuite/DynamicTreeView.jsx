@@ -603,12 +603,13 @@ const DynamicTreeView = ({ TestCaseHandle }) => {
   };
 
   const handleExecuteClick = (suite) => {
-    console.log("handleExecuteClick",suite)
+    const emailFromSession = localStorage.getItem("email");
     dispatch(setExecutingSuite(suite.name));
     let data = {
       testSuiteName: suite.name,
       userId: userId,
-      rootId: parseInt(suite.parentId)
+      rootId: parseInt(suite.parentId),
+      userEmail: emailFromSession
     };
     dispatch(ExecuteTestCasesByTestSuite(data));
   };
